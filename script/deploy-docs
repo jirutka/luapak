@@ -1,0 +1,93 @@
+#!/bin/sh
+# vim: set ts=4:
+#
+# Deploys doc/ to the gh-pages branch in the repository.
+#
+# Environment variables:
+#   GH_TOKEN : GitHub Personal Token to use for authentication when pushing
+#              back into the repository.
+set -eu
+
+DEPLOY_BRANCH='gh-pages'
+SOURCE_BRANCH='master'
+
+
+copy_docs() {
+	local build_dir="$1"
+
+	test -d doc || die "Directory $(pwd)/doc does not exist"
+
+	rm -Rf -- "$build_dir"/ldoc/*
+	mkdir -p "$build_dir"/ldoc/*
+	cp -r doc/* "$build_dir"/ldoc/
+
+	# Remove Last updated timestamp.
+	LANG=C find "$build_dir"/ldoc -name '*.html' \
+		-exec sed -i.BAK 's/<i style="float:right;">Last updated.*//' {} \; \
+		-exec rm {}.BAK \;  # sed -i behaves differently on BSD and GNU...
+}
+
+has_changes() {
+	test -n "$(git status --porcelain)"
+}
+
+remote_origin_url() {
+	if [ -n "${GH_TOKEN:-}" ]; then
+		git config remote.origin.url \
+			| sed 's|^git:|https:|' \
+			| sed "s|^https://|https://${GH_TOKEN}@|"
+	else
+		git config remote.origin.url
+	fi
+}
+
+shield() {
+	if [ -n "${GH_TOKEN:-}" ]; then
+		eval $@ 2>&1 | sed "s/$GH_TOKEN/*****/g"
+	else
+		eval $@
+	fi
+}
+
+
+#========================  Main  =========================#
+
+cd "$(dirname "$0")/.."
+. script/utils.sh
+
+einfo 'Updating ldoc documentation'
+
+commit_rev="$(git rev-parse --short HEAD)"
+commit_author="$(git log -n 1 --format='%aN <%aE>')"
+commit_date="$(git log -n 1 --format='%aD')"
+remote_url="$(remote_origin_url)" || die 'Failed to get remote.origin.url'
+build_dir="$(mktemp -q -d "${TMPDIR:-"/tmp"}/docs.XXXX")"
+
+if [ -n "${TRAVIS:-}" ]; then
+	git config --global user.name 'Travis CI'
+	git config --global user.email 'travis-ci@local.host'
+fi
+
+shield git clone --progress "$remote_url" "$build_dir"
+git -C "$build_dir" checkout "$DEPLOY_BRANCH" \
+	|| die "Branch $DEPLOY_BRANCH does not exist"
+
+copy_docs "$build_dir"
+
+cd "$build_dir"
+
+if ! has_changes; then
+	ewarn 'No changes'; exit 0
+fi
+
+einfo 'Commiting changes'
+git add --all
+git commit \
+	--message="Built from $commit_rev" \
+	--author="$commit_author" \
+	--date="$commit_date"
+
+einfo "Pushing changes to $DEPLOY_BRANCH branch"
+shield git push --progress "$remote_url" "$DEPLOY_BRANCH:$DEPLOY_BRANCH"
+
+rm -Rf -- "$build_dir"

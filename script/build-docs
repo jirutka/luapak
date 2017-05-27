@@ -1,0 +1,8 @@
+#!/bin/sh
+# vim: set ts=4:
+set -eu
+
+. "$(dirname "$0")/bootstrap"
+
+einfo 'Running ldoc'
+ldoc --verbose .

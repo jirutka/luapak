@@ -1,0 +1,56 @@
+= Luapak
+Jakub Jirutka <https://github.com/jirutka[@jirutka]>
+:proj-name: luapak
+:gh-name: jirutka/{proj-name}
+:gh-branch: master
+:ldoc-url: https://jirutka.github.io/{proj-name}/ldoc/
+
+ifdef::env-github[]
+image:https://travis-ci.org/{gh-name}.svg?branch={gh-branch}["Build Status", link="https://travis-ci.org/{gh-name}"]
+image:https://img.shields.io/badge/ldoc-docs-blue.svg["LDoc", link="{ldoc-url}"]
+endif::env-github[]
+
+TBD
+
+
+== Installation
+
+You can install {proj-name} using https://luarocks.org[LuaRocks] (the Lua package manager):
+
+[source, subs="+attributes"]
+luarocks install {proj-name}
+
+or to get the latest development version:
+
+[source, subs="+attributes"]
+luarocks install --server=http://luarocks.org/dev {proj-name}
+
+Note: If you want to bootstrap development environment for running tests, read the next section.
+
+
+== Set up development environment
+
+. Clone this repository:
+[source, subs="+attributes"]
+git clone https://github.com/{gh-name}.git
+cd {proj-name}
+
+. Source file `.envrc` into your shell (or manually add `$(pwd)/.venv/bin` to your `PATH`):
+[source]
+source .envrc
+
+. Install Lua and modules for running tests into directory `.venv`:
+[source]
+./script/bootstrap
+
+. Start hacking!
+
+. Run linters:
+[source]
+./script/test
+
+
+== License
+
+This project is licensed under http://opensource.org/licenses/MIT/[MIT License].
+For the full text of the license, see the link:LICENSE[LICENSE] file.

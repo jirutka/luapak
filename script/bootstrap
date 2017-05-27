@@ -1,0 +1,50 @@
+#!/bin/sh
+# vim: set ts=4:
+#
+# This script ensures that lua interpreter and lua modules specified
+# in Rocksfile are installed.
+#
+# Environment variables:
+#   LUA_VERSION : Version of the Lua interpreter (e.g. lua-5.3, luajit-2.0) to
+#                 be installed. Default is lua-5.3.
+#
+set -eu
+
+DEFAULT_LUA_VERSION='lua-5.3'
+HEREROCKS_URI='https://raw.githubusercontent.com/mpeterv/hererocks/0.15.0/hererocks.py'
+HEREROCKS_SHA256='1729b18b056ebf6eb3d1637616ddd0bb801c615c7a46c3f311dd646789e703ef'
+
+install_rock() {
+	local name="$1"
+	local args="$name"
+
+	case "$name" in
+		*/*) args="--server=https://luarocks.org/manifests/${name%/*} ${name#*/}";;
+	esac
+
+	luarocks install $args
+}
+
+
+cd "$(dirname "$0")/.."
+. script/utils.sh
+
+mkdir -p "$VENV_DIR" "$TEMP_DIR"
+
+if [ ! -x "$VENV_DIR"/bin/luarocks ]; then
+	version="$(printf %s "${LUA_VERSION:-$DEFAULT_LUA_VERSION}" | tr - =)"
+
+	einfo "Installing $version and luarocks into $VENV_DIR"
+	wgets "$HEREROCKS_URI" "$HEREROCKS_SHA256" "$TEMP_DIR"
+	python "$TEMP_DIR"/hererocks.py "$VENV_DIR" --no-readline --luarocks=^ --$version
+	printf '\n'
+fi
+
+. ./.envrc
+
+einfo 'Installing lua modules'
+cat Rocksfile | sed -En 's/^([^#]+).*/\1/p' | while read -r rockname; do
+	luarocks --mversion show "${rockname#*/}" >/dev/null 2>&1 \
+		|| install_rock "$rockname" \
+		|| die "Failed to install rock $rockname."
+done

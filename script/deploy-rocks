@@ -1,0 +1,44 @@
+#!/bin/sh
+# vim: set ts=4:
+#
+# If git HEAD is tagged as v*, then it generates the release rockspec(s)
+# from the dev-0 rockspec(s) and uploads them to LuaRocks. Otherwise it uploads
+# dev-0 rockspec(s) to LuaRocks.
+#
+# Environment variables:
+#   LUAROCKS_KEY : API key for LuaRocks.
+set -eu
+
+create_release_spec() {
+	local dev_spec="$1"
+	local spec_ver="$2"
+
+	local git_tag="v${spec_ver%-*}"
+	local rel_spec="$(echo "$dev_spec" | sed "s/-dev-0.rockspec/-$spec_ver.rockspec/")"
+
+	sed -E \
+		-e "s/^version *= *['\"].*['\"]/version = '$spec_ver'/" \
+		-e "/^source *= *\{/,/^\}/ s/(branch|tag) *= *['\"].*['\"]/tag = '$git_tag'/" \
+		"$dev_spec" > "$rel_spec"
+
+	echo "$rel_spec"
+}
+
+
+. "$(dirname "$0")/bootstrap"
+
+[ -n "${LUAROCKS_KEY:-}" ] || die 'LUAROCKS_KEY is not set!'
+
+for dev_spec in *-dev-0.rockspec; do
+	if is_release; then
+		rel_spec=$(create_release_spec "$dev_spec" "$(git_based_version)-1")
+
+		einfo "Uploading $(basename "$rel_spec") to LuaRocks"
+		luarocks upload --api-key="$LUAROCKS_KEY" "$rel_spec"
+
+		rm -- "$rel_spec"
+	else
+		einfo "Uploading $(basename "$dev_spec") to LuaRocks"
+		luarocks upload --force --api-key="$LUAROCKS_KEY" "$dev_spec"
+	fi
+done
