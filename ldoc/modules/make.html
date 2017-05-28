@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luapak docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Luapak</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Local_Functions">Local Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/build.builtin.html">build.builtin</a></li>
+  <li><a href="../modules/build.toolchain.gnu.html">build.toolchain.gnu</a></li>
+  <li><a href="../modules/build.toolchain.html">build.toolchain</a></li>
+  <li><a href="../modules/build.toolchain.msvc.html">build.toolchain.msvc</a></li>
+  <li><a href="../modules/build.toolchain.utils.html">build.toolchain.utils</a></li>
+  <li><a href="../modules/cli.analyse_deps.html">cli.analyse_deps</a></li>
+  <li><a href="../modules/cli.build_rock.html">cli.build_rock</a></li>
+  <li><a href="../modules/cli.make.html">cli.make</a></li>
+  <li><a href="../modules/cli.wrapper.html">cli.wrapper</a></li>
+  <li><a href="../modules/deps_analyser.html">deps_analyser</a></li>
+  <li><a href="../modules/fs.html">fs</a></li>
+  <li><a href="../modules/init.html">init</a></li>
+  <li><a href="../modules/logging.html">logging</a></li>
+  <li><a href="../modules/lua_finder.html">lua_finder</a></li>
+  <li><a href="../modules/luarocks.html">luarocks</a></li>
+  <li><strong>make</strong></li>
+  <li><a href="../modules/optparse.html">optparse</a></li>
+  <li><a href="../modules/pkgpath.html">pkgpath</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wrapper.html">wrapper</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>make</code></h1>
+<p>The main build module that handles complete process of building standalone executable.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#__call">__call (proj_paths, entry_script, output_file, rocks_dir, opts)</a></td>
+	<td class="summary">Makes a standalone executable from the Lua project(s).</td>
+	</tr>
+</table>
+<h2><a href="#Local_Functions">Local Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#default_entry_script">default_entry_script (rockspec_file)</a></td>
+	<td class="summary">Returns path and name of <strong>single</strong> CLI script specified in the rockspec.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rockspec_project_dir">rockspec_project_dir (rockspec_file)</a></td>
+	<td class="summary">Guesses project's base directory from the rockspec path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#resolve_proj_paths">resolve_proj_paths (proj_paths)</a></td>
+	<td class="summary">Resolves project paths from the CLI arguments.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#resolve_dependencies">resolve_dependencies (entry_script, extra_modules, excludes, pkg_path)</a></td>
+	<td class="summary">Resolves the entry script's dependencies, logs results
+ and returns lists of modules and objects.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "__call"></a>
+    <strong>__call (proj_paths, entry_script, output_file, rocks_dir, opts)</strong>
+    </dt>
+    <dd>
+    Makes a standalone executable from the Lua project(s).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">proj_paths</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">entry_script</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of the main Lua script.
+        </li>
+        <li><span class="parameter">output_file</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Name of the output binary.
+        </li>
+        <li><span class="parameter">rocks_dir</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Directory where to install required modules.
+        </li>
+        <li><span class="parameter">opts</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+         Options.
+        </li>
+    </ul>
+
+
+    <h3>Raises:</h3>
+    if some error occurred.
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Local_Functions"></a>Local Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "default_entry_script"></a>
+    <strong>default_entry_script (rockspec_file)</strong>
+    </dt>
+    <dd>
+
+<p>Returns path and name of <strong>single</strong> CLI script specified in the rockspec.
+ Or returns nil if:</p>
+
+<ol>
+    <li>the rockspec is unreadable,</li>
+    <li>there's no script defined in <code>build.install.bin</code>,</li>
+    <li>there's more than one script in <code>build.install.bin</code>.</li>
+</ol>
+
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">rockspec_file</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of the rockspec file.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        Path of the script file relative to the project's dir.</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        Target name of the script.</li>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        An error message.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "rockspec_project_dir"></a>
+    <strong>rockspec_project_dir (rockspec_file)</strong>
+    </dt>
+    <dd>
+    Guesses project's base directory from the rockspec path.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">rockspec_file</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of the rockspec file.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        Absolute path of the project's directory.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "resolve_proj_paths"></a>
+    <strong>resolve_proj_paths (proj_paths)</strong>
+    </dt>
+    <dd>
+    Resolves project paths from the CLI arguments.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">proj_paths</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{{string,string},...}</a></span>
+        A list of pairs: path of the project's base
+   directory, absolute path of the rockspec.
+    </ol>
+
+    <h3>Raises:</h3>
+    if rockspec is not specified or there is no unambiguous rockspec in
+   the project's directory.
+
+
+
+</dd>
+    <dt>
+    <a name = "resolve_dependencies"></a>
+    <strong>resolve_dependencies (entry_script, extra_modules, excludes, pkg_path)</strong>
+    </dt>
+    <dd>
+    Resolves the entry script's dependencies, logs results
+ and returns lists of modules and objects.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">entry_script</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of the the Lua script.
+        </li>
+        <li><span class="parameter">extra_modules</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+         Paths of additional Lua scripts to scan.
+        </li>
+        <li><span class="parameter">excludes</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+         Module(s) to exclude from the analysis; one or more
+   glob patterns matching module name in dot notation (e.g. <code>&quot;pl.*&quot;</code>).
+        </li>
+        <li><span class="parameter">pkg_path</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The path where to look for modules (see <a href="https://www.lua.org/manual/5.3/manual.html#pdf-package.searchpath">package.searchpath</a>).
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">{table,...}</a></span>
+        A list of module entries.</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+        A list of paths of the object files (native extensions).</li>
+    </ol>
+
+    <h3>Raises:</h3>
+    is some error accured.
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

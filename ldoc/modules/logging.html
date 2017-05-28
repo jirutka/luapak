@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luapak docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Luapak</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/build.builtin.html">build.builtin</a></li>
+  <li><a href="../modules/build.toolchain.gnu.html">build.toolchain.gnu</a></li>
+  <li><a href="../modules/build.toolchain.html">build.toolchain</a></li>
+  <li><a href="../modules/build.toolchain.msvc.html">build.toolchain.msvc</a></li>
+  <li><a href="../modules/build.toolchain.utils.html">build.toolchain.utils</a></li>
+  <li><a href="../modules/cli.analyse_deps.html">cli.analyse_deps</a></li>
+  <li><a href="../modules/cli.build_rock.html">cli.build_rock</a></li>
+  <li><a href="../modules/cli.make.html">cli.make</a></li>
+  <li><a href="../modules/cli.wrapper.html">cli.wrapper</a></li>
+  <li><a href="../modules/deps_analyser.html">deps_analyser</a></li>
+  <li><a href="../modules/fs.html">fs</a></li>
+  <li><a href="../modules/init.html">init</a></li>
+  <li><strong>logging</strong></li>
+  <li><a href="../modules/lua_finder.html">lua_finder</a></li>
+  <li><a href="../modules/luarocks.html">luarocks</a></li>
+  <li><a href="../modules/make.html">make</a></li>
+  <li><a href="../modules/optparse.html">optparse</a></li>
+  <li><a href="../modules/pkgpath.html">pkgpath</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wrapper.html">wrapper</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>logging</code></h1>
+<p>The logging module.</p>
+<p>
+
+
+<p> <strong>Fields</strong>:</p>
+
+<ul>
+    <li><code>output:</code> (<strong><em>file</em></strong>) Where to write log messages (default: <a href="https://www.lua.org/manual/5.3/manual.html#pdf-io.stderr">io.stderr</a>).</li>
+    <li><code>prefix:</code> (<a href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a>) The prefix to add before every message (default: <code>&quot;luapak: &quot;</code>).</li>
+    <li><code>threshold:</code> (<strong><em>int</em></strong>) The minimal log level that should be logged (default: 20).</li>
+    <li><code>DEBUG (10)</code></li>
+    <li><code>INFO (20)</code></li>
+    <li><code>WARN (30)</code></li>
+    <li><code>ERROR (40)</code></li>
+</ul>
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#log">log (level, msg, ...)</a></td>
+	<td class="summary">Logs the message with the specified level.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#error">error (msg, ...)</a></td>
+	<td class="summary">Logs error message.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#warn">warn (msg, ...)</a></td>
+	<td class="summary">Logs warn message.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#info">info (msg, ...)</a></td>
+	<td class="summary">Logs info message.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#debug">debug (msg, ...)</a></td>
+	<td class="summary">Logs debug message.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "log"></a>
+    <strong>log (level, msg, ...)</strong>
+    </dt>
+    <dd>
+    Logs the message with the specified level.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">level</span>
+            <span class="types"><span class="type">int</span></span>
+         Valid log level number.
+        </li>
+        <li><span class="parameter">msg</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The message to log.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments for <a href="https://www.lua.org/manual/5.3/manual.html#pdf-string.format">string.format</a> being applied to the <code>msg</code>.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "error"></a>
+    <strong>error (msg, ...)</strong>
+    </dt>
+    <dd>
+    Logs error message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">msg</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The message to log.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments for <a href="https://www.lua.org/manual/5.3/manual.html#pdf-string.format">string.format</a> being applied to the <code>msg</code>.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "warn"></a>
+    <strong>warn (msg, ...)</strong>
+    </dt>
+    <dd>
+    Logs warn message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">msg</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The message to log.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments for <a href="https://www.lua.org/manual/5.3/manual.html#pdf-string.format">string.format</a> being applied to the <code>msg</code>.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "info"></a>
+    <strong>info (msg, ...)</strong>
+    </dt>
+    <dd>
+    Logs info message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">msg</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The message to log.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments for <a href="https://www.lua.org/manual/5.3/manual.html#pdf-string.format">string.format</a> being applied to the <code>msg</code>.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "debug"></a>
+    <strong>debug (msg, ...)</strong>
+    </dt>
+    <dd>
+    Logs debug message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">msg</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The message to log.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments for <a href="https://www.lua.org/manual/5.3/manual.html#pdf-string.format">string.format</a> being applied to the <code>msg</code>.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

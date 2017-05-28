@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luapak docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Luapak</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/build.builtin.html">build.builtin</a></li>
+  <li><a href="../modules/build.toolchain.gnu.html">build.toolchain.gnu</a></li>
+  <li><a href="../modules/build.toolchain.html">build.toolchain</a></li>
+  <li><a href="../modules/build.toolchain.msvc.html">build.toolchain.msvc</a></li>
+  <li><a href="../modules/build.toolchain.utils.html">build.toolchain.utils</a></li>
+  <li><a href="../modules/cli.analyse_deps.html">cli.analyse_deps</a></li>
+  <li><a href="../modules/cli.build_rock.html">cli.build_rock</a></li>
+  <li><a href="../modules/cli.make.html">cli.make</a></li>
+  <li><a href="../modules/cli.wrapper.html">cli.wrapper</a></li>
+  <li><a href="../modules/deps_analyser.html">deps_analyser</a></li>
+  <li><a href="../modules/fs.html">fs</a></li>
+  <li><a href="../modules/init.html">init</a></li>
+  <li><a href="../modules/logging.html">logging</a></li>
+  <li><a href="../modules/lua_finder.html">lua_finder</a></li>
+  <li><a href="../modules/luarocks.html">luarocks</a></li>
+  <li><a href="../modules/make.html">make</a></li>
+  <li><a href="../modules/optparse.html">optparse</a></li>
+  <li><strong>pkgpath</strong></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wrapper.html">wrapper</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>pkgpath</code></h1>
+<p>Utility functions for <a href="https://www.lua.org/manual/5.3/manual.html#6.3">package</a>.</p>
+<p> <strong>Note: This module is not part of public API!</strong></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#fhs_path">fhs_path (prefix, lua_ver, lib_ext, lua_ext)</a></td>
+	<td class="summary">Creates standard Lua package path for pure Lua modules and optionally native modules.</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#dir_sep">dir_sep</a></td>
+	<td class="summary">The directory separator string.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#path_sep">path_sep</a></td>
+	<td class="summary">The character that separates templates in a path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#path_mark">path_mark</a></td>
+	<td class="summary">The string that marks the substitution points in a template.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "fhs_path"></a>
+    <strong>fhs_path (prefix, lua_ver, lib_ext, lua_ext)</strong>
+    </dt>
+    <dd>
+    Creates standard Lua package path for pure Lua modules and optionally native modules.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">prefix</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The directory prefix for the path (default: "").
+        </li>
+        <li><span class="parameter">lua_ver</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Lua API version (e.g. "5.3"). Defaults to version of this process' Lua.
+        </li>
+        <li><span class="parameter">lib_ext</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         File extension of native libraries.
+   If not specified, then path for native libraries will be omitted.
+        </li>
+        <li><span class="parameter">lua_ext</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         File extension for Lua files (default: "lua").
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        Lua package path.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "dir_sep"></a>
+    <strong>dir_sep</strong>
+    </dt>
+    <dd>
+    The directory separator string.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "path_sep"></a>
+    <strong>path_sep</strong>
+    </dt>
+    <dd>
+    The character that separates templates in a path.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "path_mark"></a>
+    <strong>path_mark</strong>
+    </dt>
+    <dd>
+    The string that marks the substitution points in a template.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

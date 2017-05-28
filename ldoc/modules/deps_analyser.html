@@ -1,0 +1,409 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luapak docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Luapak</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Local_Functions">Local Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/build.builtin.html">build.builtin</a></li>
+  <li><a href="../modules/build.toolchain.gnu.html">build.toolchain.gnu</a></li>
+  <li><a href="../modules/build.toolchain.html">build.toolchain</a></li>
+  <li><a href="../modules/build.toolchain.msvc.html">build.toolchain.msvc</a></li>
+  <li><a href="../modules/build.toolchain.utils.html">build.toolchain.utils</a></li>
+  <li><a href="../modules/cli.analyse_deps.html">cli.analyse_deps</a></li>
+  <li><a href="../modules/cli.build_rock.html">cli.build_rock</a></li>
+  <li><a href="../modules/cli.make.html">cli.make</a></li>
+  <li><a href="../modules/cli.wrapper.html">cli.wrapper</a></li>
+  <li><strong>deps_analyser</strong></li>
+  <li><a href="../modules/fs.html">fs</a></li>
+  <li><a href="../modules/init.html">init</a></li>
+  <li><a href="../modules/logging.html">logging</a></li>
+  <li><a href="../modules/lua_finder.html">lua_finder</a></li>
+  <li><a href="../modules/luarocks.html">luarocks</a></li>
+  <li><a href="../modules/make.html">make</a></li>
+  <li><a href="../modules/optparse.html">optparse</a></li>
+  <li><a href="../modules/pkgpath.html">pkgpath</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wrapper.html">wrapper</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>deps_analyser</code></h1>
+<p>Static analyser of dependencies between Lua modules.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#analyse">analyse (entry_point, pkg_path, predicate, flags)</a></td>
+	<td class="summary">Recursively resolves all dependencies (modules) of the given <code>entry_point</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#analyse_with_filter">analyse_with_filter (entry_points, pkg_path, excludes, flags)</a></td>
+	<td class="summary">Recursively analyses all dependencies (modules) of the given <code>entry_points</code>.</td>
+	</tr>
+</table>
+<h2><a href="#Local_Functions">Local Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#locate_module">locate_module (name, pkg_path)</a></td>
+	<td class="summary">Finds path of the given module <code>name</code> on the given <code>pkg_path</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#resolve_requires">resolve_requires (filename)</a></td>
+	<td class="summary">Resolves requires in the given Lua source file.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#expand_wildcard_require">expand_wildcard_require (pattern, pkg_path)</a></td>
+	<td class="summary">Expands the given module path in dot-notation (prefix) ended with a wildcard
+ (e.g.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#filter_predicate">filter_predicate (excludes, includes)</a></td>
+	<td class="summary">Creates a predicate function from the given list of positive and negative string patterns.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#convert_globs">convert_globs (patterns)</a></td>
+	<td class="summary">Converts glob patterns into Lua patterns.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "analyse"></a>
+    <strong>analyse (entry_point, pkg_path, predicate, flags)</strong>
+    </dt>
+    <dd>
+
+<p>Recursively resolves all dependencies (modules) of the given <code>entry_point</code>. </p>
+
+<p> <strong>Flags</strong>:</p>
+
+<ul>
+    <li>pcalls: Analyze pcall requires? (default: true)</li>
+    <li>wildcards: Expand "wildcard" requires? (default: true)</li>
+</ul>
+
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">entry_point</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of Lua script, or name of Lua module.
+        </li>
+        <li><span class="parameter">pkg_path</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The path where to look for modules (see <a href="https://www.lua.org/manual/5.3/manual.html#pdf-package.searchpath">package.searchpath</a>).
+   Default is <code>&lt;package.path&gt;;&lt;package.cpath&gt;;;</code>.
+        </li>
+        <li><span class="parameter">predicate</span>
+            <span class="types">optional <span class="type">function</span></span>
+         The predicate function that is called with name of each module to be
+   processed. When it returns true, the module is processed, otherwise it's skipped.
+        </li>
+        <li><span class="parameter">flags</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{[string]=...}</a></span>
+         (See above)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{[string]=string,...}</a></span>
+        A map of found modules; key is the module name, value is the
+   source file path.</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+        A list of missing modules.</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+        A list of ignored modules.</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+        A list of error messages.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "analyse_with_filter"></a>
+    <strong>analyse_with_filter (entry_points, pkg_path, excludes, flags)</strong>
+    </dt>
+    <dd>
+    Recursively analyses all dependencies (modules) of the given <code>entry_points</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">entry_points</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a> or <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path(s) of Lua script, or name(s) of Lua module.
+        </li>
+        <li><span class="parameter">pkg_path</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The path where to look for modules (see <a href="https://www.lua.org/manual/5.3/manual.html#pdf-package.searchpath">package.searchpath</a>).
+   Default is <code>&lt;package.path&gt;;&lt;package.cpath&gt;;;</code>.
+        </li>
+        <li><span class="parameter">excludes</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+         Module(s) to exclude from the analysis; one or more
+   glob patterns matching module name in dot notation (e.g. <code>&quot;pl.*&quot;</code>).
+        </li>
+        <li><span class="parameter">flags</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{[string]=bool,...}</a></span>
+         See <a href="../modules/deps_analyser.html#analyse">analyse</a>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{[string]=string,...}</a></span>
+        A map of found modules; key is the module name, value is the
+   source file path.</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+        A list of missing modules.</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+        A list of ignored/excluded modules.</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+        A list of error messages.</li>
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Local_Functions"></a>Local Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "locate_module"></a>
+    <strong>locate_module (name, pkg_path)</strong>
+    </dt>
+    <dd>
+    Finds path of the given module <code>name</code> on the given <code>pkg_path</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The module name in dot-notation.
+        </li>
+        <li><span class="parameter">pkg_path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The path where to look for modules (see <a href="https://www.lua.org/manual/5.3/manual.html#pdf-package.searchpath">package.searchpath</a>).
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a> or <span class="type">nil</span></span>
+        Location of the module file (may be relative), or nil if not found.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "resolve_requires"></a>
+    <strong>resolve_requires (filename)</strong>
+    </dt>
+    <dd>
+    Resolves requires in the given Lua source file.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of the Lua source file to analyse.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">{table,...}</a></span>
+        A list of require info. Each info table contains the following keys:
+  <code>name</code>, <code>line</code>, <code>column</code>, and optionally: <code>conditional</code>, <code>lazy</code>, <code>protected</code>.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        An error message.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "expand_wildcard_require"></a>
+    <strong>expand_wildcard_require (pattern, pkg_path)</strong>
+    </dt>
+    <dd>
+    Expands the given module path in dot-notation (prefix) ended with a wildcard
+ (e.g.  <code>lua-rocks.build.*</code>) to a list of all modules on the <code>pkg_path</code> with
+ the matching prefix.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pattern</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The require string ended with a wildcard.
+        </li>
+        <li><span class="parameter">pkg_path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The path where to look for modules (see <a href="https://www.lua.org/manual/5.3/manual.html#pdf-package.searchpath">package.searchpath</a>).
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+        A list of module names.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "filter_predicate"></a>
+    <strong>filter_predicate (excludes, includes)</strong>
+    </dt>
+    <dd>
+    Creates a predicate function from the given list of positive and negative string patterns.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">excludes</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+         A list of patterns that should be excluded.
+        </li>
+        <li><span class="parameter">includes</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+         A list of patterns that should not be excluded.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        string -> bool
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "convert_globs"></a>
+    <strong>convert_globs (patterns)</strong>
+    </dt>
+    <dd>
+    Converts glob patterns into Lua patterns.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">patterns</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+         List of glob patterns.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+        A list of positive patterns</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+        A list of negative patterns.</li>
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

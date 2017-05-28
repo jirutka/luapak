@@ -1,0 +1,359 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luapak docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Luapak</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/build.builtin.html">build.builtin</a></li>
+  <li><a href="../modules/build.toolchain.gnu.html">build.toolchain.gnu</a></li>
+  <li><a href="../modules/build.toolchain.html">build.toolchain</a></li>
+  <li><a href="../modules/build.toolchain.msvc.html">build.toolchain.msvc</a></li>
+  <li><a href="../modules/build.toolchain.utils.html">build.toolchain.utils</a></li>
+  <li><a href="../modules/cli.analyse_deps.html">cli.analyse_deps</a></li>
+  <li><a href="../modules/cli.build_rock.html">cli.build_rock</a></li>
+  <li><a href="../modules/cli.make.html">cli.make</a></li>
+  <li><a href="../modules/cli.wrapper.html">cli.wrapper</a></li>
+  <li><a href="../modules/deps_analyser.html">deps_analyser</a></li>
+  <li><strong>fs</strong></li>
+  <li><a href="../modules/init.html">init</a></li>
+  <li><a href="../modules/logging.html">logging</a></li>
+  <li><a href="../modules/lua_finder.html">lua_finder</a></li>
+  <li><a href="../modules/luarocks.html">luarocks</a></li>
+  <li><a href="../modules/make.html">make</a></li>
+  <li><a href="../modules/optparse.html">optparse</a></li>
+  <li><a href="../modules/pkgpath.html">pkgpath</a></li>
+  <li><a href="../modules/utils.html">utils</a></li>
+  <li><a href="../modules/wrapper.html">wrapper</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>fs</code></h1>
+<p>Utility functions for operations on a file system and paths.</p>
+<p> Extends LuaFileSystem module.</p>
+
+<p> <strong>Note: This module is not part of public API!</strong></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#absolute_path">absolute_path (path, relative_to)</a></td>
+	<td class="summary">Converts the <code>path</code> to an absolute path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#dirname">dirname (path)</a></td>
+	<td class="summary">Returns the directory name of the <code>path</code>, i.e.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#is_binary_file">is_binary_file (filename)</a></td>
+	<td class="summary">Checks if the specified file is a binary file (i.e.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#is_dir">is_dir (path)</a></td>
+	<td class="summary">Returns true if there's a directory on the <code>path</code>, false otherwise.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#is_file">is_file (path)</a></td>
+	<td class="summary">Returns true if there's a file on the <code>path</code>, false otherwise.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#walk_dir">walk_dir (dir_path)</a></td>
+	<td class="summary">Traverses all files under the specified directory recursively.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#read_file">read_file (filename, mode)</a></td>
+	<td class="summary">Reads the specified file and returns its content as string.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "absolute_path"></a>
+    <strong>absolute_path (path, relative_to)</strong>
+    </dt>
+    <dd>
+    Converts the <code>path</code> to an absolute path. </p>
+
+<p> Relative paths are referenced from the current working directory of
+ the process unless <code>relative_to</code> is given, in which case it will be used as
+ the starting point. If the given pathname starts with a <code>~</code> it is NOT
+ expanded, it is treated as a normal directory name.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The path name to convert.
+        </li>
+        <li><span class="parameter">relative_to</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The path to prepend when making <code>path</code> absolute.
+   Defaults to the current working directory.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        An absolute path name.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "dirname"></a>
+    <strong>dirname (path)</strong>
+    </dt>
+    <dd>
+    Returns the directory name of the <code>path</code>, i.e.  all the path's components
+ except the last one.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The path name.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a> or <span class="type">nil</span></span>
+        The directory name, or nil if the <code>path</code> has
+   only one component (e.g. <code>/foo</code> or <code>foo</code>).
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "is_binary_file"></a>
+    <strong>is_binary_file (filename)</strong>
+    </dt>
+    <dd>
+    Checks if the specified file is a binary file (i.e.  not textual).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of the file.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        true if the file is binary, false otherwise.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        An error message.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "is_dir"></a>
+    <strong>is_dir (path)</strong>
+    </dt>
+    <dd>
+    Returns true if there's a directory on the <code>path</code>, false otherwise.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "is_file"></a>
+    <strong>is_file (path)</strong>
+    </dt>
+    <dd>
+    Returns true if there's a file on the <code>path</code>, false otherwise.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "walk_dir"></a>
+    <strong>walk_dir (dir_path)</strong>
+    </dt>
+    <dd>
+    Traverses all files under the specified directory recursively.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dir_path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of the directory to traverse.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.2">coroutine</a></span>
+        A coroutine that yields file path and its attributes.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "read_file"></a>
+    <strong>read_file (filename, mode)</strong>
+    </dt>
+    <dd>
+    Reads the specified file and returns its content as string.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of the file to read.
+        </li>
+        <li><span class="parameter">mode</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The mode in which to open the file, see <a href="https://www.lua.org/manual/5.3/manual.html#pdf-io.open">io.open</a>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        A content of the file.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        An error message.</li>
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

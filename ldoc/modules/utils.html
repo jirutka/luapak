@@ -1,0 +1,891 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Luapak docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Luapak</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/build.builtin.html">build.builtin</a></li>
+  <li><a href="../modules/build.toolchain.gnu.html">build.toolchain.gnu</a></li>
+  <li><a href="../modules/build.toolchain.html">build.toolchain</a></li>
+  <li><a href="../modules/build.toolchain.msvc.html">build.toolchain.msvc</a></li>
+  <li><a href="../modules/build.toolchain.utils.html">build.toolchain.utils</a></li>
+  <li><a href="../modules/cli.analyse_deps.html">cli.analyse_deps</a></li>
+  <li><a href="../modules/cli.build_rock.html">cli.build_rock</a></li>
+  <li><a href="../modules/cli.make.html">cli.make</a></li>
+  <li><a href="../modules/cli.wrapper.html">cli.wrapper</a></li>
+  <li><a href="../modules/deps_analyser.html">deps_analyser</a></li>
+  <li><a href="../modules/fs.html">fs</a></li>
+  <li><a href="../modules/init.html">init</a></li>
+  <li><a href="../modules/logging.html">logging</a></li>
+  <li><a href="../modules/lua_finder.html">lua_finder</a></li>
+  <li><a href="../modules/luarocks.html">luarocks</a></li>
+  <li><a href="../modules/make.html">make</a></li>
+  <li><a href="../modules/optparse.html">optparse</a></li>
+  <li><a href="../modules/pkgpath.html">pkgpath</a></li>
+  <li><strong>utils</strong></li>
+  <li><a href="../modules/wrapper.html">wrapper</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>utils</code></h1>
+<p>General utility functions.</p>
+<p> <strong>Note: This module is not part of public API!</strong></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#always">always (value)</a></td>
+	<td class="summary">Returns a function that always returns the given <code>value</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#any">any (func, list)</a></td>
+	<td class="summary">Returns true if at least one of elements of the <code>list</code> match the predicate, false otherwise.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#check_args">check_args (type_specs, ...)</a></td>
+	<td class="summary">Checks that the given arguments have the correct type.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#dedup">dedup (list)</a></td>
+	<td class="summary">Removes repeated elements from the given <code>list</code> (in-place).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#default">default (default, value)</a></td>
+	<td class="summary">Returns <code>value</code> if it's not nil, otherwise returns <a href="../modules/utils.html#default">default</a>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ends_with">ends_with (suffix, str)</a></td>
+	<td class="summary">Returns true if the string <code>str</code> ends with the <code>suffix</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#errorf">errorf (message, ...)</a></td>
+	<td class="summary">The same as <a href="https://www.lua.org/manual/5.3/manual.html#pdf-error">error</a>, but with formatted message.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#find">find (predicate, list)</a></td>
+	<td class="summary">Searches through the <code>list</code> and returns the first value that passes
+ the <code>predicate</code> function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#is_empty">is_empty (value)</a></td>
+	<td class="summary">Returns true if the <code>value</code> is nil or empty string.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#imap">imap (func, list)</a></td>
+	<td class="summary">Returns a new table with the results of running <code>func(value, index)</code> once
+ for every item in the <code>list</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#index_map">index_map (list)</a></td>
+	<td class="summary">Create an index map from the <code>list</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#last">last (list)</a></td>
+	<td class="summary">Returns the last element of the <code>list</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#merge">merge (...)</a></td>
+	<td class="summary">Returns a new table containing the contents of all the given tables.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#partial">partial (func, ...)</a></td>
+	<td class="summary">Partial application.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#printf">printf (str, ...)</a></td>
+	<td class="summary">Prints the given string to the stdout, ended with a newline.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#push_all">push_all (dest, src)</a></td>
+	<td class="summary">Inserts items from the <code>src</code> list at the end of the <code>dest</code> list and returns
+ modified <code>dest</code> (i.e.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#reject">reject (predicate, list)</a></td>
+	<td class="summary">Returns a new list containing the items in the given <code>list</code> for which
+ the <code>predicate</code> function returns false or nil.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#shallow_clone">shallow_clone (tab)</a></td>
+	<td class="summary">Makes a shallow clone of the given table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#size">size (tab)</a></td>
+	<td class="summary">Counts total number of elements in the given table; both in the array part
+ and the hash part.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#split">split (delim, str)</a></td>
+	<td class="summary">Splits the given <code>str</code> into a list of strings based on
+ the delimiter <code>delim</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#starts_with">starts_with (prefix, str)</a></td>
+	<td class="summary">Returns true if the string <code>str</code> starts with the <code>prefix</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#tableize">tableize (value)</a></td>
+	<td class="summary">Wraps the given value to a table, or returns as-is if it is table.</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#LUA_VERSION">LUA_VERSION</a></td>
+	<td class="summary">Version of the Lua interpreter running this code in format x.y.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "always"></a>
+    <strong>always (value)</strong>
+    </dt>
+    <dd>
+    Returns a function that always returns the given <code>value</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        () -> value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "any"></a>
+    <strong>any (func, list)</strong>
+    </dt>
+    <dd>
+    Returns true if at least one of elements of the <code>list</code> match the predicate, false otherwise.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">func</span>
+            <span class="types"><span class="type">function</span></span>
+         The predicate function.
+        </li>
+        <li><span class="parameter">list</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+         The list to test.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        Whether the predicate is satisfied by at least one element.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "check_args"></a>
+    <strong>check_args (type_specs, ...)</strong>
+    </dt>
+    <dd>
+    Checks that the given arguments have the correct type.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">type_specs</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         A colon separated list of allowed types for each argument.
+   Multiple allowed types per argument are separated by <code>|</code> (without spaces).
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments to check against <code>type_specs</code>.
+        </li>
+    </ul>
+
+
+    <h3>Raises:</h3>
+    on type mismatch.
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">check_args(<span class="string">'table, string|table, ?table'</span>, a, b, c)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "dedup"></a>
+    <strong>dedup (list)</strong>
+    </dt>
+    <dd>
+    Removes repeated elements from the given <code>list</code> (in-place).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">list</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+         The list to deduplicate.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+        A sorted list of unique elements.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "default"></a>
+    <strong>default (default, value)</strong>
+    </dt>
+    <dd>
+    Returns <code>value</code> if it's not nil, otherwise returns <a href="../modules/utils.html#default">default</a>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">default</span>
+
+
+
+        </li>
+        <li><span class="parameter">value</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ends_with"></a>
+    <strong>ends_with (suffix, str)</strong>
+    </dt>
+    <dd>
+    Returns true if the string <code>str</code> ends with the <code>suffix</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">suffix</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">str</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "errorf"></a>
+    <strong>errorf (message, ...)</strong>
+    </dt>
+    <dd>
+    The same as <a href="https://www.lua.org/manual/5.3/manual.html#pdf-error">error</a>, but with formatted message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The error message.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments for <a href="https://www.lua.org/manual/5.3/manual.html#pdf-string.format">string.format</a> being applied to the <code>message</code>.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "find"></a>
+    <strong>find (predicate, list)</strong>
+    </dt>
+    <dd>
+    Searches through the <code>list</code> and returns the first value that passes
+ the <code>predicate</code> function.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">predicate</span>
+            <span class="types"><span class="type">function</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">list</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The first list's value passing <code>predicate</code>.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "is_empty"></a>
+    <strong>is_empty (value)</strong>
+    </dt>
+    <dd>
+    Returns true if the <code>value</code> is nil or empty string.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "imap"></a>
+    <strong>imap (func, list)</strong>
+    </dt>
+    <dd>
+    Returns a new table with the results of running <code>func(value, index)</code> once
+ for every item in the <code>list</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">func</span>
+            <span class="types"><span class="type">function</span></span>
+         Function that accepts at least one argument and returns a value.
+        </li>
+        <li><span class="parameter">list</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+         The table to map over.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+        A new table.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "index_map"></a>
+    <strong>index_map (list)</strong>
+    </dt>
+    <dd>
+    Create an index map from the <code>list</code>.  The original values become keys, and
+ the associated values are the indices into the original <code>list</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">list</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "last"></a>
+    <strong>last (list)</strong>
+    </dt>
+    <dd>
+    Returns the last element of the <code>list</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">list</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Last element of the <code>list</code>.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "merge"></a>
+    <strong>merge (...)</strong>
+    </dt>
+    <dd>
+    Returns a new table containing the contents of all the given tables.
+ Tables are iterated using <a href="https://www.lua.org/manual/5.3/manual.html#pdf-pairs">pairs</a>, so this function is intended for tables
+ that represent <em>associative arrays</em>. Entries with duplicate keys are
+ overwritten with the values from a later table.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">{table,...}</a></span>
+         The tables to merge.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+        A new table.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "partial"></a>
+    <strong>partial (func, ...)</strong>
+    </dt>
+    <dd>
+    Partial application.
+ Takes a function <code>func</code> and arguments, and returns a function <em>func2</em>.
+ When applied, <em>func2</em> returns the result of applying <code>func</code> to the arguments
+ provided initially followed by the arguments provided to <em>func2</em>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">func</span>
+            <span class="types"><span class="type">function</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments to pass to the <code>func</code>.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        A partially applied function.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "printf"></a>
+    <strong>printf (str, ...)</strong>
+    </dt>
+    <dd>
+    Prints the given string to the stdout, ended with a newline.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">str</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The string to print.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments for <a href="https://www.lua.org/manual/5.3/manual.html#pdf-string.format">string.format</a> being applied to the <code>str</code>.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "push_all"></a>
+    <strong>push_all (dest, src)</strong>
+    </dt>
+    <dd>
+    Inserts items from the <code>src</code> list at the end of the <code>dest</code> list and returns
+ modified <code>dest</code> (i.e.  it modifies it in-place!).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+         The destination list to extend.
+        </li>
+        <li><span class="parameter">src</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+         The source list to take items from.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+        The given <code>dest</code> list.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "reject"></a>
+    <strong>reject (predicate, list)</strong>
+    </dt>
+    <dd>
+    Returns a new list containing the items in the given <code>list</code> for which
+ the <code>predicate</code> function returns false or nil.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">predicate</span>
+            <span class="types"><span class="type">function</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">list</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "shallow_clone"></a>
+    <strong>shallow_clone (tab)</strong>
+    </dt>
+    <dd>
+    Makes a shallow clone of the given table.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tab</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "size"></a>
+    <strong>size (tab)</strong>
+    </dt>
+    <dd>
+    Counts total number of elements in the given table; both in the array part
+ and the hash part.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tab</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+         The table to count size of.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        A total number of elements.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "split"></a>
+    <strong>split (delim, str)</strong>
+    </dt>
+    <dd>
+    Splits the given <code>str</code> into a list of strings based on
+ the delimiter <code>delim</code>.  If the <code>str</code> is falsy, then empty table is returned.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">delim</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The delimiter pattern.
+        </li>
+        <li><span class="parameter">str</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The string to split.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "starts_with"></a>
+    <strong>starts_with (prefix, str)</strong>
+    </dt>
+    <dd>
+    Returns true if the string <code>str</code> starts with the <code>prefix</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">prefix</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">str</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "tableize"></a>
+    <strong>tableize (value)</strong>
+    </dt>
+    <dd>
+    Wraps the given value to a table, or returns as-is if it is table.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         The value to wrap.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+        A table.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "LUA_VERSION"></a>
+    <strong>LUA_VERSION</strong>
+    </dt>
+    <dd>
+    Version of the Lua interpreter running this code in format x.y.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
