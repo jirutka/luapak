@@ -1,0 +1,40 @@
+#!/bin/sh
+# vim: set ts=4:
+#
+# This script is run on CI to prepare build environment.
+#
+# Environment variables:
+#   TARGET_ARCH : Target architecture (others than x86_64 are emulated using QEMU).
+#
+set -eu
+
+cd "$(dirname "$0")/.."
+. script/utils.sh
+
+[ "$HOST_OS" = Linux ] || exit 0
+
+# Note: QEMU on Travis is ancient and doesn't support syscall getrandom on
+# arm (384), so we install a newer version.
+if [ "$TARGET_ARCH" != 'x86_64' ]; then
+	ubuntu_release='yakkety'
+
+	einfo "Adding repository of ubuntu $ubuntu_release"
+	sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $ubuntu_release main universe"
+	sudo cat > /etc/apt/preferences.d/$ubuntu_release <<-EOF
+		Package: *
+		Pin: release n=$ubuntu_release
+		Pin-Priority: -1
+	EOF
+	sudo apt-get update
+
+	einfo "Installing qemu-user-static from $ubuntu_release"
+	sudo apt-get install -t $ubuntu_release qemu-user-static
+fi
+
+einfo 'Downloading alpine-chroot-install'
+wgets 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.2.1/alpine-chroot-install' \
+	'4bf330f07378e4c9ff600c3a700277312bf30b0033557afe4fb510216c0bac21'
+
+sudo sh alpine-chroot-install \
+	-a "$TARGET_ARCH" -b v3.6 -k 'LIBC LUA_VERSION TARGET_ARCH' \
+	-p 'build-base curl file git python wget'

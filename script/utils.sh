@@ -5,6 +5,8 @@ readonly PKG_NAME='luapak'
 readonly TEMP_DIR="$(pwd)/.tmp"
 readonly VENV_DIR="$(pwd)/.venv"
 
+: ${TARGET_ARCH:=$(uname -m)}
+
 if [ "$HOST_OS" = Darwin ]; then
 	alias sha256sum='shasum -a 256'
 fi
@@ -45,6 +47,12 @@ is_release() {
 	git rev-parse HEAD >/dev/null
 
 	git describe --tags --exact-match --match 'v*' >/dev/null 2>&1
+}
+
+# Prints the given arguments and runs them.
+run() {
+	printf '$ %s\n' "$*"
+	"$@"
 }
 
 # Fetches the given URL and verifies SHA256 checksum.

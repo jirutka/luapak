@@ -1,0 +1,34 @@
+#!/bin/sh
+# vim: set ts=4:
+#
+# Builds standalone luapak binary using Luapak.
+#
+# Environment variables:
+# 	LIBC : System libc library; if "musl", then it links the binary statically.
+#
+set -eu
+
+LDFLAGS=''
+[ "${LIBC:-}" != musl ] || LDFLAGS='-static -no-pie'
+
+
+. "$(dirname "$0")/bootstrap"
+
+einfo 'Building standalone luapak'
+
+rm -Rf "$TEMP_DIR"/* dist/*
+
+# Note: LUA_VERSION interferes with LuaRock's Makefile, so we must unset it.
+LDFLAGS="$LDFLAGS" LUA_VERSION= \
+	lua luapak/cli/init.lua make -v -t "$TEMP_DIR"
+printf '\n'
+
+run ls -lh dist/luapak
+run file dist/luapak
+
+case "$HOST_OS" in
+	Darwin) run otool -L dist/luapak;;
+	Linux) run ldd dist/luapak || true;;
+esac
+
+run ./dist/luapak --version

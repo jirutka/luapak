@@ -1,4 +1,6 @@
+/.luapak/
 /.tmp/
 /.venv/
+/dist/
 /doc/
 *.rock

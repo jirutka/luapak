@@ -1,0 +1,37 @@
+#!/bin/sh
+# vim: set ts=4:
+#
+# Creates release tarball for a standalone Luapak binary.
+#
+# Environment variables:
+#   TARGET_ARCH : Architecture for which is the binary built (this is used in
+#                 the tarball's name).
+#
+set -eu
+
+cd "$(dirname "$0")/.."
+
+if [ -f dist/luapak ]; then
+	. script/utils.sh
+else
+	. script/build
+fi
+
+einfo 'Creating release tarball'
+
+test -f dist/luapak || die 'dist/luapak does not exist!'
+is_release || die 'There is no git release tag!'
+
+version=$(git_based_version)
+dir_name="luapak-$version"
+file_name="luapak-$version-$TARGET_ARCH-$(echo "$HOST_OS" | tr '[A-Z]' '[a-z]')"
+
+cd dist
+mkdir "$dir_name"
+mv luapak "$dir_name"/
+
+tar -czf "$file_name.tar.gz" "$dir_name"
+rm -r "$dir_name"
+
+cd ..
+run ls -lah dist/$file_name.tar.gz
