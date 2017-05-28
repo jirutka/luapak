@@ -1,4 +1,19 @@
 -- vim: set ft=lua:
 
-std = 'min'
+stds.compat = {
+  read_globals = {
+    table = {
+      fields = {
+        unpack = {}
+      }
+    },
+    package = {
+      fields = {
+        searchpath = {}
+      }
+    }
+  }
+}
+
+std = 'min+compat'
 codes = true
