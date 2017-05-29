@@ -15,6 +15,11 @@ TBD
 
 == Installation
 
+Note: If you want to bootstrap development environment for running tests, read the next section.
+
+
+=== Using LuaRocks
+
 You can install {proj-name} using https://luarocks.org[LuaRocks] (the Lua package manager):
 
 [source, subs="+attributes"]
@@ -25,7 +30,12 @@ or to get the latest development version:
 [source, subs="+attributes"]
 luarocks install --server=http://luarocks.org/dev {proj-name}
 
-Note: If you want to bootstrap development environment for running tests, read the next section.
+
+=== Download standalone binary
+
+You can also download standalone Luapak binaries built by Luapak from https://github.com/{gh-name}/releases/[Releases].
+
+Note: Linux binaries are statically linked with http://www.musl-libc.org/[musl libc], so they should work on any Linux system.
 
 
 == Set up development environment
