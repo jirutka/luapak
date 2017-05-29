@@ -114,8 +114,6 @@ end
 -- @raise if some error occured.
 return function (arg)
   local optparser = optparse(help_msg)
-  optparser:on('--', optparser.finished)
-
   local args, opts = optparser:parse(arg)
 
   if #args == 0 then
