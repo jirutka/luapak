@@ -10,6 +10,10 @@ image:https://travis-ci.org/{gh-name}.svg?branch={gh-branch}["Build Status", lin
 image:https://img.shields.io/badge/ldoc-docs-blue.svg["LDoc", link="{ldoc-url}"]
 endif::env-github[]
 
+Luapak is a command-line tool that offers a complete, all-in-one (yet modular) solution for building a standalone, zero-dependencies, possibly statically linked executable for any Lua program.
+It automatically resolves all required dependencies using LuaRocks and static analysis of requirements across Lua
+sources, generates C wrapper with embedded Lua sources, compiles it and links with Lua library and native extensions.
+
 TBD
 
 
