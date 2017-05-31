@@ -1,5 +1,4 @@
 #!/usr/bin/env lua
-local luapak = require 'luapak.init'
 local log = require 'luapak.logging'
 local optparse = require 'luapak.optparse'
 local utils = require 'luapak.utils'
@@ -14,8 +13,8 @@ local commands = {
 }
 
 
-local optparser = optparse([[
-${PROG_NAME} ${VERSION}
+local optparser = optparse [[
+${PROG_NAME} ${PROG_VERSION}
 
 Usage: ${PROG_NAME} COMMAND [args]
        ${PROG_NAME} (--help | --version)
@@ -35,7 +34,7 @@ Options:
   -v, --verbose     Be verbose, i.e. print debug messages.
   -h, --help        Display this help message and exit. Note that every command has its own --help.
   -V, --version     Display version information and exit.
-]], { VERSION = luapak._VERSION })
+]]
 
 optparser:on('--help', function (_, arglist, i)
   if not commands[arglist[1]] then

@@ -17,6 +17,8 @@ local FOOTER = string.format('Please report bugs at <%s/issues>.', luapak._HOMEP
 return function (help_msg, vars)
   vars = vars or {}
   vars['PROG_NAME'] = luapak._NAME
+  vars['PROG_VERSION'] = luapak._VERSION
+
   help_msg = help_msg:gsub('%${([%w_]+)}', vars)..'\n'..FOOTER
 
   local parser = OptionParser(help_msg)
