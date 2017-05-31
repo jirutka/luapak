@@ -17,7 +17,7 @@ local tableize = utils.tableize
 
 local help_msg = [[
 .
-Usage: ${PROGRAM} analyse-deps [-a|-f|-m|-g] [options] FILE...
+Usage: ${PROG_NAME} analyse-deps [-a|-f|-m|-g] [options] FILE...
 
 Arguments:
   FILE                        The entry point(s); path(s) to Lua script(s) to analyze.

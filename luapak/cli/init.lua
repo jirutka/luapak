@@ -17,8 +17,8 @@ local commands = {
 local optparser = optparse([[
 ${PROG_NAME} ${VERSION}
 
-Usage: ${PROGRAM} COMMAND [args]
-       ${PROGRAM} (--help | --version)
+Usage: ${PROG_NAME} COMMAND [args]
+       ${PROG_NAME} (--help | --version)
 
 Commands:
   make              Make a standalone executable for the specified Lua program. This is the main
@@ -35,7 +35,7 @@ Options:
   -v, --verbose     Be verbose, i.e. print debug messages.
   -h, --help        Display this help message and exit. Note that every command has its own --help.
   -V, --version     Display version information and exit.
-]], { PROG_NAME = luapak._NAME, VERSION = luapak._VERSION })
+]], { VERSION = luapak._VERSION })
 
 optparser:on('--help', function (_, arglist, i)
   if not commands[arglist[1]] then

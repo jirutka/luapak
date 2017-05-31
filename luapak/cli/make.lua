@@ -14,8 +14,8 @@ local tableize = utils.tableize
 
 local help_msg = [[
 .
-Usage: ${PROGRAM} make [options] [PACKAGE...]
-       ${PROGRAM} make --help
+Usage: ${PROG_NAME} make [options] [PACKAGE...]
+       ${PROG_NAME} make --help
 
 Arguments:
   PACKAGE                         Lua package to build specified as <source-dir>:<rockspec>.

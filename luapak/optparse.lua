@@ -16,8 +16,8 @@ local FOOTER = string.format('Please report bugs at <%s/issues>.', luapak._HOMEP
 -- @tparam ?table vars The table of variables for substitutions in `help_msg`.
 return function (help_msg, vars)
   vars = vars or {}
-  vars['PROGRAM'] = _G.arg[0]
-  help_msg = help_msg:gsub('%${(%w+)}', vars)..'\n'..FOOTER
+  vars['PROG_NAME'] = luapak._NAME
+  help_msg = help_msg:gsub('%${([%w_]+)}', vars)..'\n'..FOOTER
 
   local parser = OptionParser(help_msg)
   parser:on('--', parser.finished)

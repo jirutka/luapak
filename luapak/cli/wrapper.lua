@@ -12,8 +12,8 @@ local unpack = table.unpack
 
 local help_msg = [[
 .
-Usage: ${PROGRAM} wrapper [options] ENTRY_SCRIPT [MODULE...]
-       ${PROGRAM} wrapper [-h | --help]
+Usage: ${PROG_NAME} wrapper [options] ENTRY_SCRIPT [MODULE...]
+       ${PROG_NAME} wrapper [-h | --help]
 
 Arguments:
   ENTRY_SCRIPT              Entry point of the wrapped program, i.e. the main Lua script.

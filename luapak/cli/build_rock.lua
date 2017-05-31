@@ -16,8 +16,8 @@ local luah_version = lua_finder.luah_version
 
 local help_msg = [[
 .
-Usage: ${PROGRAM} build-rock [options] ROCKSPEC...
-       ${PROGRAM} build-rock [-h | --help]
+Usage: ${PROG_NAME} build-rock [options] ROCKSPEC...
+       ${PROG_NAME} build-rock [-h | --help]
 
 Arguments:
   ROCKSPEC                    Path of the rockspec file to build and install.
