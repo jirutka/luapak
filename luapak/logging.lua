@@ -11,6 +11,7 @@
 -- * `WARN (30)`
 -- * `ERROR (40)`
 ----
+local luapak = require 'luapak.init'
 local utils = require 'luapak.utils'
 
 local always = utils.always
@@ -18,7 +19,7 @@ local fmt = string.format
 local par = utils.partial
 
 local output = io.stderr
-local prefix = 'luapak: '
+local prefix = luapak._NAME..': '
 local threshold
 
 local M = {}

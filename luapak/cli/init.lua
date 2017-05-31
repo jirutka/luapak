@@ -15,7 +15,7 @@ local commands = {
 
 
 local optparser = optparse([[
-luapak ${VERSION}
+${PROG_NAME} ${VERSION}
 
 Usage: ${PROGRAM} COMMAND [args]
        ${PROGRAM} (--help | --version)
@@ -35,7 +35,7 @@ Options:
   -v, --verbose     Be verbose, i.e. print debug messages.
   -h, --help        Display this help message and exit. Note that every command has its own --help.
   -V, --version     Display version information and exit.
-]], { VERSION = luapak._VERSION })
+]], { PROG_NAME = luapak._NAME, VERSION = luapak._VERSION })
 
 optparser:on('--help', function (_, arglist, i)
   if not commands[arglist[1]] then
