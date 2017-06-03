@@ -4,22 +4,23 @@
 # Builds standalone luapak binary using Luapak.
 #
 # Environment variables:
-# 	LIBC : System libc library; if "musl", then it links the binary statically.
-#
+#   LDFLAGS : Extra flags to pass to the linker.
+#   LIBC    : System libc library; if "musl" and LDFLAGS is not set, then
+#             LDFLAGS is set to "-static -no-pie" (static linking).
 set -eu
-
-LDFLAGS=''
-[ "${LIBC:-}" != musl ] || LDFLAGS='-static -no-pie'
-
 
 . "$(dirname "$0")/bootstrap"
 
 einfo 'Building standalone luapak'
 
+if [ "${LIBC:-}" = musl ] && [ -z "${LDFLAGS:-}" ]; then
+	export LDFLAGS='-static -no-pie'
+fi
+
 rm -Rf "$TEMP_DIR"/* dist/*
 
 # Note: LUA_VERSION interferes with LuaRock's Makefile, so we must unset it.
-LDFLAGS="$LDFLAGS" LUA_VERSION= \
+LUA_VERSION= \
 	lua luapak/cli/init.lua make -v -t "$TEMP_DIR"
 printf '\n'
 
