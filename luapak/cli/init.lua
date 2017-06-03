@@ -36,7 +36,7 @@ Options:
   -V, --version     Display version information and exit.
 ]]
 
-optparser:on('--help', function (_, arglist, i)
+optparser:on({ '-h', '--help' }, function (_, arglist, i)
   if not commands[arglist[1]] then
     optparser:help()
   end
