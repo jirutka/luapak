@@ -5,9 +5,21 @@ local concat = table.concat
 local find = utils.find
 
 
-local function has_command (command)
+local system
+local function is_system (pattern)
+  system = system or assert(io.popen('uname -s'):read('*l'), 'uname -s failed')
+  return system:match(pattern)
+end
+
+--- Returns true if there's system command `name` on PATH, false otherwise.
+local function has_command (name)
+  local command = 'command -v '..name
+  if is_system('^MINGW') or is_system('^Windows') then
+    command = 'where '..name
+  end
+
   -- Note: It behaves differently on Lua 5.1 and 5.2+.
-  local first, _, third = os.execute('command -v '..command)
+  local first, _, third = os.execute(command)
   return third == 0 or first == 0
 end
 
