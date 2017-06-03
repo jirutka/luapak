@@ -4,9 +4,10 @@
 # Builds standalone luapak binary using Luapak.
 #
 # Environment variables:
-#   LDFLAGS : Extra flags to pass to the linker.
-#   LIBC    : System libc library; if "musl" and LDFLAGS is not set, then
-#             LDFLAGS is set to "-static -no-pie" (static linking).
+#   LDFLAGS  : Extra flags to pass to the linker.
+#   LIBC     : System libc library; if "musl" and LDFLAGS is not set, then
+#              LDFLAGS is set to "-static -no-pie" (static linking).
+#   LUA_PATH : Lua package path, i.e. where to look for Lua modules.
 set -eu
 
 . "$(dirname "$0")/bootstrap"
@@ -15,6 +16,21 @@ einfo 'Building standalone luapak'
 
 if [ "${LIBC:-}" = musl ] && [ -z "${LDFLAGS:-}" ]; then
 	export LDFLAGS='-static -no-pie'
+fi
+
+# Hacks needed for Windows/MSYS2.
+if [ -d "$VENV_DIR"/luarocks/lua ]; then
+	cygpath --version >/dev/null 2>&1 \
+		&& luarocks_path="$(cygpath -w "$VENV_DIR/luarocks/lua")\\?.lua" \
+		|| luarocks_path="$VENV_DIR/luarocks/lua/?.lua"
+	export LUA_PATH="${LUA_PATH:+"$LUA_PATH;"}$luarocks_path;;"
+
+	# XXX: https://github.com/luarocks/luarocks/pull/709
+	site_config="$VENV_DIR/luarocks/share/lua/$(lua_version)/luarocks/site_config.lua"
+	if [ ! -f "$site_config" ]; then
+		mkdir -p "${site_config%/*}"
+		echo 'return {}' > "$site_config"
+	fi
 fi
 
 rm -Rf "$TEMP_DIR"/* dist/*
@@ -29,7 +45,7 @@ run file dist/luapak
 
 case "$HOST_OS" in
 	Darwin) run otool -L dist/luapak;;
-	Linux) run ldd dist/luapak || true;;
+	Linux | MINGW*) run ldd dist/luapak || true;;
 esac
 
 run ./dist/luapak --version
