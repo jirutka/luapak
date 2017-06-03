@@ -253,6 +253,10 @@ return function (proj_paths, entry_script, output_file, rocks_dir, opts)
     output_file = basename(entry_script):gsub('%.lua', '')
   end
 
+  if luarocks.is_windows and not ends_with('.exe') then
+    output_file = output_file..'.exe'
+  end
+
   if is_dir(output_file) then
     errorf('Cannot create file "%s", because it is a directory', output_file)
   end
