@@ -90,7 +90,7 @@ local function expand_wildcard_require (pattern, pkg_path)
       for path in walk_dir(full_prefix) do
         if ends_with(suffix, path) then
           local mod_name = path:sub(#base_path + 1, -#suffix - 1)
-                               :gsub(dir_sep, '.')
+                               :gsub('[/\\]', '.')
           push(found, mod_name)
         end
       end
