@@ -5,8 +5,10 @@
 -- **Note: This module is not part of public API!**
 ----
 local lfs = require 'lfs'
+local pkgpath = require 'luapak.pkgpath'
 local utils = require 'luapak.utils'
 
+local concat = table.concat
 local cowrap = coroutine.wrap
 local file_attrs = lfs.attributes
 local fmt = string.format
@@ -103,20 +105,29 @@ function M.is_file (path)
   return attrs and attrs.mode == 'file'
 end
 
+--- Joins the given path components using platform-specific separator.
+--
+-- @tparam string ... The path components.
+-- @treturn string
+function M.path_join (...)
+  return concat({...}, pkgpath.dir_sep)
+end
+local path_join = M.path_join
+
 --- Traverses all files under the specified directory recursively.
 --
 -- @tparam string dir_path Path of the directory to traverse.
 -- @treturn coroutine A coroutine that yields file path and its attributes.
 function M.walk_dir (dir_path)
-  -- Trim trailing "/".
-  if dir_path:sub(-1) == '/' then
+  -- Trim trailing "/" or "\".
+  if dir_path:sub(-1):match('[/\\]') then
     dir_path = dir_path:sub(1, -2)
   end
 
   local function yieldtree (dir)
     for entry in iter_dir(dir) do
       if entry ~= '.' and entry ~= '..' then
-        entry = dir..'/'..entry
+        entry = path_join(dir, entry)
         local attrs = file_attrs(entry)
 
         yield(entry, attrs)
