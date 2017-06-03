@@ -18,17 +18,27 @@ cd "$(dirname "$0")/.."
 . script/utils.sh
 
 configure_luarocks() {
+	local luaver; luaver=$(lua_version)
+
 	# LuaRocks expects gcc and make with prefix "mingw32-" under MinGW,
 	# but this is not how they are named in MSYS2/MinGW environment, so we must
 	# overwrite them.
 	case "$HOST_OS" in
-		MINGW*) cat >> "$VENV_DIR"/luarocks/config-$(lua_version).lua <<-EOF
+		MINGW*) cat >> "$VENV_DIR"/luarocks/config-$luaver.lua <<-EOF
 					variables = variables or {}
 					variables.CC = "gcc"
 					variables.LD = "gcc"
 					variables.MAKE = "make"
 				EOF
 	esac
+
+	# XXX: LuaRocks requires this file to exist when installing itself from LuaRocks.
+	# https://github.com/luarocks/luarocks/pull/709
+	local site_config="$VENV_DIR/share/lua/$luaver/luarocks/site_config.lua"
+	if [ ! -f "$site_config" ]; then
+		mkdir -p "${site_config%/*}"
+		echo 'return {}' > "$site_config"
+	fi
 }
 
 install_rock() {
