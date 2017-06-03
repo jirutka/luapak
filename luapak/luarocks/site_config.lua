@@ -26,10 +26,10 @@ local site_config; do
   local ok
 
   ok, site_config = pcall(require, 'luarocks.site_config_'..version_suffix)
-  if not ok then
+  if not ok or type(site_config) ~= 'table' then
     ok, site_config = pcall(require, 'luarocks.site_config')
   end
-  if not ok then
+  if not ok or type(site_config) ~= 'table' then
     site_config = {}
     package.loaded['luarocks.site_config'] = site_config
   end
