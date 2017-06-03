@@ -7,9 +7,12 @@ readonly VENV_DIR="$(pwd)/.venv"
 
 : ${TARGET_ARCH:=$(uname -m)}
 
-if [ "$HOST_OS" = Darwin ]; then
-	alias sha256sum='shasum -a 256'
-fi
+case "$HOST_OS" in
+	Darwin)
+		alias sha256sum='shasum -a 256';;
+	MINGW* | Windows)
+		alias luarocks='luarocks.bat';;
+esac
 
 einfo() {
 	# bold cyan
@@ -47,6 +50,14 @@ is_release() {
 	git rev-parse HEAD >/dev/null
 
 	git describe --tags --exact-match --match 'v*' >/dev/null 2>&1
+}
+
+# Prints version of the specified Lua binary, or "lua" on PATH if $1 is empty.
+# This is API version, i.e. it's the same for Lua and LuaJIT.
+lua_version() {
+	local lua_path="${1:-lua}"
+
+	$lua_path -e 'print(_VERSION:sub(5))'
 }
 
 # Prints the given arguments and runs them.

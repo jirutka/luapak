@@ -14,6 +14,23 @@ DEFAULT_LUA_VERSION='lua-5.3'
 HEREROCKS_URI='https://raw.githubusercontent.com/mpeterv/hererocks/0.15.0/hererocks.py'
 HEREROCKS_SHA256='1729b18b056ebf6eb3d1637616ddd0bb801c615c7a46c3f311dd646789e703ef'
 
+cd "$(dirname "$0")/.."
+. script/utils.sh
+
+configure_luarocks() {
+	# LuaRocks expects gcc and make with prefix "mingw32-" under MinGW,
+	# but this is not how they are named in MSYS2/MinGW environment, so we must
+	# overwrite them.
+	case "$HOST_OS" in
+		MINGW*) cat >> "$VENV_DIR"/luarocks/config-$(lua_version).lua <<-EOF
+					variables = variables or {}
+					variables.CC = "gcc"
+					variables.LD = "gcc"
+					variables.MAKE = "make"
+				EOF
+	esac
+}
+
 install_rock() {
 	local name="$1"
 	local args="$name"
@@ -26,21 +43,23 @@ install_rock() {
 }
 
 
-cd "$(dirname "$0")/.."
-. script/utils.sh
-
 mkdir -p "$VENV_DIR" "$TEMP_DIR"
 
-if [ ! -x "$VENV_DIR"/bin/luarocks ]; then
+if [ ! -e "$VENV_DIR"/bin/luarocks ] && [ ! -e "$VENV_DIR"/bin/luarocks.bat ]; then
 	version="$(printf %s "${LUA_VERSION:-$DEFAULT_LUA_VERSION}" | tr - =)"
 
 	einfo "Installing $version and luarocks into $VENV_DIR"
+
 	wgets "$HEREROCKS_URI" "$HEREROCKS_SHA256" "$TEMP_DIR"
 	python "$TEMP_DIR"/hererocks.py "$VENV_DIR" --no-readline --luarocks=^ --$version
-	printf '\n'
-fi
 
-. ./.envrc
+	. ./.envrc
+	configure_luarocks
+
+	printf '\n'
+else
+	. ./.envrc
+fi
 
 einfo 'Installing lua modules'
 cat Rocksfile | sed -En 's/^([^#]+).*/\1/p' | while read -r rockname; do
