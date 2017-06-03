@@ -186,6 +186,11 @@ local function build (proj_paths, entry_script, output_file, pkg_path, lua_lib, 
   luarocks.set_variable('CFLAGS', luarocks.get_variable('CFLAGS')..' -Os -std=c99')
   local vars = luarocks.cfg.variables
 
+  local libs = { 'm' }  -- math library
+  if not luarocks.is_windows then
+    push(libs, 'dl')  -- dynamic linker library
+  end
+
   log.info('Resolving dependencies...')
   local modules, objects = resolve_dependencies(entry_script,
       opts.extra_modules, opts.exclude_modules, pkg_path)
@@ -199,7 +204,7 @@ local function build (proj_paths, entry_script, output_file, pkg_path, lua_lib, 
   assert(toolchain.compile_object(vars, main_obj, main_src), 'Failed to compile '..main_obj)
 
   log.info('Linking %s...', output_file)
-  assert(toolchain.link_binary(vars, output_file, objects, { 'm', 'dl' }),
+  assert(toolchain.link_binary(vars, output_file, objects, libs),
          'Failed to link '..output_file)
   assert(toolchain.strip(vars, output_file), 'Failed to strip '..output_file)
 

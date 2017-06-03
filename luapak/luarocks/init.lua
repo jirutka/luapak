@@ -30,6 +30,9 @@ local M = {}
 --- The configuration table.
 M.cfg = cfg
 
+--- Do we run on Windows?
+M.is_windows = cfg.platforms.windows
+
 --- Builds and installs local rock specified by the rockspec.
 --
 -- @tparam string rockspec_file Path of the rockspec file.
