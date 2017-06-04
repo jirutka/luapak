@@ -1,7 +1,9 @@
 local cfg = require 'luarocks.cfg'
+local utils = require 'luapak.utils'
 
 local fmt = string.format
 local getenv = os.getenv
+local starts_with = utils.starts_with
 local MSVC = cfg.is_platform('win32') and not cfg.is_platform('mingw32')
 
 if not cfg.shared_lib_extension then
@@ -30,11 +32,24 @@ if not cfg.variables.LUALIB and not MSVC then
                                             cfg.lib_extension)
 end
 
--- Allow to override specified variables from environment.
+-- Allow to override the named variables by environment.
 for _, name in ipairs {
   'AR', 'CC', 'CMAKE', 'CFLAGS', 'LD', 'LDFLAGS', 'MAKE', 'RANLIB', 'STRIP'
 } do
   local value = getenv(name)
+  if value then
+    cfg.variables[name] = value
+  end
+end
+
+-- Allow to override any uppercase variable by environment.
+-- To avoid clashes with common variables like PWD, environment variables
+-- must be prefixed with "LUAROCKS_".
+-- Note: If, for example, both CFLAGS and LUAROCKS_CFLAGS is defined,
+-- then the prefixed one is used.
+for name, _ in pairs(cfg.variables) do
+  local prefix = starts_with('LUAROCKS', name) and '' or 'LUAROCKS_'
+  local value = getenv(prefix..name)
   if value then
     cfg.variables[name] = value
   end
