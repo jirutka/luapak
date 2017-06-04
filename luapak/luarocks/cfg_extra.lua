@@ -13,6 +13,9 @@ local starts_with = utils.starts_with
 local MSVC = cfg.is_platform('win32') and not cfg.is_platform('mingw32')
 
 
+-- Always use LuaFileSystem and other modules when available.
+cfg.fs_use_modules = true
+
 if not is_empty(getenv('LUAROCKS_DEBUG')) then
   cfg.verbose = true
   require('luarocks.fs').verbose()
