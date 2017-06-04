@@ -1,7 +1,7 @@
 ---------
 -- Facade for interaction with LuaRocks.
 ----
-require 'luapak.luarocks.site_config'
+local site_config = require 'luapak.luarocks.site_config'
 require 'luapak.luarocks.cfg_extra'
 package.loaded['luarocks.build.builtin'] = require 'luapak.build.builtin'
 
@@ -118,7 +118,15 @@ end
 ---
 -- @tparam string dirname Path of the directory.
 function M.use_tree (dirname)
-  path.use_tree(fs.absolute_name(dirname))
+  local old_root_dir = cfg.root_dir
+  local prefix = cfg.variables.LUAROCKS_PREFIX
+
+  dirname = fs.absolute_name(dirname)
+  path.use_tree(dirname)
+
+  if prefix == old_root_dir or prefix == site_config.LUAROCKS_FAKE_PREFIX then
+    cfg.variables.LUAROCKS_PREFIX = dirname
+  end
 end
 
 return M

@@ -63,4 +63,12 @@ if not site_config.LUAROCKS_MD5CHECKER then
       find_command('a MD5 checksum calculator', { 'md5sum', 'openssl', 'md5' })
 end
 
+site_config.LUAROCKS_FAKE_PREFIX = 'C:\\Fake-Prefix'
+if is_windows then
+  -- Set specified LUAROCKS_PREFIX so we can strip it in cfg_extra.
+  if not site_config.LUAROCKS_PREFIX then
+    site_config.LUAROCKS_PREFIX = site_config.LUAROCKS_FAKE_PREFIX
+  end
+end
+
 return site_config

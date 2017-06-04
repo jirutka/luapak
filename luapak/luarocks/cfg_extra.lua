@@ -1,10 +1,16 @@
 local cfg = require 'luarocks.cfg'
+
+local fs = require 'luapak.fs'
+local site_config = require 'luapak.luarocks.site_config'
 local utils = require 'luapak.utils'
 
+local basename = fs.basename
 local fmt = string.format
 local getenv = os.getenv
 local starts_with = utils.starts_with
+
 local MSVC = cfg.is_platform('win32') and not cfg.is_platform('mingw32')
+
 
 if not cfg.shared_lib_extension then
   cfg.shared_lib_extension = cfg.lib_extension
@@ -30,6 +36,17 @@ end
 if not cfg.variables.LUALIB and not MSVC then
   cfg.variables.LUALIB = fmt('liblua%s.%s', cfg.lua_version:gsub('%.', ''),
                                             cfg.lib_extension)
+end
+
+if cfg.is_platform('windows') then
+  local fake_prefix = site_config.LUAROCKS_FAKE_PREFIX
+
+  for name, value in pairs(cfg.variables) do
+    -- Don't use bundled tools (set in luarocks.cfg).
+    if starts_with(fake_prefix, value) then
+      cfg.variables[name] = basename(value)
+    end
+  end
 end
 
 -- Allow to override the named variables by environment.
