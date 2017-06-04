@@ -9,10 +9,12 @@ local is_windows  -- initialized later
 
 --- Returns true if there's system command `name` on PATH, false otherwise.
 local function has_command (name)
-  local command = (is_windows and 'where ' or 'command -v ')..name
+  local cmd_tmpl = is_windows
+      and 'where %s 2> NUL 1> NUL'
+      or 'command -v %s >/dev/null'
 
   -- Note: It behaves differently on Lua 5.1 and 5.2+.
-  local first, _, third = os.execute(command)
+  local first, _, third = os.execute(cmd_tmpl:format(name))
   return third == 0 or first == 0
 end
 
