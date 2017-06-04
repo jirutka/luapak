@@ -18,8 +18,8 @@ clone_depth: 50
 install:
   - ps: |
       switch ($env:PLATFORM) {
-        "x64" { $env:MSYSTEM = "MINGW64" }
-        "x86" { $env:MSYSTEM = "MINGW32" }
+        "x64" { $env:MSYSTEM = "MINGW64"; $env:TARGET_ARCH = "x86_64" }
+        "x86" { $env:MSYSTEM = "MINGW32"; $env:TARGET_ARCH = "x86" }
       }
   - SET PATH=C:\msys64\%MSYSTEM%\bin;C:\msys64\%MSYSTEM%\usr\bin;C:\msys64\usr\bin;%PATH%
   - sh -c 'uname -a'
@@ -28,3 +28,15 @@ install:
 build_script:
   - sh -c 'cp .venv/lib/liblua*.a .venv/bin/liblua.a'  # XXX: temporary hack!
   - sh -c script/build-standalone
+after_build:
+  - sh -c script/ci-artifact
+artifacts:
+  - path: dist\*.zip
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: 1/r/2LKvSANrBoD9Nu3lMPHbhcCDcKAo2k8I1Fb4FBR/Jz08FksbcROSUBfeDqDt
+  artifact: dist\*.zip
+  on:
+    # Deploy on tag push only.
+    appveyor_repo_tag: true

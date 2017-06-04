@@ -19,18 +19,31 @@ fi
 
 einfo 'Creating build artifact'
 
-test -f dist/luapak || die 'dist/luapak does not exist!'
+test -f dist/luapak* || die 'dist/luapak does not exist!'
+
+case "$HOST_OS" in
+	MINGW*) target_os='windows';;
+	*) target_os=$(echo "$HOST_OS" | tr '[A-Z]' '[a-z]');;
+esac
 
 version=$(git_based_version)
 dir_name="luapak-$version"
-file_name="luapak-$version-$TARGET_ARCH-$(echo "$HOST_OS" | tr '[A-Z]' '[a-z]')"
+file_name="luapak-$version-$TARGET_ARCH-$target_os"
 
 cd dist
-mkdir "$dir_name"
-mv luapak "$dir_name"/
 
-tar -czf "$file_name.tar.gz" "$dir_name"
-rm -r "$dir_name"
+case "$target_os" in
+	windows)
+		7z a $file_name.zip luapak.exe
+		rm luapak.exe
+	;;
+	*)
+		mkdir "$dir_name"
+		mv luapak "$dir_name"/
+		tar -czf "$file_name.tar.gz" "$dir_name"
+		rm -r "$dir_name"
+	;;
+esac
 
 cd ..
-run ls -lah dist/$file_name.tar.gz
+run ls -lh dist/
