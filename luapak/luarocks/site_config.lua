@@ -4,19 +4,12 @@ local utils = require 'luapak.utils'
 local concat = table.concat
 local find = utils.find
 
+local is_windows  -- initialized later
 
-local system
-local function is_system (pattern)
-  system = system or assert(io.popen('uname -s'):read('*l'), 'uname -s failed')
-  return system:match(pattern)
-end
 
 --- Returns true if there's system command `name` on PATH, false otherwise.
 local function has_command (name)
-  local command = 'command -v '..name
-  if is_system('^MINGW') or is_system('^Windows') then
-    command = 'where '..name
-  end
+  local command = (is_windows and 'where ' or 'command -v ')..name
 
   -- Note: It behaves differently on Lua 5.1 and 5.2+.
   local first, _, third = os.execute(command)
@@ -51,6 +44,14 @@ site_config.LUAROCKS_SYSCONFDIR = nil
 site_config.LUAROCKS_ROCKS_TREE = nil
 site_config.LUAROCKS_ROCKS_SUBDIR = nil
 site_config.LUA_DIR_SET = nil
+
+if not site_config.LUAROCKS_UNAME_S then
+  site_config.LUAROCKS_UNAME_S = io.popen('uname -s'):read('*l')
+end
+
+is_windows = site_config.LUAROCKS_UNAME_S
+    :gsub('^MINGW', 'Windows')
+    :match('^Windows') ~= nil
 
 if not site_config.LUAROCKS_DOWNLOADER then
   site_config.LUAROCKS_DOWNLOADER =
