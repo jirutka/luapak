@@ -7,10 +7,16 @@ local utils = require 'luapak.utils'
 local basename = fs.basename
 local fmt = string.format
 local getenv = os.getenv
+local is_empty = utils.is_empty
 local starts_with = utils.starts_with
 
 local MSVC = cfg.is_platform('win32') and not cfg.is_platform('mingw32')
 
+
+if not is_empty(getenv('LUAROCKS_DEBUG')) then
+  cfg.verbose = true
+  require('luarocks.fs').verbose()
+end
 
 if not cfg.shared_lib_extension then
   cfg.shared_lib_extension = cfg.lib_extension
