@@ -20,7 +20,6 @@ fi
 einfo 'Creating build artifact'
 
 test -f dist/luapak || die 'dist/luapak does not exist!'
-is_release || die 'There is no git release tag!'
 
 version=$(git_based_version)
 dir_name="luapak-$version"

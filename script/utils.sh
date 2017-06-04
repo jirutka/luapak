@@ -34,14 +34,14 @@ die() {
 
 # Prints version number based on the last git tag with prefix "v". If HEAD is
 # not tagged (i.e. this is not a release), then it prints last version with
-# suffix "-<n>-<abbrev>". If there's no tag with prefix "v" (i.e. there's no
-# release yet), it prints "0.0.0".
+# suffix "_git<n>g<abbrev>". If there's no tag with prefix "v" (i.e. there's no
+# release yet), it prints "0.0.0_git<n>g<abbrev>".
 git_based_version() {
 	# First check that we are in a git repository.
 	git rev-parse HEAD >/dev/null
 
 	{ git describe --tags --match 'v*' 2>/dev/null || echo 'v0.0.0'; } \
-		| cut -c 2-
+		| cut -c 2- | sed -E 's/\-([0-9]+)\-g([0-9a-f]+)/_git\1g\2/'
 }
 
 # Returns 0 if git HEAD is a release, i.e. it has tag with prefix "v".
