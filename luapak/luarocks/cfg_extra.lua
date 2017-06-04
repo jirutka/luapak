@@ -46,6 +46,11 @@ if cfg.is_platform('windows') then
     if starts_with(fake_prefix, value) then
       cfg.variables[name] = basename(value)
     end
+
+    -- MSYS2/MinGW does not use mingw32- prefix.
+    if starts_with('mingw32-', value) then
+      cfg.variables[name] = value:gsub('^mingw32%-', '')
+    end
   end
 end
 
