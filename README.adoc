@@ -12,7 +12,7 @@ image:https://ci.appveyor.com/api/projects/status/{appveyor-id}/branch/{gh-branc
 image:https://img.shields.io/badge/ldoc-docs-blue.svg["LDoc", link="{ldoc-url}"]
 endif::env-github[]
 
-Luapak is a command-line tool that offers a complete, all-in-one (yet modular) solution for building a standalone, zero-dependencies, possibly statically linked executable for any Lua program.
+Luapak is a command-line tool that offers a complete, multi-platform (Linux, macOS, and Windows), all-in-one (yet modular) solution for building a standalone, zero-dependencies, possibly statically linked (only on Linux) executable for any Lua program.
 It automatically resolves all required dependencies using LuaRocks and static analysis of requirements across Lua
 sources, generates C wrapper with embedded Lua sources, compiles it and links with Lua library and native extensions.
 
@@ -39,7 +39,7 @@ luarocks install --server=http://luarocks.org/dev {proj-name}
 
 === Download standalone binary
 
-You can also download standalone Luapak binaries built by Luapak from https://github.com/{gh-name}/releases/[Releases].
+You can also download standalone Luapak binaries for Linux, macOS and Windows from https://github.com/{gh-name}/releases/[Releases].
 
 Note: Linux binaries are statically linked with http://www.musl-libc.org/[musl libc], so they should work on any Linux system.
 
@@ -71,8 +71,6 @@ source .envrc
 * Add support for LuaJIT into lua_finder module.
 * Write documentation into README.
 * Write integration tests.
-* Fix and test support for Windows.
-* Use AppVeyor for building standalone Luapak for Windows.
 * Add support for “squashing” Lua sources into single file that can be used as entry script.
   ** Luapak already supports embedding multiple source files, but every file is stored separately to be lazy loaded, so it cannot be compressed as a single unit.
 * Integrate with LuaSrcDiet to strip comments etc.
