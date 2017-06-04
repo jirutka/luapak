@@ -1,11 +1,11 @@
 #!/bin/sh
 # vim: set ts=4:
 #
-# Creates release tarball for a standalone Luapak binary.
+# Creates build artifact for a standalone Luapak binary.
 #
 # Environment variables:
 #   TARGET_ARCH : Architecture for which is the binary built (this is used in
-#                 the tarball's name).
+#                 the archive's name).
 #
 set -eu
 
@@ -17,7 +17,7 @@ else
 	. script/build
 fi
 
-einfo 'Creating release tarball'
+einfo 'Creating build artifact'
 
 test -f dist/luapak || die 'dist/luapak does not exist!'
 is_release || die 'There is no git release tag!'

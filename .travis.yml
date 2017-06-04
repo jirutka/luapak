@@ -69,7 +69,7 @@ jobs:
       script:
         - /alpine/enter-chroot $USER script/build-standalone
       before_deploy:
-        - /alpine/enter-chroot $USER script/ci-tarball
+        - /alpine/enter-chroot $USER script/ci-artifact
       deploy: &deploy-releases
         provider: releases
         api_key: $GH_TOKEN
@@ -103,5 +103,5 @@ jobs:
       script:
         - script/build-standalone
       before_deploy:
-        - script/ci-tarball
+        - script/ci-artifact
       deploy: *deploy-releases
