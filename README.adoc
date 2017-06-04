@@ -3,10 +3,12 @@ Jakub Jirutka <https://github.com/jirutka[@jirutka]>
 :proj-name: luapak
 :gh-name: jirutka/{proj-name}
 :gh-branch: master
+:appveyor-id: qmkkk86ldwvkvdc9
 :ldoc-url: https://jirutka.github.io/{proj-name}/ldoc/
 
 ifdef::env-github[]
 image:https://travis-ci.org/{gh-name}.svg?branch={gh-branch}["Build Status", link="https://travis-ci.org/{gh-name}"]
+image:https://ci.appveyor.com/api/projects/status/{appveyor-id}/branch/{gh-branch}?svg=true["Windows Build Status", link="https://ci.appveyor.com/project/{gh-name}"]
 image:https://img.shields.io/badge/ldoc-docs-blue.svg["LDoc", link="{ldoc-url}"]
 endif::env-github[]
 

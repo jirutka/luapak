@@ -1,0 +1,30 @@
+version: '{branch}.{build}'
+image:
+  - Visual Studio 2017  # Windows Server 2016
+  - Visual Studio 2013  # Windows Server 2012 R2
+platform:
+  - x64
+  - x86
+environment:
+  matrix:
+    - LUA_VERSION: lua-5.3
+matrix:
+  # Immediately finish build once one of the jobs fails.
+  fast_finish: true
+branches:
+  except:
+    - gh-pages
+clone_depth: 50
+install:
+  - ps: |
+      switch ($env:PLATFORM) {
+        "x64" { $env:MSYSTEM = "MINGW64" }
+        "x86" { $env:MSYSTEM = "MINGW32" }
+      }
+  - SET PATH=C:\msys64\%MSYSTEM%\bin;C:\msys64\%MSYSTEM%\usr\bin;C:\msys64\usr\bin;%PATH%
+  - sh -c 'uname -a'
+  - sh -c 'gcc --version'
+  - sh -c script/bootstrap
+build_script:
+  - sh -c 'cp .venv/lib/liblua*.a .venv/bin/liblua.a'  # XXX: temporary hack!
+  - sh -c script/build-standalone
