@@ -30,11 +30,12 @@ after_build:
   - sh -c script/ci-artifact
 artifacts:
   - path: dist\*.zip
+    name: luapak
 deploy:
   provider: GitHub
   auth_token:
     secure: 1/r/2LKvSANrBoD9Nu3lMPHbhcCDcKAo2k8I1Fb4FBR/Jz08FksbcROSUBfeDqDt
-  artifact: dist\*.zip
+  artifact: luapak
   on:
     # Deploy on tag push only.
     appveyor_repo_tag: true
