@@ -23,12 +23,15 @@ configure_luarocks() {
 	# LuaRocks expects gcc and make with prefix "mingw32-" under MinGW,
 	# but this is not how they are named in MSYS2/MinGW environment, so we must
 	# overwrite them.
+	# LuaRocks ships and uses bundled unix tools for Windows; the bundled wget
+	# doesn't work correctly for HTTPS, so we must use system-provided wget.
 	case "$HOST_OS" in
 		MINGW*) cat >> "$VENV_DIR"/luarocks/config-$luaver.lua <<-EOF
 					variables = variables or {}
 					variables.CC = "gcc"
 					variables.LD = "gcc"
 					variables.MAKE = "make"
+					variables.WGET = "wget"
 				EOF
 	esac
 

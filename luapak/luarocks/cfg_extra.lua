@@ -16,6 +16,12 @@ local MSVC = cfg.is_platform('win32') and not cfg.is_platform('mingw32')
 -- Always use LuaFileSystem and other modules when available.
 cfg.fs_use_modules = true
 
+-- Always validate TLS certificates!
+-- Why the hack LuaRocks disables it by default?! >_<
+cfg.check_certificates = true
+cfg.variables.CURLNOCERTFLAG = ''
+cfg.variables.WGETNOCERTFLAG = ''
+
 if not is_empty(getenv('LUAROCKS_DEBUG')) then
   cfg.verbose = true
   require('luarocks.fs').verbose()
