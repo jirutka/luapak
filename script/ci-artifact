@@ -14,7 +14,7 @@ cd "$(dirname "$0")/.."
 if [ -f dist/luapak ]; then
 	. script/utils.sh
 else
-	. script/build
+	. script/build-standalone
 fi
 
 einfo 'Creating build artifact'
