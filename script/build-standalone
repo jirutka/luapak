@@ -33,11 +33,16 @@ if [ -d "$VENV_DIR"/luarocks/lua ]; then
 	fi
 fi
 
+opts=''
+if lua -v | grep -q 'LuaJIT'; then
+	opts='--lua-impl=LuaJIT'
+fi
+
 rm -Rf "$TEMP_DIR"/* dist/*
 
 # Note: LUA_VERSION interferes with LuaRock's Makefile, so we must unset it.
 LUA_VERSION= \
-	lua luapak/cli/init.lua make -v -t "$TEMP_DIR"
+	lua luapak/cli/init.lua make -v -t "$TEMP_DIR" $opts
 printf '\n'
 
 run ls -lh dist/luapak
