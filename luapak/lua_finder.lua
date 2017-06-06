@@ -5,6 +5,7 @@ local fs = require 'luapak.fs'
 local luarocks = require 'luapak.luarocks.init'
 local utils = require 'luapak.utils'
 
+local check_args = utils.check_args
 local filter = utils.filter
 local fmt = string.format
 local is_dir = fs.is_dir
@@ -37,6 +38,8 @@ local default_lib_dirs = {
 -- @treturn[2] nil
 -- @treturn[2] An error message.
 local function find_string_in_binary (pattern, filename)
+  check_args('string, string', pattern, filename)
+
   if not is_file(filename) then
     return nil, 'file does not exist or not readable: '..filename
   end
@@ -137,6 +140,7 @@ local luajith_version = M.luajith_version
 -- @treturn[1] string Version of the found header file in format `x.y.z`.
 -- @treturn[2] nil Not found.
 function M.find_incdir (lua_name, lua_ver, dirs)
+  check_args('?string, ?string, ?table', lua_name, lua_ver, dirs)
   lua_name = lua_name or 'lua'
 
   local header_version = lua_name == 'luajit' and luajith_version or luah_version
@@ -159,7 +163,7 @@ end
 
 --- Looking for Lua or LuaJIT library in common locations.
 --
--- @tparam ?string lib_ext File extension of the library to search for (default: "a").
+-- @tparam string lib_ext File extension of the library to search for.
 -- @tparam ?string lua_name Base name of the Lua library; typically "lua", or "luajit"
 --   (default: "lua").
 -- @tparam ?string lua_ver Version of the Lua(JIT) library to search for (default: "5.3").
@@ -169,7 +173,9 @@ end
 -- @treturn[1] string Version of the found Lua library in format `x.y.z`.
 -- @treturn[2] nil Not found.
 function M.find_liblua (lib_ext, lua_name, lua_ver, dirs)
-  lib_ext = lib_ext or 'a'
+  check_args('string, ?string, ?string, ?table',
+             lib_ext, lua_name, lua_ver, dirs)
+
   lua_name = lua_name or 'lua'
   lua_ver = lua_ver or '5.3'
 
