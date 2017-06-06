@@ -234,6 +234,7 @@ return function (proj_paths, entry_script, output_file, rocks_dir, opts)
 
   local lua_lib = opts.lua_lib
   local lua_incdir = opts.lua_incdir
+  local lua_name = opts.lua_impl == 'luajit' and 'LuaJIT' or 'Lua'
   local lua_ver = opts.lua_version
 
   luarocks.set_link_static(true)
@@ -266,12 +267,12 @@ return function (proj_paths, entry_script, output_file, rocks_dir, opts)
       errorf('Cannot find lua.h in %s!', lua_incdir)
     end
   else
-    lua_incdir, lua_ver = find_incdir('lua', lua_ver)
+    lua_incdir, lua_ver = find_incdir(lua_name:lower(), lua_ver)
     if not lua_incdir then
-      errorf('Cannot find Lua %s headers. Please specify --lua-incdir=DIR',
-             opts.lua_version or '')
+      errorf('Cannot find headers for %s %s. Please specify --lua-incdir=DIR',
+             lua_name, opts.lua_version or '')
     end
-    log.debug('Using Lua %s headers from: %s', lua_ver or '', lua_incdir)
+    log.debug('Using %s %s headers from: %s', lua_name, lua_ver or '', lua_incdir)
   end
   luarocks.set_variable('LUA_INCDIR', lua_incdir)
 
@@ -283,11 +284,11 @@ return function (proj_paths, entry_script, output_file, rocks_dir, opts)
   end
 
   if not lua_lib then
-    lua_lib = find_liblua(luarocks.cfg.lib_extension, 'lua', lua_ver)
+    lua_lib = find_liblua(luarocks.cfg.lib_extension, lua_name:lower(), lua_ver)
     if not lua_lib then
-      errorf('Cannot find Lua %s library. Please specify --lua-lib=PATH', lua_ver)
+      errorf('Cannot find %s %s library. Please specify --lua-lib=PATH', lua_name, lua_ver)
     end
-    log.debug('Using Lua %s library: %s', lua_ver, lua_lib)
+    log.debug('Using %s %s library: %s', lua_name, lua_ver, lua_lib)
   elseif not is_file(lua_lib) then
     errorf('File %s does not exist!', lua_lib)
   end

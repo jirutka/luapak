@@ -6,6 +6,7 @@ local optparse = require 'luapak.optparse'
 local utils = require 'luapak.utils'
 
 local concat = table.concat
+local fmt = string.format
 local is_empty = utils.is_empty
 local reject = utils.reject
 local split = utils.split
@@ -49,13 +50,19 @@ Options:
   -t, --rocks-tree=DIR            The prefix where to install required modules. Default is
                                   ".luapak" in the current directory.
 
-      --lua-incdir=DIR            The directory that contains Lua headers. If not specified, luapak
-                                  will look for the lua.h file inside: Luarock's LUA_INCDIR,
-                                  ./vendor/lua, ./deps/lua, /usr/local/include, and /usr/include.
-                                  If --lua-version is specified, then it will also try
-                                  subdirectories lua<version> and lua-<version> of each of the
-                                  named directories and verify that the found lua.h is for the
-                                  specified Lua version.
+      --lua-impl=NAME             The Lua implementation that should be used - "PUC" (default),
+                                  or "LuaJIT". This is currently used only as a hint to find the
+                                  correct library and headers when auto-detection is used
+                                  (i.e. --lua-incdir or --lua-lib is not specified).
+
+      --lua-incdir=DIR            The directory that contains Lua (or LuaJIT) headers. If not
+                                  specified, luapak will look for the lua.h (and luajit.h) file
+                                  inside: Luarock's LUA_INCDIR, ./vendor/lua, ./deps/lua,
+                                  /usr/local/include, and /usr/include. If --lua-version is
+                                  specified, then it will also try subdirectories lua<version> and
+                                  lua-<version> of each of the named directories and verify that
+                                  the found lua.h (or luajit.h) is for the specified Lua
+                                  (or LuaJIT) version.
 
       --lua-lib=FILE              The library of Lua interpreter to include in the binary. If not
                                   specified, luapak will try to find library with version
@@ -63,8 +70,8 @@ Options:
                                   ./vendor/lua, ./deps/lua, /usr/local/lib, /usr/local/lib64,
                                   /usr/lib, and /usr/lib64.
 
-      --lua-version=VERSION       The version number of Lua headers and library to try to find
-                                  (e.g. "5.3").
+      --lua-version=VERSION       The version number of Lua (or LuaJIT) headers and library to try
+                                  to find (e.g. "5.3", "2.0").
 
   -q, --quiet                     Be quiet, i.e. print only errors.
 
@@ -92,15 +99,20 @@ end
 -- @raise if some error occured.
 return function (arg)
   local optparser = optparse(help_msg)
-  local args, opts = optparser:parse(arg)
+  local args, opts = optparser:parse(arg, { lua_impl = 'PUC' })
 
   if #args == 0 then
     args = { '.' }
   end
 
+  if not ({ puc = 1, luajit = 1 })[opts.lua_impl:lower()] then
+    optparser:opterr(fmt('--lua-impl="%s" is invalid, must be "PUC", or "LuaJIT"', opts.lua_impl))
+  end
+
   local make_opts = {
     exclude_modules = split_repeated_option(opts.exclude_modules),
     extra_modules = split_repeated_option(opts.include_modules),
+    lua_impl = opts.lua_impl:lower(),
     lua_incdir = opts.lua_incdir,
     lua_lib = opts.lua_lib,
     lua_version = opts.lua_version,
