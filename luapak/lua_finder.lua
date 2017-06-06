@@ -17,11 +17,11 @@ local read_file = fs.read_file
 local starts_with = utils.starts_with
 
 
-local include_dirs = {
+local default_include_dirs = {
   luarocks.get_variable('LUA_INCDIR') or '',
   'vendor/lua', 'deps/lua', '/usr/local/include', '/usr/include'
 }
-local liblua_dirs = {
+local default_lib_dirs = {
   luarocks.get_variable('LUA_LIBDIR') or '.',
   'vendor/lua', 'deps/lua', '/usr/local/lib', '/usr/local/lib64', '/usr/lib', '/usr/lib64'
 }
@@ -131,10 +131,12 @@ local luajith_version = M.luajith_version
 --
 -- @tparam ?string lua_name Base name of the Lua header file; "lua", or "luajit" (default: "lua").
 -- @tparam ?string lua_ver Version of the header file to search for in format `x.y` or `x.y.z`.
+-- @tparam ?{string,...} List of prefixes (directories) to search.
+--   If `nil`, the default list of directories is used.
 -- @treturn[1] string File path of the found directory.
 -- @treturn[1] string Version of the found header file in format `x.y.z`.
 -- @treturn[2] nil Not found.
-function M.find_incdir (lua_name, lua_ver)
+function M.find_incdir (lua_name, lua_ver, dirs)
   lua_name = lua_name or 'lua'
 
   local header_version = lua_name == 'luajit' and luajith_version or luah_version
@@ -143,7 +145,7 @@ function M.find_incdir (lua_name, lua_ver)
       and { '', '/'..lua_name..lua_ver2, '/'..lua_name..'-'..lua_ver2 }
       or { '' }
 
-  for _, dir in ipairs(include_dirs) do
+  for _, dir in ipairs(dirs or default_include_dirs) do
     for _, suffix in ipairs(suffixes) do
       local path = dir..suffix
       local found_ver = header_version(fmt('%s/%s.h', path, lua_name))
@@ -161,10 +163,12 @@ end
 -- @tparam ?string lua_name Base name of the Lua library; typically "lua", or "luajit"
 --   (default: "lua").
 -- @tparam ?string lua_ver Version of the Lua(JIT) library to search for (default: "5.3").
+-- @tparam ?{string,...} dirs List of prefixes (directories) to search.
+--   If `nil`, the default list of prefixes is used.
 -- @treturn[1] string File path of the found Lua library.
 -- @treturn[1] string Version of the found Lua library in format `x.y.z`.
 -- @treturn[2] nil Not found.
-function M.find_liblua (lib_ext, lua_name, lua_ver)
+function M.find_liblua (lib_ext, lua_name, lua_ver, dirs)
   lib_ext = lib_ext or 'a'
   lua_name = lua_name or 'lua'
   lua_ver = lua_ver or '5.3'
@@ -175,7 +179,7 @@ function M.find_liblua (lib_ext, lua_name, lua_ver)
   local lualib = luarocks.get_variable('LUALIB')
   local lib_version = lua_name == 'luajit' and libluajit_version or liblua_version
 
-  if lualib and lualib:find(filename_patt) then
+  if not dirs and lualib and lualib:find(filename_patt) then
     local path = (luarocks.get_variable('LUA_LIBDIR') or '.')..'/'..lualib
     local found_ver = lib_version(path)
 
@@ -184,7 +188,7 @@ function M.find_liblua (lib_ext, lua_name, lua_ver)
     end
   end
 
-  for _, dir in ipairs(filter(is_dir, liblua_dirs)) do
+  for _, dir in ipairs(filter(is_dir, dirs or default_lib_dirs)) do
     for entry in iter_dir(dir) do
       if entry:find(lua_name, 1, true) then
         local path = dir..'/'..entry
