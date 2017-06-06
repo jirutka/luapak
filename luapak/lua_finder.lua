@@ -102,24 +102,49 @@ function M.luah_version (filename)
 end
 local luah_version = M.luah_version
 
---- Looking for a directory containing `lua.h` in common locations.
+--- Reads version number from the given `luajit.h` file.
 --
--- @tparam string lua_ver Version of the `lua.h` file to search for.
+-- @tparam string filename Path of the `luajit.h` file.
+-- @treturn[1] string Version number in format `x.y`.
+-- @treturn[2] nil
+-- @treturn[2] string An error message.
+function M.luajith_version (filename)
+  local content, err = read_file(filename)
+  if not content then
+    return nil, err
+  end
+
+  local x, y = content:match('#define%s+LUAJIT_VERSION_NUM%s+(%d)0(%d)')
+  if not x or not y then
+    return nil, 'LUAJIT_VERSION_NUM not found in '..filename
+  end
+
+  return x..'.'..y
+end
+local luajith_version = M.luajith_version
+
+--- Looking for a directory containing Lua header file `lua_name` in common locations.
+--
+-- @tparam ?string lua_name Base name of the Lua header file; "lua", or "luajit" (default: "lua").
+-- @tparam ?string lua_ver Version of the header file to search for in format `x.y`.
 -- @treturn[1] string File path of the found directory.
--- @treturn[1] string Version of the found `lua.h` file in format `x.y`.
+-- @treturn[1] string Version of the found header file in format `x.y`.
 -- @treturn[2] nil Not found.
-function M.find_incdir (lua_ver)
+function M.find_incdir (lua_name, lua_ver)
+  lua_name = lua_name or 'lua'
+
+  local header_version = lua_name == 'luajit' and luajith_version or luah_version
   local suffixes = lua_ver ~= nil
-      and { '', '/lua'..lua_ver, '/lua-'..lua_ver }
+      and { '', '/'..lua_name..lua_ver, '/'..lua_name..'-'..lua_ver }
       or { '' }
 
   for _, dir in ipairs(include_dirs) do
     for _, suffix in ipairs(suffixes) do
       local path = dir..suffix
-      local ver = luah_version(path..'/lua.h')
+      local found_ver = header_version(fmt('%s/%s.h', path, lua_name))
 
-      if ver and (lua_ver == nil or lua_ver == ver) then
-        return path, ver
+      if found_ver and (lua_ver == nil or starts_with(lua_ver, found_ver)) then
+        return path, found_ver
       end
     end
   end

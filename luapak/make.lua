@@ -266,7 +266,7 @@ return function (proj_paths, entry_script, output_file, rocks_dir, opts)
       errorf('Cannot find lua.h in %s!', lua_incdir)
     end
   else
-    lua_incdir, lua_ver = find_incdir(lua_ver)
+    lua_incdir, lua_ver = find_incdir('lua', lua_ver)
     if not lua_incdir then
       errorf('Cannot find Lua %s headers. Please specify --lua-incdir=DIR',
              opts.lua_version or '')
