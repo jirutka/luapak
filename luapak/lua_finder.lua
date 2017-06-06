@@ -65,20 +65,20 @@ local M = {}
 --
 -- @function liblua_version
 -- @tparam string filename Path of the Lua library.
--- @treturn[1] string Version number in format `x.y`.
+-- @treturn[1] string Version number in format `x.y.z`.
 -- @treturn[2] nil
 -- @treturn[2] string An error message.
-local liblua_version = par(find_string_in_binary, '^Lua (%d%.%d+)')
+local liblua_version = par(find_string_in_binary, '^@?%$Lua%w*: Lua (%d%.%d+%.%d+)')
 M.liblua_version = liblua_version
 
 --- Parses version number from the given LuaJIT library using @{find_string_in_binary}.
 --
 -- @function libluajit_version
 -- @tparam string filename Path of the LuaJIT library.
--- @treturn[1] string Version number in format `x.y`.
+-- @treturn[1] string Version number in format `x.y.z`.
 -- @treturn[2] nil
 -- @treturn[2] string An error message.
-local libluajit_version = par(find_string_in_binary, '^LuaJIT (%d%.%d+)')
+local libluajit_version = par(find_string_in_binary, '^LuaJIT (%d%.%d+%.%d+)')
 M.libluajit_version = libluajit_version
 
 --- Reads version number from the given `lua.h` file.
@@ -130,10 +130,9 @@ end
 -- @tparam ?string lib_ext File extension of the library to search for (default: "a").
 -- @tparam ?string lua_name Base name of the Lua library; typically "lua", or "luajit"
 --   (default: "lua").
--- @tparam ?string lua_ver Version of the Lua(JIT) library to search for in format `x.y`
---   (default: "5.3").
+-- @tparam ?string lua_ver Version of the Lua(JIT) library to search for (default: "5.3").
 -- @treturn[1] string File path of the found Lua library.
--- @treturn[1] string Version of the found Lua library in format `x.y`.
+-- @treturn[1] string Version of the found Lua library in format `x.y.z`.
 -- @treturn[2] nil Not found.
 function M.find_liblua (lib_ext, lua_name, lua_ver)
   lib_ext = lib_ext or 'a'
@@ -150,7 +149,7 @@ function M.find_liblua (lib_ext, lua_name, lua_ver)
     local path = (luarocks.get_variable('LUA_LIBDIR') or '.')..'/'..lualib
     local found_ver = lib_version(path)
 
-    if found_ver == lua_ver then
+    if starts_with(lua_ver, found_ver) then
       return path, found_ver
     end
   end
@@ -170,7 +169,7 @@ function M.find_liblua (lib_ext, lua_name, lua_ver)
 
         if matches then
           local found_ver = lib_version(path)
-          if found_ver == lua_ver then
+          if starts_with(lua_ver, found_ver) then
             return path, found_ver
           end
         end
