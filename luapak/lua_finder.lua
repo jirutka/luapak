@@ -5,9 +5,10 @@ local fs = require 'luapak.fs'
 local luarocks = require 'luapak.luarocks.init'
 local utils = require 'luapak.utils'
 
-local fmt = string.format
-local insert = table.insert
+local filter = utils.filter
+local is_dir = fs.is_dir
 local is_file = fs.is_file
+local iter_dir = fs.dir
 local popen = io.popen
 local read_file = fs.read_file
 local starts_with = utils.starts_with
@@ -18,7 +19,7 @@ local include_dirs = {
   'vendor/lua', 'deps/lua', '/usr/local/include', '/usr/include'
 }
 local liblua_dirs = {
-  luarocks.get_variable('LUA_LIBDIR') or '',
+  luarocks.get_variable('LUA_LIBDIR') or '.',
   'vendor/lua', 'deps/lua', '/usr/local/lib', '/usr/local/lib64', '/usr/lib', '/usr/lib64'
 }
 
@@ -102,29 +103,51 @@ end
 
 --- Looking for Lua library in common locations.
 --
--- @tparam string lib_ext File extension of the library to search for.
--- @tparam ?string lua_ver Version of the Lua library to search for, or nil to
---   search for any version.
+-- @tparam ?string lib_ext File extension of the library to search for (default: "a").
+-- @tparam ?string lua_name Base name of the Lua library (default: "lua").
+-- @tparam ?string lua_ver Version of the Lua library to search for in format `x.y`
+--   (default: "5.3").
 -- @treturn[1] string File path of the found Lua library.
 -- @treturn[1] string Version of the found Lua library in format `x.y`.
 -- @treturn[2] nil Not found.
-function M.find_liblua (lib_ext, lua_ver)
-  local libnames = lua_ver ~= nil
-      and { 'liblua', 'liblua'..lua_ver, 'liblua.'..lua_ver, 'lua'..lua_ver..'/liblua' }
-      or { 'liblua' }
+function M.find_liblua (lib_ext, lua_name, lua_ver)
+  lib_ext = lib_ext or 'a'
+  lua_name = lua_name or 'lua'
+  lua_ver = lua_ver or '5.3'
 
+  local lib_prefix = 'lib'
+  local filename_patt = '^'..lib_prefix..lua_name..'[.-]?[%d.]*%.'..lib_ext..'[%d%.]*$'
+  local dirname_patt = '^'..lua_name..'[.-]?[%d.]*$'
   local lualib = luarocks.get_variable('LUALIB')
-  if lualib then
-    insert(libnames, 1, (lualib:gsub('%.%w+$', '')))  -- strip file extension
+
+  if lualib and lualib:find(filename_patt) then
+    local path = (luarocks.get_variable('LUA_LIBDIR') or '.')..'/'..lualib
+    local found_ver = lualib_version(path)
+
+    if found_ver == lua_ver then
+      return path, found_ver
+    end
   end
 
-  for _, dir in ipairs(liblua_dirs) do
-    for _, libname in ipairs(libnames) do
-      local path = fmt('%s/%s.%s', dir, libname, lib_ext)
-      local ver = lualib_version(path)
+  for _, dir in ipairs(filter(is_dir, liblua_dirs)) do
+    for entry in iter_dir(dir) do
+      if entry:find(lua_name, 1, true) then
+        local path = dir..'/'..entry
+        local matches = false
 
-      if ver and (lua_ver == nil or lua_ver == ver) then
-        return path, ver
+        if entry:find(filename_patt) then
+          matches = true
+        elseif entry:find(dirname_patt) and is_dir(path) then
+          path = path..'/'..lib_prefix..lua_name..'.'..lib_ext
+          matches = true
+        end
+
+        if matches then
+          local found_ver = lualib_version(path)
+          if found_ver == lua_ver then
+            return path, found_ver
+          end
+        end
       end
     end
   end

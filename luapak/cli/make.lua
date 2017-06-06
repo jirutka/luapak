@@ -58,10 +58,10 @@ Options:
                                   specified Lua version.
 
       --lua-lib=FILE              The library of Lua interpreter to include in the binary. If not
-                                  specified, luapak will look for liblua.<ext>, liblua<ver>.<ext>,
-                                  liblua.<ver>.<ext> and lua<ver>/liblua.<ext> inside Luarock's
-                                  LUA_LIBDIR, ./vendor/lua, ./deps/lua, /usr/local/lib,
-                                  /usr/local/lib64, /usr/lib, and /usr/lib64.
+                                  specified, luapak will try to find library with version
+                                  corresponding to the headers inside Luarock's LUA_LIBDIR,
+                                  ./vendor/lua, ./deps/lua, /usr/local/lib, /usr/local/lib64,
+                                  /usr/lib, and /usr/lib64.
 
       --lua-version=VERSION       The version number of Lua headers and library to try to find
                                   (e.g. "5.3").

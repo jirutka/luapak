@@ -135,6 +135,24 @@ function M.errorf (message, ...)
   error(fmt(message, ...), 2)
 end
 
+--- Returns a new list containing the items in the given `list` for which
+-- the `predicate` function does *not* return false or nil.
+--
+-- @tparam function predicate
+-- @tparam table list
+-- @treturn table
+function M.filter (predicate, list)
+  local result = {}
+
+  for _, item in ipairs(list) do
+    if predicate(item) then
+      insert(result, item)
+    end
+  end
+
+  return result
+end
+
 --- Searches through the `list` and returns the first value that passes
 -- the `predicate` function.
 --
