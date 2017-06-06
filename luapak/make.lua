@@ -275,7 +275,7 @@ return function (proj_paths, entry_script, output_file, rocks_dir, opts)
   end
   luarocks.set_variable('LUA_INCDIR', lua_incdir)
 
-  local luaapi_ver = assert(luah_version(lua_incdir..'/lua.h'))
+  local luaapi_ver = assert(luah_version(lua_incdir..'/lua.h')):match('^(%d+%.%d+)')
   log.debug('Detected Lua API %s', luaapi_ver)
 
   if luarocks.cfg.lua_version ~= luaapi_ver then

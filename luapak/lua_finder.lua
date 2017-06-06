@@ -6,6 +6,7 @@ local luarocks = require 'luapak.luarocks.init'
 local utils = require 'luapak.utils'
 
 local filter = utils.filter
+local fmt = string.format
 local is_dir = fs.is_dir
 local is_file = fs.is_file
 local iter_dir = fs.dir
@@ -84,7 +85,7 @@ M.libluajit_version = libluajit_version
 --- Reads version number from the given `lua.h` file.
 --
 -- @tparam string filename Path of the `lua.h` file.
--- @treturn[1] string Version number in format `x.y`.
+-- @treturn[1] string Version number in format `x.y.z`.
 -- @treturn[2] nil
 -- @treturn[2] string An error message.
 function M.luah_version (filename)
@@ -93,19 +94,22 @@ function M.luah_version (filename)
     return nil, err
   end
 
-  local major, minor = content:match('#define%s+LUA_VERSION_NUM%s+(%d)0(%d)')
-  if not major or not minor then
+  local x, y = content:match('#define%s+LUA_VERSION_NUM%s+(%d)0(%d)')
+  if not x or not y then
     return nil, 'LUA_VERSION_NUM not found in '..filename
   end
+  local z = content:match('#define%s+LUA_VERSION_RELEASE%s+"(%d+)"')
+            or content:match('#define%s+LUA_RELEASE%s+"Lua %d%.%d%.(%d+)"')
+            or '0'
 
-  return major..'.'..minor
+  return fmt('%s.%s.%s', x, y, z)
 end
 local luah_version = M.luah_version
 
 --- Reads version number from the given `luajit.h` file.
 --
 -- @tparam string filename Path of the `luajit.h` file.
--- @treturn[1] string Version number in format `x.y`.
+-- @treturn[1] string Version number in format `x.y.z`.
 -- @treturn[2] nil
 -- @treturn[2] string An error message.
 function M.luajith_version (filename)
@@ -114,12 +118,12 @@ function M.luajith_version (filename)
     return nil, err
   end
 
-  local x, y = content:match('#define%s+LUAJIT_VERSION_NUM%s+(%d)0(%d)')
-  if not x or not y then
+  local x, y, z = content:match('#define%s+LUAJIT_VERSION_NUM%s+(%d)0(%d)0(%d)')
+  if not x or not y or not z then
     return nil, 'LUAJIT_VERSION_NUM not found in '..filename
   end
 
-  return x..'.'..y
+  return fmt('%s.%s.%s', x, y, z)
 end
 local luajith_version = M.luajith_version
 
@@ -128,7 +132,7 @@ local luajith_version = M.luajith_version
 -- @tparam ?string lua_name Base name of the Lua header file; "lua", or "luajit" (default: "lua").
 -- @tparam ?string lua_ver Version of the header file to search for in format `x.y`.
 -- @treturn[1] string File path of the found directory.
--- @treturn[1] string Version of the found header file in format `x.y`.
+-- @treturn[1] string Version of the found header file in format `x.y.z`.
 -- @treturn[2] nil Not found.
 function M.find_incdir (lua_name, lua_ver)
   lua_name = lua_name or 'lua'
