@@ -130,7 +130,7 @@ local luajith_version = M.luajith_version
 --- Looking for a directory containing Lua header file `lua_name` in common locations.
 --
 -- @tparam ?string lua_name Base name of the Lua header file; "lua", or "luajit" (default: "lua").
--- @tparam ?string lua_ver Version of the header file to search for in format `x.y`.
+-- @tparam ?string lua_ver Version of the header file to search for in format `x.y` or `x.y.z`.
 -- @treturn[1] string File path of the found directory.
 -- @treturn[1] string Version of the found header file in format `x.y.z`.
 -- @treturn[2] nil Not found.
@@ -138,8 +138,9 @@ function M.find_incdir (lua_name, lua_ver)
   lua_name = lua_name or 'lua'
 
   local header_version = lua_name == 'luajit' and luajith_version or luah_version
-  local suffixes = lua_ver ~= nil
-      and { '', '/'..lua_name..lua_ver, '/'..lua_name..'-'..lua_ver }
+  local lua_ver2 = (lua_ver or ''):match('^(%d+%.%d+)')  -- extract x.y
+  local suffixes = lua_ver2 ~= nil
+      and { '', '/'..lua_name..lua_ver2, '/'..lua_name..'-'..lua_ver2 }
       or { '' }
 
   for _, dir in ipairs(include_dirs) do
