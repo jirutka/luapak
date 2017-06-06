@@ -55,7 +55,7 @@ local luah_version = M.luah_version
 -- @treturn[1] string Version number in format `x.y`.
 -- @treturn[2] nil
 -- @treturn[2] string An error message.
-function M.lualib_version (filename)
+function M.liblua_version (filename)
   if not is_file(filename) then
     return nil, 'file does not exist or not readable: '..filename
   end
@@ -76,7 +76,7 @@ function M.lualib_version (filename)
   handler:close()
   return ver
 end
-local lualib_version = M.lualib_version
+local liblua_version = M.liblua_version
 
 --- Looking for a directory containing `lua.h` in common locations.
 --
@@ -122,7 +122,7 @@ function M.find_liblua (lib_ext, lua_name, lua_ver)
 
   if lualib and lualib:find(filename_patt) then
     local path = (luarocks.get_variable('LUA_LIBDIR') or '.')..'/'..lualib
-    local found_ver = lualib_version(path)
+    local found_ver = liblua_version(path)
 
     if found_ver == lua_ver then
       return path, found_ver
@@ -143,7 +143,7 @@ function M.find_liblua (lib_ext, lua_name, lua_ver)
         end
 
         if matches then
-          local found_ver = lualib_version(path)
+          local found_ver = liblua_version(path)
           if found_ver == lua_ver then
             return path, found_ver
           end
