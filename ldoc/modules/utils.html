@@ -101,6 +101,11 @@
 	<td class="summary">The same as <a href="https://www.lua.org/manual/5.3/manual.html#pdf-error">error</a>, but with formatted message.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#filter">filter (predicate, list)</a></td>
+	<td class="summary">Returns a new list containing the items in the given <code>list</code> for which
+ the <code>predicate</code> function does <em>not</em> return false or nil.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#find">find (predicate, list)</a></td>
 	<td class="summary">Searches through the <code>list</code> and returns the first value that passes
  the <code>predicate</code> function.</td>
@@ -382,6 +387,44 @@
         </li>
     </ul>
 
+
+
+
+
+</dd>
+    <dt>
+    <a name = "filter"></a>
+    <strong>filter (predicate, list)</strong>
+    </dt>
+    <dd>
+    Returns a new list containing the items in the given <code>list</code> for which
+ the <code>predicate</code> function does <em>not</em> return false or nil.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">predicate</span>
+            <span class="types"><span class="type">function</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">list</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+
+
+
+    </ol>
 
 
 

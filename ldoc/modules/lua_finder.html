@@ -33,6 +33,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Local_Functions">Local Functions</a></li>
 </ul>
 
 
@@ -74,20 +75,35 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
+	<td class="name" nowrap><a href="#liblua_version">liblua_version (filename)</a></td>
+	<td class="summary">Parses version number from the given Lua library using <a href="../modules/lua_finder.html#find_string_in_binary">find_string_in_binary</a>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#libluajit_version">libluajit_version (filename)</a></td>
+	<td class="summary">Parses version number from the given LuaJIT library using <a href="../modules/lua_finder.html#find_string_in_binary">find_string_in_binary</a>.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#luah_version">luah_version (filename)</a></td>
 	<td class="summary">Reads version number from the given <code>lua.h</code> file.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#lualib_version">lualib_version (filename)</a></td>
-	<td class="summary">Reads version number of the given Lua library.</td>
+	<td class="name" nowrap><a href="#luajith_version">luajith_version (filename)</a></td>
+	<td class="summary">Reads version number from the given <code>luajit.h</code> file.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#find_incdir">find_incdir (lua_ver)</a></td>
-	<td class="summary">Looking for a directory containing <code>lua.h</code> in common locations.</td>
+	<td class="name" nowrap><a href="#find_incdir">find_incdir (lua_name, lua_ver, List)</a></td>
+	<td class="summary">Looking for a directory containing Lua header file <code>lua_name</code> in common locations.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#find_liblua">find_liblua (lib_ext, lua_ver)</a></td>
-	<td class="summary">Looking for Lua library in common locations.</td>
+	<td class="name" nowrap><a href="#find_liblua">find_liblua (lib_ext, lua_name, lua_ver, dirs)</a></td>
+	<td class="summary">Looking for Lua or LuaJIT library in common locations.</td>
+	</tr>
+</table>
+<h2><a href="#Local_Functions">Local Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#find_string_in_binary">find_string_in_binary (pattern, filename)</a></td>
+	<td class="summary">Looks for string specified by the <code>pattern</code> in the given binary file.</td>
 	</tr>
 </table>
 
@@ -98,6 +114,82 @@
     <h2 class="section-header "><a name="Functions"></a>Functions</h2>
 
     <dl class="function">
+    <dt>
+    <a name = "liblua_version"></a>
+    <strong>liblua_version (filename)</strong>
+    </dt>
+    <dd>
+    Parses version number from the given Lua library using <a href="../modules/lua_finder.html#find_string_in_binary">find_string_in_binary</a>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of the Lua library.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        Version number in format <code>x.y.z</code>.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        An error message.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "libluajit_version"></a>
+    <strong>libluajit_version (filename)</strong>
+    </dt>
+    <dd>
+    Parses version number from the given LuaJIT library using <a href="../modules/lua_finder.html#find_string_in_binary">find_string_in_binary</a>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of the LuaJIT library.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        Version number in format <code>x.y.z</code>.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        An error message.</li>
+    </ol>
+
+
+
+
+</dd>
     <dt>
     <a name = "luah_version"></a>
     <strong>luah_version (filename)</strong>
@@ -118,7 +210,7 @@
     <ol>
 
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-        Version number in format <code>x.y</code>.
+        Version number in format <code>x.y.z</code>.
     </ol>
      <h3>Or</h3>
     <ol>
@@ -137,21 +229,18 @@
 
 </dd>
     <dt>
-    <a name = "lualib_version"></a>
-    <strong>lualib_version (filename)</strong>
+    <a name = "luajith_version"></a>
+    <strong>luajith_version (filename)</strong>
     </dt>
     <dd>
-    Reads version number of the given Lua library. </p>
-
-<p> This function uses command <code>strings</code> to determine the version number.
- It works for both static and dynamic library on Linux and macOS.
+    Reads version number from the given <code>luajit.h</code> file.
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">filename</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-         Path of the Lua library.
+         Path of the <code>luajit.h</code> file.
         </li>
     </ul>
 
@@ -159,7 +248,7 @@
     <ol>
 
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-        Version number in format <code>x.y</code>.
+        Version number in format <code>x.y.z</code>.
     </ol>
      <h3>Or</h3>
     <ol>
@@ -179,17 +268,26 @@
 </dd>
     <dt>
     <a name = "find_incdir"></a>
-    <strong>find_incdir (lua_ver)</strong>
+    <strong>find_incdir (lua_name, lua_ver, List)</strong>
     </dt>
     <dd>
-    Looking for a directory containing <code>lua.h</code> in common locations.
+    Looking for a directory containing Lua header file <code>lua_name</code> in common locations.
 
 
     <h3>Parameters:</h3>
     <ul>
+        <li><span class="parameter">lua_name</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Base name of the Lua header file; "lua", or "luajit" (default: "lua").
+        </li>
         <li><span class="parameter">lua_ver</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-         Version of the <code>lua.h</code> file to search for.
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Version of the header file to search for in format <code>x.y</code> or <code>x.y.z</code>.
+        </li>
+        <li><span class="parameter">List</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+         of prefixes (directories) to search.
+   If <code>nil</code>, the default list of directories is used.
         </li>
     </ul>
 
@@ -200,7 +298,7 @@
         File path of the found directory.</li>
         <li>
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-        Version of the found <code>lua.h</code> file in format <code>x.y</code>.</li>
+        Version of the found header file in format <code>x.y.z</code>.</li>
     </ol>
      <h3>Or</h3>
     <ol>
@@ -215,10 +313,10 @@
 </dd>
     <dt>
     <a name = "find_liblua"></a>
-    <strong>find_liblua (lib_ext, lua_ver)</strong>
+    <strong>find_liblua (lib_ext, lua_name, lua_ver, dirs)</strong>
     </dt>
     <dd>
-    Looking for Lua library in common locations.
+    Looking for Lua or LuaJIT library in common locations.
 
 
     <h3>Parameters:</h3>
@@ -227,10 +325,19 @@
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
          File extension of the library to search for.
         </li>
+        <li><span class="parameter">lua_name</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Base name of the Lua library; typically "lua", or "luajit"
+   (default: "lua").
+        </li>
         <li><span class="parameter">lua_ver</span>
             <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-         Version of the Lua library to search for, or nil to
-   search for any version.
+         Version of the Lua(JIT) library to search for (default: "5.3").
+        </li>
+        <li><span class="parameter">dirs</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+         List of prefixes (directories) to search.
+   If <code>nil</code>, the default list of prefixes is used.
         </li>
     </ul>
 
@@ -241,13 +348,62 @@
         File path of the found Lua library.</li>
         <li>
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-        Version of the found Lua library in format <code>x.y</code>.</li>
+        Version of the found Lua library in format <code>x.y.z</code>.</li>
     </ol>
      <h3>Or</h3>
     <ol>
 
            <span class="types"><span class="type">nil</span></span>
         Not found.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Local_Functions"></a>Local Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "find_string_in_binary"></a>
+    <strong>find_string_in_binary (pattern, filename)</strong>
+    </dt>
+    <dd>
+    Looks for string specified by the <code>pattern</code> in the given binary file. </p>
+
+<p> This function uses command <code>strings</code>. It works for both static and dynamic
+ library on Linux and macOS.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pattern</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The string pattern to search for.
+        </li>
+        <li><span class="parameter">filename</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of the file to scan.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        Captured substring, or nil if not found.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><span class="type">An</span></span>
+        error message.</li>
     </ol>
 
 

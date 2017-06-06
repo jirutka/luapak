@@ -79,6 +79,10 @@
 	<td class="summary">Builds and installs local rock specified by the rockspec.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#change_target_lua">change_target_lua (api_ver, luajit_ver)</a></td>
+	<td class="summary">Changes the target Lua version.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#find_default_rockspec">find_default_rockspec (proj_dir)</a></td>
 	<td class="summary">Looks for the default rockspec file in the project's directory.</td>
 	</tr>
@@ -93,10 +97,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#set_link_static">set_link_static (enabled)</a></td>
 	<td class="summary">Switches LuaRocks to use static or dynamic linking.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#set_lua_version">set_lua_version (target_ver)</a></td>
-	<td class="summary">Changes the target Lua version.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#set_variable">set_variable (name, value)</a></td>
@@ -145,6 +145,31 @@
         <li><span class="parameter">proj_dir</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
          The base directory with the rock's sources.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "change_target_lua"></a>
+    <strong>change_target_lua (api_ver, luajit_ver)</strong>
+    </dt>
+    <dd>
+    Changes the target Lua version.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">api_ver</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The Lua API version in format <code>x.y</code> (e.g. 5.1).
+        </li>
+        <li><span class="parameter">luajit_ver</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The LuaJIT version, or nil if target is not LuaJIT.
         </li>
     </ul>
 
@@ -265,27 +290,6 @@
             <span class="types"><span class="type">bool</span></span>
          true to use static linking, false to use
    dynamic linking.
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "set_lua_version"></a>
-    <strong>set_lua_version (target_ver)</strong>
-    </dt>
-    <dd>
-    Changes the target Lua version.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">target_ver</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-         The Lua version in format <code>x.y</code>.
         </li>
     </ul>
 
