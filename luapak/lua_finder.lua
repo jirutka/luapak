@@ -9,6 +9,8 @@ local filter = utils.filter
 local is_dir = fs.is_dir
 local is_file = fs.is_file
 local iter_dir = fs.dir
+local match = string.match
+local par = utils.partial
 local popen = io.popen
 local read_file = fs.read_file
 local starts_with = utils.starts_with
@@ -23,7 +25,61 @@ local liblua_dirs = {
   'vendor/lua', 'deps/lua', '/usr/local/lib', '/usr/local/lib64', '/usr/lib', '/usr/lib64'
 }
 
+--- Looks for string specified by the `pattern` in the given binary file.
+--
+-- This function uses command `strings`. It works for both static and dynamic
+-- library on Linux and macOS.
+--
+-- @tparam string pattern The string pattern to search for.
+-- @tparam string filename Path of the file to scan.
+-- @treturn[1] string Captured substring, or nil if not found.
+-- @treturn[2] nil
+-- @treturn[2] An error message.
+local function find_string_in_binary (pattern, filename)
+  if not is_file(filename) then
+    return nil, 'file does not exist or not readable: '..filename
+  end
+
+  local cmd = luarocks.get_variable('STRINGS') or 'strings'
+  local handler, err = popen(cmd..' -n 4 '..filename)
+  if not handler then
+    return nil, err
+  end
+
+  local capture
+  for line in handler:lines() do
+    capture = match(line, pattern)
+    if capture then
+      break
+    end
+  end
+
+  handler:close()
+  return capture
+end
+
+
 local M = {}
+
+--- Parses version number from the given Lua library using @{find_string_in_binary}.
+--
+-- @function liblua_version
+-- @tparam string filename Path of the Lua library.
+-- @treturn[1] string Version number in format `x.y`.
+-- @treturn[2] nil
+-- @treturn[2] string An error message.
+local liblua_version = par(find_string_in_binary, '^Lua (%d%.%d+)')
+M.liblua_version = liblua_version
+
+--- Parses version number from the given LuaJIT library using @{find_string_in_binary}.
+--
+-- @function libluajit_version
+-- @tparam string filename Path of the LuaJIT library.
+-- @treturn[1] string Version number in format `x.y`.
+-- @treturn[2] nil
+-- @treturn[2] string An error message.
+local libluajit_version = par(find_string_in_binary, '^LuaJIT (%d%.%d+)')
+M.libluajit_version = libluajit_version
 
 --- Reads version number from the given `lua.h` file.
 --
@@ -45,39 +101,6 @@ function M.luah_version (filename)
   return major..'.'..minor
 end
 local luah_version = M.luah_version
-
---- Reads version number of the given Lua library.
---
--- This function uses command `strings` to determine the version number.
--- It works for both static and dynamic library on Linux and macOS.
---
--- @tparam string filename Path of the Lua library.
--- @treturn[1] string Version number in format `x.y`.
--- @treturn[2] nil
--- @treturn[2] string An error message.
-function M.liblua_version (filename)
-  if not is_file(filename) then
-    return nil, 'file does not exist or not readable: '..filename
-  end
-
-  local cmd = luarocks.get_variable('STRINGS')
-  local handler, err = popen(cmd..' -n 4 '..filename)
-  if not handler then
-    return nil, err
-  end
-
-  local ver
-  for line in handler:lines() do
-    if starts_with('Lua 5.', line) then
-      ver = line:match('Lua (5%.%d+)')
-      break
-    end
-  end
-
-  handler:close()
-  return ver
-end
-local liblua_version = M.liblua_version
 
 --- Looking for a directory containing `lua.h` in common locations.
 --
@@ -102,11 +125,12 @@ function M.find_incdir (lua_ver)
   end
 end
 
---- Looking for Lua library in common locations.
+--- Looking for Lua or LuaJIT library in common locations.
 --
 -- @tparam ?string lib_ext File extension of the library to search for (default: "a").
--- @tparam ?string lua_name Base name of the Lua library (default: "lua").
--- @tparam ?string lua_ver Version of the Lua library to search for in format `x.y`
+-- @tparam ?string lua_name Base name of the Lua library; typically "lua", or "luajit"
+--   (default: "lua").
+-- @tparam ?string lua_ver Version of the Lua(JIT) library to search for in format `x.y`
 --   (default: "5.3").
 -- @treturn[1] string File path of the found Lua library.
 -- @treturn[1] string Version of the found Lua library in format `x.y`.
@@ -120,10 +144,11 @@ function M.find_liblua (lib_ext, lua_name, lua_ver)
   local filename_patt = '^'..lib_prefix..lua_name..'[.-]?[%d.]*%.'..lib_ext..'[%d%.]*$'
   local dirname_patt = '^'..lua_name..'[.-]?[%d.]*$'
   local lualib = luarocks.get_variable('LUALIB')
+  local lib_version = lua_name == 'luajit' and libluajit_version or liblua_version
 
   if lualib and lualib:find(filename_patt) then
     local path = (luarocks.get_variable('LUA_LIBDIR') or '.')..'/'..lualib
-    local found_ver = liblua_version(path)
+    local found_ver = lib_version(path)
 
     if found_ver == lua_ver then
       return path, found_ver
@@ -144,7 +169,7 @@ function M.find_liblua (lib_ext, lua_name, lua_ver)
         end
 
         if matches then
-          local found_ver = liblua_version(path)
+          local found_ver = lib_version(path)
           if found_ver == lua_ver then
             return path, found_ver
           end
