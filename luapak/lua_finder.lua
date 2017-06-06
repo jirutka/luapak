@@ -60,7 +60,8 @@ function M.liblua_version (filename)
     return nil, 'file does not exist or not readable: '..filename
   end
 
-  local handler, err = popen('strings -n 4 '..filename)
+  local cmd = luarocks.get_variable('STRINGS')
+  local handler, err = popen(cmd..' -n 4 '..filename)
   if not handler then
     return nil, err
   end

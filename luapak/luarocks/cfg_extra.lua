@@ -47,6 +47,10 @@ if not cfg.variables.STRIP then
   cfg.variables.STRIP = 'strip'
 end
 
+if not cfg.variables.STRINGS then
+  cfg.variables.STRINGS = 'strings'
+end
+
 -- LUALIB for MSVC is already defined in cfg.lua.
 if not cfg.variables.LUALIB and not MSVC then
   cfg.variables.LUALIB = fmt('liblua%s.%s', cfg.lua_version:gsub('%.', ''),
