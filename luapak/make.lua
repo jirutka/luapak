@@ -264,9 +264,6 @@ return function (proj_paths, entry_script, output_file, rocks_dir, opts)
   if lua_incdir then
     if not is_file(lua_incdir..'/lua.h') then
       errorf('Cannot find lua.h in %s!', lua_incdir)
-    elseif not lua_ver then
-      lua_ver = assert(luah_version(lua_incdir..'/lua.h'))
-      log.debug('Detected Lua %s', lua_ver)
     end
   else
     lua_incdir, lua_ver = find_incdir(lua_ver)
@@ -278,8 +275,11 @@ return function (proj_paths, entry_script, output_file, rocks_dir, opts)
   end
   luarocks.set_variable('LUA_INCDIR', lua_incdir)
 
-  if luarocks.cfg.lua_version ~= lua_ver then
-    luarocks.set_lua_version(lua_ver)
+  local luaapi_ver = assert(luah_version(lua_incdir..'/lua.h'))
+  log.debug('Detected Lua API %s', luaapi_ver)
+
+  if luarocks.cfg.lua_version ~= luaapi_ver then
+    luarocks.set_lua_version(luaapi_ver)
   end
 
   if not lua_lib then
@@ -299,7 +299,7 @@ return function (proj_paths, entry_script, output_file, rocks_dir, opts)
     assert(fs.mkdir(dirname(output_file)))
   end
 
-  local pkg_path = pkg.fhs_path(rocks_dir, lua_ver, luarocks.cfg.lib_extension)
+  local pkg_path = pkg.fhs_path(rocks_dir, luaapi_ver, luarocks.cfg.lib_extension)
 
   return build(proj_paths, entry_script, output_file, pkg_path, lua_lib, opts)
 end
