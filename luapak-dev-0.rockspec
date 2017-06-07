@@ -62,7 +62,7 @@ build = {
   },
   install = {
     bin = {
-      luapak = 'luapak/cli/init.lua',
+      luapak = 'bin/luapak',
     }
   }
 }
