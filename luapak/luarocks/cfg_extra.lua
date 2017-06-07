@@ -61,6 +61,11 @@ if package.loaded.jit and not cfg.luajit_version then
   cfg.luajit_version = package.loaded.jit.version:match('LuaJIT (%d+%.%d+%.%d+)')
 end
 
+if cfg.is_platform('macosx') and cfg.luajit_version then
+  -- See http://luajit.org/install.html#embed.
+  cfg.variables.LDFLAGS = '-pagezero_size 10000 -image_base 100000000'
+end
+
 if cfg.is_platform('windows') then
   local fake_prefix = site_config.LUAROCKS_FAKE_PREFIX
 

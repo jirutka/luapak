@@ -59,6 +59,12 @@ function M.change_target_lua (api_ver, luajit_ver)
 
   if luajit_ver then
     cfg.rocks_provided.luabitop = luajit_ver:gsub('%-', '')..'-1'
+
+    if cfg.is_platform('macosx') then
+      -- See http://luajit.org/install.html#embed.
+      local ldflags = cfg.variables.LDFLAGS or ''
+      cfg.variables.LDFLAGS = '-pagezero_size 10000 -image_base 100000000 '..ldflags
+    end
   else
     cfg.rocks_provided.luabitop = nil
   end
