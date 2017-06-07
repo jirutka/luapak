@@ -68,7 +68,6 @@ source .envrc
 
 == TODO
 
-* Add support for LuaJIT into lua_finder module.
 * Write documentation into README.
 * Write integration tests.
 * Add support for “squashing” Lua sources into single file that can be used as entry script.
