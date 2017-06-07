@@ -51,6 +51,7 @@ build = {
     ['luapak.lua_finder'] = 'luapak/lua_finder.lua',
     ['luapak.luarocks'] = 'luapak/luarocks/init.lua',
     ['luapak.luarocks.cfg_extra'] = 'luapak/luarocks/cfg_extra.lua',
+    ['luapak.luarocks.constants'] = 'luapak/luarocks/constants.lua',
     ['luapak.luarocks.site_config'] = 'luapak/luarocks/site_config.lua',
     ['luapak.make'] = 'luapak/make.lua',
     ['luapak.optparse'] = 'luapak/optparse.lua',

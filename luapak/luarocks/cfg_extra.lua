@@ -1,7 +1,7 @@
 local cfg = require 'luarocks.cfg'
 
+local const = require 'luapak.luarocks.constants'
 local fs = require 'luapak.fs'
-local site_config = require 'luapak.luarocks.site_config'
 local utils = require 'luapak.utils'
 
 local basename = fs.basename
@@ -10,6 +10,7 @@ local getenv = os.getenv
 local is_empty = utils.is_empty
 local starts_with = utils.starts_with
 
+local LUAROCKS_FAKE_PREFIX = const.LUAROCKS_FAKE_PREFIX
 local MSVC = cfg.is_platform('win32') and not cfg.is_platform('mingw32')
 
 
@@ -62,16 +63,13 @@ if package.loaded.jit and not cfg.luajit_version then
 end
 
 if cfg.is_platform('macosx') and cfg.luajit_version then
-  -- See http://luajit.org/install.html#embed.
-  cfg.variables.LDFLAGS = '-pagezero_size 10000 -image_base 100000000'
+  cfg.variables.LDFLAGS = const.LUAJIT_MACOS_LDFLAGS
 end
 
 if cfg.is_platform('windows') then
-  local fake_prefix = site_config.LUAROCKS_FAKE_PREFIX
-
   for name, value in pairs(cfg.variables) do
     -- Don't use bundled tools (set in luarocks.cfg).
-    if starts_with(fake_prefix, value) then
+    if starts_with(LUAROCKS_FAKE_PREFIX, value) then
       cfg.variables[name] = basename(value)
     end
 
