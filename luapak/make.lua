@@ -278,10 +278,7 @@ return function (proj_paths, entry_script, output_file, rocks_dir, opts)
 
   local luaapi_ver = assert(luah_version(lua_incdir..'/lua.h')):match('^(%d+%.%d+)')
   log.debug('Detected Lua API %s', luaapi_ver)
-
-  if luarocks.cfg.lua_version ~= luaapi_ver then
-    luarocks.set_lua_version(luaapi_ver)
-  end
+  luarocks.change_target_lua(luaapi_ver, lua_name == 'LuaJIT' and lua_ver or nil)
 
   if not lua_lib then
     lua_lib = find_liblua(luarocks.cfg.lib_extension, lua_name:lower(), lua_ver)

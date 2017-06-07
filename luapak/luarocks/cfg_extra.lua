@@ -57,6 +57,10 @@ if not cfg.variables.LUALIB and not MSVC then
                                             cfg.lib_extension)
 end
 
+if package.loaded.jit and not cfg.luajit_version then
+  cfg.luajit_version = package.loaded.jit.version:match('LuaJIT (%d+%.%d+%.%d+)')
+end
+
 if cfg.is_platform('windows') then
   local fake_prefix = site_config.LUAROCKS_FAKE_PREFIX
 
