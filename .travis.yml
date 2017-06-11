@@ -65,11 +65,11 @@ jobs:
         - TARGET_ARCH=x86_64 LIBC=musl
         - LUA_VERSION=lua-5.3
       install:
-        - sudo script/ci-install
+        - script/ci-install
       script:
-        - /alpine/enter-chroot $USER script/build-standalone
+        - /alpine/enter-chroot -u $USER script/build-standalone
       before_deploy:
-        - /alpine/enter-chroot $USER script/ci-artifact
+        - /alpine/enter-chroot -u $USER script/ci-artifact
       deploy: &deploy-releases
         provider: releases
         api_key: $GH_TOKEN
