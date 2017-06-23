@@ -14,8 +14,8 @@ cd "$(dirname "$0")/.."
 [ "$HOST_OS" = Linux ] || exit 0
 
 einfo 'Downloading alpine-chroot-install'
-wgets 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.5.0/alpine-chroot-install' \
-	'936abfd1906c77418b03528c0b84cc81023cb4d0529468f3861c3aad198a0d3d'
+wgets 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.6.0/alpine-chroot-install' \
+	'c081ae31075c5da20cbc2e5aaa6cfadea9d65795b6f4baedef871d7467b58593'
 
 sudo sh alpine-chroot-install \
 	-a "$TARGET_ARCH" -b v3.6 -k 'LIBC LUA_VERSION TARGET_ARCH' \
