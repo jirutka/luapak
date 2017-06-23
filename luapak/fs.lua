@@ -20,10 +20,10 @@ local UTF8_BOM = '\239\187\191'
 local NUL_PATT = utils.LUA_VERSION == '5.1' and '%z' or '\0'
 
 local function normalize_io_error (name, err)
-   if err:sub(1, #name + 2) == name..': ' then
-      err = err:sub(#name + 3)
-   end
-   return err
+  if err:sub(1, #name + 2) == name..': ' then
+    err = err:sub(#name + 3)
+  end
+  return err
 end
 
 
