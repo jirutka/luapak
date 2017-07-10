@@ -17,6 +17,34 @@ return [[
 
 //--PLACEHOLDER--//
 
+
+/*****************************************************************************
+*                                 Stub libdl                                 *
+*****************************************************************************/
+
+// Stub implementation of libdl (dynamic linker) to avoid linking
+// with real libdl if Lua has been built with LUA_USE_DLOPEN.
+#if !defined(_WIN32)
+  #include <dlfcn.h>
+
+  int dlclose(void *handle) {
+    return 0;
+  }
+
+  char *dlerror(void) {
+    return "libdl is not implemented";
+  }
+
+  void *dlopen(const char *filename, int flag) {
+    return NULL;
+  }
+
+  void *dlsym(void *handle, const char *symbol) {
+    return NULL;
+  }
+#endif
+
+
 /*****************************************************************************
 *                        Compatibility with older Lua                        *
 *****************************************************************************/

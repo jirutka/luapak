@@ -187,9 +187,6 @@ local function build (proj_paths, entry_script, output_file, pkg_path, lua_lib, 
   local vars = luarocks.cfg.variables
 
   local libs = { 'm' }  -- math library
-  if not luarocks.is_windows then
-    push(libs, 'dl')  -- dynamic linker library
-  end
 
   log.info('Resolving dependencies...')
   local modules, objects = resolve_dependencies(entry_script,
