@@ -101,30 +101,23 @@ end
 --- Generates a fragment of C code that should be included in the template.
 --
 -- @tparam string lua_main Source code or byte code of the main script.
--- @tparam {table,...} modules A list of modules to include.
+-- @tparam {string,...} native_modules List of native modules names to preload.
+-- @tparam {[string]=string,...} lua_modules Map of Lua modules name to chunks (source code).
 -- @treturn string A generated C code.
--- @raise if some module table doesn't have required keys or has wrong "type".
-local function generate_fragment (lua_main, modules)
+local function generate_fragment (lua_main, native_modules, lua_modules)
   local buffer = {}
   local mod_names = {}
 
   push(buffer, define_lua_main(lua_main))
 
-  for i, mod in ipairs(modules) do
-    assert(mod.name, fmt('modules[%d].name is %s', i, mod.name))
+  for _, name in ipairs(native_modules) do
+    push(buffer, declare_luaopen_func(name))
+    push(mod_names, name)
+  end
 
-    if mod.type == 'lua' then
-      assert(mod.content, fmt('modules[%d].content is %s', i, mod.content))
-      push(buffer, define_luaopen_for_lua(mod.name, mod.content))
-
-    elseif mod.type == 'native' then
-      push(buffer, declare_luaopen_func(mod.name))
-
-    else
-      error(fmt('invalid module type: %s', mod.type))
-    end
-
-    push(mod_names, mod.name)
+  for name, chunk in pairs(lua_modules) do
+    push(buffer, define_luaopen_for_lua(name, chunk))
+    push(mod_names, name)
   end
 
   push(buffer, define_preloaded_libs(mod_names))
@@ -137,21 +130,15 @@ local M = {}
 
 --- Generates source code of the C "wrapper" with the given Lua script and modules.
 --
--- **Module table:**
---
--- * `type:` `"lua"`, or `"native"`
--- * `name:` Full name of the module in dot-notation.
--- * `content:` Source code or bytecode of Lua module (only for type "lua").
---
 -- @tparam string lua_main Source code or byte code of the main Lua script.
--- @tparam {table,...} modules A list of modules to be included.
+-- @tparam ?{string,...} native_modules List of names of native modules to preload.
+-- @tparam ?{[string]=string,...} lua_modules Map of Lua modules name to chunks (source code).
 -- @treturn string A source code in C.
--- @raise if some module table doesn't have required keys or has wrong "type".
-function M.generate (lua_main, modules)
-  check_args('string, table', lua_main, modules)
+function M.generate (lua_main, native_modules, lua_modules)
+  check_args('string, ?table, ?table', lua_main, native_modules, lua_modules)
 
   return (wrapper_tmpl:gsub('//%-%-PLACEHOLDER%-%-//',
-                            generate_fragment(lua_main, modules)))
+      generate_fragment(lua_main, native_modules or {}, lua_modules or {})))
 end
 local generate = M.generate
 
@@ -176,14 +163,22 @@ function M.generate_from_files (main_file, modules)
   local lua_main = assert(read_file(main_file))
   lua_main = remove_shebang(lua_main)
 
+  local native_modules = {}
+  local lua_modules = {}
+
   for _, module in pairs(modules) do
     if module.path and not module.content then
       local content = assert(read_file(module.path))
       module.content = remove_shebang(content)
     end
+    if module.content then
+      lua_modules[module.name] = module.content
+    else
+      push(native_modules, module.name)
+    end
   end
 
-  return generate(lua_main, modules)
+  return generate(lua_main, native_modules, lua_modules)
 end
 
 return M
