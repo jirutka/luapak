@@ -56,6 +56,7 @@ build = {
     ['luapak.luarocks.constants'] = 'luapak/luarocks/constants.lua',
     ['luapak.luarocks.site_config'] = 'luapak/luarocks/site_config.lua',
     ['luapak.make'] = 'luapak/make.lua',
+    ['luapak.merger'] = 'luapak/merger.lua',
     ['luapak.minifier'] = 'luapak/minifier.lua',
     ['luapak.optparse'] = 'luapak/optparse.lua',
     ['luapak.pkgpath'] = 'luapak/pkgpath.lua',
