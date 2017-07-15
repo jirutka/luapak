@@ -8,6 +8,7 @@ require 'luapak.compat'
 local fmt = string.format
 local gmatch = string.gmatch
 local insert = table.insert
+local io_type = io.type
 local pairs = pairs
 local select = select
 local sort = table.sort
@@ -56,7 +57,13 @@ end
 function M.check_args (type_specs, ...)
   local n = 1
   for spec in gmatch(type_specs, '([^, ]+)') do
-    local actual_type = type(select(n, ...) or nil)
+    local arg = select(n, ...) or nil
+
+    local actual_type = type(arg)
+    if actual_type == 'userdata' then
+      actual_type = io_type(arg) or actual_type
+    end
+
     local ok = false
 
     local nullable = sub(spec, 1, 1) == '?'
