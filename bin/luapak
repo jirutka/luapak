@@ -9,6 +9,7 @@ local commands = {
   ['analyse-deps'] = 'analyse_deps',
   ['build-rock'] = 'build_rock',
   ['make'] = 'make',
+  ['merge'] = 'merge',
   ['minify'] = 'minify',
   ['wrapper'] = 'wrapper',
 }
@@ -27,6 +28,8 @@ Commands:
   analyse-deps      Analyse requirements of Lua sources.
 
   build-rock        Build and install Lua rock from local rockspec and sources.
+
+  merge             Merge Lua modules into single file.
 
   minify            Minify Lua source code.
 
