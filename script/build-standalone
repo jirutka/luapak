@@ -42,7 +42,7 @@ rm -Rf "$TEMP_DIR"/* dist/*
 
 # Note: LUA_VERSION interferes with LuaRock's Makefile, so we must unset it.
 LUA_VERSION= \
-	lua bin/luapak make -v -t "$TEMP_DIR" $opts
+	lua bin/luapak make -v -t "$TEMP_DIR" $opts "$@"
 printf '\n'
 
 run ls -lh dist/luapak
