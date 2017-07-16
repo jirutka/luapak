@@ -44,6 +44,7 @@ build = {
     ['luapak.cli.analyse_deps'] = 'luapak/cli/analyse_deps.lua',
     ['luapak.cli.build_rock'] = 'luapak/cli/build_rock.lua',
     ['luapak.cli.make'] = 'luapak/cli/make.lua',
+    ['luapak.cli.minify'] = 'luapak/cli/minify.lua',
     ['luapak.cli.wrapper'] = 'luapak/cli/wrapper.lua',
     ['luapak.compat'] = 'luapak/compat.lua',
     ['luapak.deps_analyser'] = 'luapak/deps_analyser.lua',

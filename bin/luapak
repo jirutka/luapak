@@ -9,6 +9,7 @@ local commands = {
   ['analyse-deps'] = 'analyse_deps',
   ['build-rock'] = 'build_rock',
   ['make'] = 'make',
+  ['minify'] = 'minify',
   ['wrapper'] = 'wrapper',
 }
 
@@ -26,6 +27,8 @@ Commands:
   analyse-deps      Analyse requirements of Lua sources.
 
   build-rock        Build and install Lua rock from local rockspec and sources.
+
+  minify            Minify Lua source code.
 
   wrapper           Generate C wrapper for Lua program.
 
