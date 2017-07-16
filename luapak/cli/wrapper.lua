@@ -1,11 +1,13 @@
 ---------
 -- CLI for the wrapper module.
 ----
+local fs = require 'luapak.fs'
 local optparse = require 'luapak.optparse'
 local utils = require 'luapak.utils'
 local wrapper = require 'luapak.wrapper'
 
-local imap = utils.imap
+local push = table.insert
+local read_file = fs.read_file
 local split = utils.split
 local unpack = table.unpack
 
@@ -41,18 +43,25 @@ return function (arg)
   if not lua_main then
     optparser:opterr('ENTRY_SCRIPT not specified')
   end
+  lua_main = assert(read_file(lua_main))
 
-  local modules = imap(function (item)
-      local name, path = unpack(split('%=', item))
-      return path and { name = name, type = 'lua', path = path }
-                  or { name = name, type = 'native' }
-    end, args)
+  local lua_modules = {}
+  local native_modules = {}
+
+  for _, item in ipairs(args) do
+    local name, path = unpack(split('%=', item))
+    if path then
+      lua_modules[name] = assert(read_file(path))
+    else
+      push(native_modules, name)
+    end
+  end
 
   local out = opts.output == '-'
       and io.stdout
       or assert(io.open(opts.output, 'w'))
 
-  local output = wrapper.generate_from_files(lua_main, modules)
+  local output = wrapper.generate(lua_main, native_modules, lua_modules)
 
   assert(out:write(output))
   out:close()

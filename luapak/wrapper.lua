@@ -108,7 +108,7 @@ local function generate_fragment (lua_main, native_modules, lua_modules)
   local buffer = {}
   local mod_names = {}
 
-  push(buffer, define_lua_main(lua_main))
+  push(buffer, define_lua_main(remove_shebang(lua_main)))
 
   for _, name in ipairs(native_modules) do
     push(buffer, declare_luaopen_func(name))
@@ -116,7 +116,7 @@ local function generate_fragment (lua_main, native_modules, lua_modules)
   end
 
   for name, chunk in pairs(lua_modules) do
-    push(buffer, define_luaopen_for_lua(name, chunk))
+    push(buffer, define_luaopen_for_lua(name, remove_shebang(chunk)))
     push(mod_names, name)
   end
 
@@ -161,15 +161,13 @@ function M.generate_from_files (main_file, modules)
   check_args('string, table', main_file, modules)
 
   local lua_main = assert(read_file(main_file))
-  lua_main = remove_shebang(lua_main)
 
   local native_modules = {}
   local lua_modules = {}
 
   for _, module in pairs(modules) do
     if module.path and not module.content then
-      local content = assert(read_file(module.path))
-      module.content = remove_shebang(content)
+      module.content = assert(read_file(module.path))
     end
     if module.content then
       lua_modules[module.name] = module.content

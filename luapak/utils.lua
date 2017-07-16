@@ -175,20 +175,6 @@ function M.is_empty (value)
   return value == nil or value == ''
 end
 
---- Returns a new table with the results of running `func(value, index)` once
--- for every item in the `list`.
---
--- @tparam function func Function that accepts at least one argument and returns a value.
--- @tparam table list The table to map over.
--- @treturn table A new table.
-function M.imap (func, list)
-  local result = {}
-  for i, item in ipairs(list) do
-    insert(result, func(item, i))
-  end
-  return result
-end
-
 --- Create an index map from the `list`. The original values become keys, and
 -- the associated values are the indices into the original `list`.
 --
