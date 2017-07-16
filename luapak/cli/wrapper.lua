@@ -18,15 +18,16 @@ Usage: ${PROG_NAME} wrapper [options] ENTRY_SCRIPT [MODULE...]
        ${PROG_NAME} wrapper [-h | --help]
 
 Arguments:
-  ENTRY_SCRIPT              Entry point of the wrapped program, i.e. the main Lua script.
+  ENTRY_SCRIPT                Entry point of the wrapped program, i.e. the main Lua script.
 
-  MODULE                    Name of the native module to register (e.g. "cjson"), or name and
-                            path of the Lua module to embed into the wrapper as lazy-loaded
-                            (e.g. "luapak.utils=luapak/utils.lua").
+  MODULE                      Name of the native module to register (e.g. "cjson"), or name and
+                              path of the Lua module to embed into the wrapper as lazy-loaded
+                              (e.g. "luapak.utils=luapak/utils.lua").
 
 Options:
-  -o, --output=FILE         Where to write the generated code. Use "-" for stdout. Default is "-".
-  -h, --help                Display this help message and exit.
+  -o, --output=FILE           Where to write the generated code; "-" for stdout. Default is "-".
+  -v, --verbose               Be verbose, i.e. print debug messages.
+  -h, --help                  Display this help message and exit.
 ]]
 
 

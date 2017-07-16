@@ -32,8 +32,8 @@ Commands:
 Options:
   -q, --quiet       Be quiet, i.e. print only errors.
   -v, --verbose     Be verbose, i.e. print debug messages.
-  -h, --help        Display this help message and exit. Note that every command has its own --help.
   -V, --version     Display version information and exit.
+  -h, --help        Display this help message and exit. Note that every command has its own --help.
 ]]
 
 optparser:on({ '-h', '--help' }, function (_, arglist, i)

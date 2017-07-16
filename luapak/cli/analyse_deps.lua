@@ -33,14 +33,16 @@ Options:
                               (e.g. "pl.*"). Patterns may be delimited by comma or space. This
                               option can be also specified multiple times.
 
-  -p, --pkg-path=PATH         The path pattern where to search for Lua and C/Lua modules instead of
-                              the default path.
+  -n, --ignore-errors         Ignore errors from dependencies resolution (like unredable or unparseable files).
 
   -P, --no-pcalls             Do not analyze pcall requires.
 
   -W, --no-wildcards          Do not expand "wildcard" requires.
 
-  -n, --ignore-errors         Ignore errors from dependencies resolution (like unredable or unparseable files).
+  -p, --pkg-path=PATH         The path pattern where to search for Lua and C/Lua modules instead of
+                              the default path.
+
+  -v, --verbose               Be verbose, i.e. print debug messages.
 
   -h, --help                  Display this help message and exit.
 ]]

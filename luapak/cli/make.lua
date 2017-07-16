@@ -30,6 +30,10 @@ Arguments:
                                   <source-dir>.
 
 Options:
+  -s, --entry-script=FILE         The entry point of your program, i.e. the main Lua script. If not
+                                  specified and the last PACKAGE defines exactly one CLI script,
+                                  then it's used.
+
   -e, --exclude-modules=PATTERNS  Module(s) to exclude from dependencies analysis and the
                                   generated binary. PATTERNS is one or more glob patterns matching
                                   module name in dot notation (e.g. "pl.*"). Patterns may be
@@ -39,16 +43,6 @@ Options:
   -i, --include-modules=PATTERNS  Extra module(s) to include in dependencies analysis and add to
                                   the generated binary. PATTERNS has the same format as in
                                   "--exclude-module".
-
-  -o, --output=FILE               Output file name or path. Defaults to base name of the main
-                                  script with stripped .lua extension.
-
-  -s, --entry-script=FILE         The entry point of your program, i.e. the main Lua script. If not
-                                  specified and the last PACKAGE defines exactly one CLI script,
-                                  then it's used.
-
-  -t, --rocks-tree=DIR            The prefix where to install required modules. Default is
-                                  ".luapak" in the current directory.
 
       --lua-impl=NAME             The Lua implementation that should be used - "PUC" (default),
                                   or "LuaJIT". This is currently used only as a hint to find the
@@ -73,6 +67,11 @@ Options:
       --lua-version=VERSION       The version number of Lua (or LuaJIT) headers and library to try
                                   to find (e.g. "5.3", "2.0").
 
+  -o, --output=FILE               Output file name or path. Defaults to base name of the main
+                                  script with stripped .lua extension.
+
+  -t, --rocks-tree=DIR            The prefix where to install required modules. Default is
+                                  ".luapak" in the current directory.
   -q, --quiet                     Be quiet, i.e. print only errors.
 
   -v, --verbose                   Be verbose, i.e. print debug messages.
