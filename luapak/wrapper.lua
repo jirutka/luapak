@@ -1,7 +1,6 @@
 ---------
 -- Generator of a C "wrapper" for standalone Lua programs.
 ----
-local fs = require 'luapak.fs'
 local wrapper_tmpl = require 'luapak.wrapper_tmpl'
 local utils = require 'luapak.utils'
 
@@ -10,7 +9,6 @@ local check_args = utils.check_args
 local concat = table.concat
 local fmt = string.format
 local push = table.insert
-local read_file = fs.read_file
 
 
 --- Returns copy of the given `script` with removed shebang.
@@ -139,44 +137,6 @@ function M.generate (lua_main, native_modules, lua_modules)
 
   return (wrapper_tmpl:gsub('//%-%-PLACEHOLDER%-%-//',
       generate_fragment(lua_main, native_modules or {}, lua_modules or {})))
-end
-local generate = M.generate
-
---- Generates source code of the C "wrapper" with the given Lua script and modules.
---
--- **Module table:**
---
--- * `type:` `"lua"`, or `"native"`
--- * `name:` Full name of the module in dot-notation.
--- * `path:` Path of the Lua module to read (required for type "lua" if `content` is not set).
--- * `content:` Source code or bytecode of the Lua module (required for type "lua"
---   if `path` is not set).
---
--- @tparam string main_file Path of the main Lua script.
--- @tparam table modules A list of modules to be included.
--- @treturn string A source code in C.
--- @raise if any path in the `modules` is unreadable or some module table doesn't have
---   required keys or has wrong "type".
-function M.generate_from_files (main_file, modules)
-  check_args('string, table', main_file, modules)
-
-  local lua_main = assert(read_file(main_file))
-
-  local native_modules = {}
-  local lua_modules = {}
-
-  for _, module in pairs(modules) do
-    if module.path and not module.content then
-      module.content = assert(read_file(module.path))
-    end
-    if module.content then
-      lua_modules[module.name] = module.content
-    else
-      push(native_modules, module.name)
-    end
-  end
-
-  return generate(lua_main, native_modules, lua_modules)
 end
 
 return M

@@ -27,6 +27,7 @@ local luah_version = lua_finder.luah_version
 local fmt = string.format
 local last = utils.last
 local push = table.insert
+local read_file = fs.read_file
 local size = utils.size
 local split = utils.split
 local unpack = table.unpack
@@ -121,8 +122,9 @@ end
 local function resolve_dependencies (entry_script, extra_modules, excludes, pkg_path)
   local entry_points = { entry_script, unpack(extra_modules or {}) }
   local lib_ext = luarocks.cfg.lib_extension
-  local modules = {}
-  local objects = {}
+  local lmods = {}
+  local cmod_names = {}
+  local cmod_paths = {}
 
   local found, missing, ignored, errors =
       deps_analyser.analyse_with_filter(entry_points, pkg_path, excludes)
@@ -143,27 +145,28 @@ local function resolve_dependencies (entry_script, extra_modules, excludes, pkg_
   for name, path in pairs(found) do
     log.debug('   %s (%s)', name, path)
 
-    local entry = { name = name }
     if ends_with('.lua', path) then
-      entry.type = 'lua'
-      entry.path = path
+      lmods[name] = path
     elseif ends_with('.'..lib_ext, path) then
-      entry.type = 'native'
-      push(objects, path)
+      push(cmod_names, name)
+      push(cmod_paths, path)
     else
       log.warn('Skipping module with unexpected file extension: %s', path)
     end
-
-    push(modules, entry)
   end
   log.debug('')
 
-  return modules, objects
+  return lmods, cmod_names, cmod_paths
 end
 
-local function generate_wrapper (output_file, entry_script, modules)
+local function generate_wrapper (output_file, entry_script, native_modules, lua_modules)
+  entry_script = assert(read_file(entry_script))
+  for name, path in pairs(lua_modules) do
+    lua_modules[name] = assert(read_file(path))
+  end
+
   local fileh = assert(io.open(output_file, 'w'))
-  fileh:write(wrapper.generate_from_files(entry_script, modules))
+  fileh:write(wrapper.generate(entry_script, native_modules, lua_modules))
   fileh:flush()
   fileh:close()
 end
@@ -189,13 +192,13 @@ local function build (proj_paths, entry_script, output_file, pkg_path, lua_lib, 
   local libs = { 'm' }  -- math library
 
   log.info('Resolving dependencies...')
-  local modules, objects = resolve_dependencies(entry_script,
-      opts.extra_modules, opts.exclude_modules, pkg_path)
+  local lua_modules, native_modules, objects = resolve_dependencies(
+      entry_script, opts.extra_modules, opts.exclude_modules, pkg_path)
   insert(objects, 1, main_obj)
   push(objects, lua_lib)
 
   log.info('Generating %s...', main_src)
-  generate_wrapper(main_src, entry_script, modules)
+  generate_wrapper(main_src, entry_script, native_modules, lua_modules)
 
   log.info('Compiling %s...', main_obj)
   assert(toolchain.compile_object(vars, main_obj, main_src), 'Failed to compile '..main_obj)
