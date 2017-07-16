@@ -72,7 +72,6 @@ source .envrc
 * Write integration tests.
 * Add support for “squashing” Lua sources into single file that can be used as entry script.
   ** Luapak already supports embedding multiple source files, but every file is stored separately to be lazy loaded, so it cannot be compressed as a single unit.
-* Integrate with LuaSrcDiet to strip comments etc.
 * Integrate some compression algorithm for compressing embedded Lua sources.
 * Analyse usage of Lua standard modules and exclude unused from the binary.
 

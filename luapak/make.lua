@@ -7,6 +7,7 @@ local log = require 'luapak.logging'
 local lua_finder = require 'luapak.lua_finder'
 local luarocks = require 'luapak.luarocks.init'
 local pkg = require 'luapak.pkgpath'
+local minifier = require 'luapak.minifier'
 local toolchain = require 'luapak.build.toolchain.init'
 local utils = require 'luapak.utils'
 local wrapper = require 'luapak.wrapper'
@@ -159,12 +160,22 @@ local function resolve_dependencies (entry_script, extra_modules, excludes, pkg_
   return lmods, cmod_names, cmod_paths
 end
 
-local function generate_wrapper (output_file, entry_script, native_modules, lua_modules)
-  entry_script = assert(read_file(entry_script))
-  for name, path in pairs(lua_modules) do
-    lua_modules[name] = assert(read_file(path))
-  end
+local function init_minifier (opts)
+  local min_opts = opts.debug
+      and { keep_lno = true, keep_names = true }
+      or {}
+  local minify = minifier(min_opts)
 
+  return function (chunk, name)
+    local minified, err = minify(chunk, name)
+    if err then
+      log.warn(err)
+    end
+    return minified or chunk
+  end
+end
+
+local function generate_wrapper (output_file, entry_script, native_modules, lua_modules)
   local fileh = assert(io.open(output_file, 'w'))
   fileh:write(wrapper.generate(entry_script, native_modules, lua_modules))
   fileh:flush()
@@ -196,6 +207,20 @@ local function build (proj_paths, entry_script, output_file, pkg_path, lua_lib, 
       entry_script, opts.extra_modules, opts.exclude_modules, pkg_path)
   insert(objects, 1, main_obj)
   push(objects, lua_lib)
+
+  local minify
+  if opts.minify then
+    log.info('Loading and minifying Lua modules...')
+    minify = init_minifier(opts)
+  else
+    log.info('Loading Lua modules...')
+    minify = function (...) return ... end
+  end
+
+  entry_script = minify(assert(read_file(entry_script)))
+  for name, path in pairs(lua_modules) do
+    lua_modules[name] = minify(assert(read_file(path)))
+  end
 
   log.info('Generating %s...', main_src)
   generate_wrapper(main_src, entry_script, native_modules, lua_modules)

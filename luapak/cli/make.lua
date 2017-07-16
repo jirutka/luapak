@@ -40,6 +40,9 @@ Options:
                                   delimited by comma or space. This option can be also specified
                                   multiple times.
 
+  -g, --debug                     Enable debug mode, i.e. preserve line numbers, module names and
+                                  local variable names for error messages and backtraces.
+
   -i, --include-modules=PATTERNS  Extra module(s) to include in dependencies analysis and add to
                                   the generated binary. PATTERNS has the same format as in
                                   "--exclude-module".
@@ -69,6 +72,8 @@ Options:
 
   -o, --output=FILE               Output file name or path. Defaults to base name of the main
                                   script with stripped .lua extension.
+
+  -M, --no-minify                 Disable minification of Lua sources.
 
   -t, --rocks-tree=DIR            The prefix where to install required modules. Default is
                                   ".luapak" in the current directory.
@@ -109,12 +114,14 @@ return function (arg)
   end
 
   local make_opts = {
+    debug = opts.debug,
     exclude_modules = split_repeated_option(opts.exclude_modules),
     extra_modules = split_repeated_option(opts.include_modules),
     lua_impl = opts.lua_impl:lower(),
     lua_incdir = opts.lua_incdir,
     lua_lib = opts.lua_lib,
     lua_version = opts.lua_version,
+    minify = not opts.no_minify,
   }
 
   make(args, opts.entry_script, opts.output, opts.rocks_tree, make_opts)
