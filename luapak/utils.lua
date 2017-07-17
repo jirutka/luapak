@@ -281,6 +281,14 @@ function M.reject (predicate, list)
   return result
 end
 
+--- Returns copy of the given `chunk` without shebang.
+--
+-- @tparam string chunk
+-- @treturn string
+function M.remove_shebang (chunk)
+  return (chunk:gsub('^#%!.-\n', ''))
+end
+
 --- Makes a shallow clone of the given table.
 --
 -- @tparam table tab

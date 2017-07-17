@@ -9,15 +9,8 @@ local check_args = utils.check_args
 local concat = table.concat
 local fmt = string.format
 local push = table.insert
+local remove_shebang = utils.remove_shebang
 
-
---- Returns copy of the given `script` with removed shebang.
---
--- @tparam string script
--- @treturn string
-local function remove_shebang (script)
-  return script:gsub('^#%!.-\n', '')
-end
 
 --- Encodes string into hexadecimal representation formatted as a C array.
 --

@@ -7,12 +7,8 @@ local check_args = utils.check_args
 local concat = table.concat
 local fmt = string.format
 local push = table.insert
+local remove_shebang = utils.remove_shebang
 
-
---- Returns copy of the given `chunk` with removed shebang.
-local function remove_shebang (chunk)
-  return chunk:gsub('^#%!.-\n', '')
-end
 
 --- Wraps the given `chunk` in a function.
 -- This method does not preserve file name and line numbers.
