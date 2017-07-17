@@ -299,7 +299,7 @@ static int pushargs (lua_State *L) {
 int main (int argc, char *argv[]) {
   lua_State *L = luaL_newstate();
   if (L == NULL) {
-    lua_writestringerror("%s\n", "ERROR: not enough memory");
+    lua_writestringerror("%s\n", "PANIC: not enough memory");
     return EXIT_FAILURE;
   }
 
