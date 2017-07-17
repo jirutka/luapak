@@ -7,6 +7,7 @@ local log = require 'luapak.logging'
 local lua_finder = require 'luapak.lua_finder'
 local luarocks = require 'luapak.luarocks.init'
 local pkg = require 'luapak.pkgpath'
+local merger = require 'luapak.merger'
 local minifier = require 'luapak.minifier'
 local toolchain = require 'luapak.build.toolchain.init'
 local utils = require 'luapak.utils'
@@ -29,6 +30,7 @@ local fmt = string.format
 local last = utils.last
 local push = table.insert
 local read_file = fs.read_file
+local remove_shebang = utils.remove_shebang
 local size = utils.size
 local split = utils.split
 local unpack = table.unpack
@@ -175,9 +177,17 @@ local function init_minifier (opts)
   end
 end
 
-local function generate_wrapper (output_file, entry_script, native_modules, lua_modules)
+local function generate_wrapper (output_file, entry_script, lua_modules, native_modules, opts)
   local fileh = assert(io.open(output_file, 'w'))
-  fileh:write(wrapper.generate(entry_script, native_modules, lua_modules))
+
+  local buff = {}
+  merger.merge_modules(lua_modules, opts.debug, function (data)
+      push(buff, data)
+    end)
+  push(buff, remove_shebang(entry_script))
+
+  assert(fileh:write(wrapper.generate(concat(buff), native_modules)))
+
   fileh:flush()
   fileh:close()
 end
@@ -223,7 +233,7 @@ local function build (proj_paths, entry_script, output_file, pkg_path, lua_lib, 
   end
 
   log.info('Generating %s...', main_src)
-  generate_wrapper(main_src, entry_script, native_modules, lua_modules)
+  generate_wrapper(main_src, entry_script, lua_modules, native_modules, opts)
 
   log.info('Compiling %s...', main_obj)
   assert(toolchain.compile_object(vars, main_obj, main_src), 'Failed to compile '..main_obj)
