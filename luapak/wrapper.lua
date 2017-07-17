@@ -33,28 +33,6 @@ local function luaopen_name (name)
   return 'luaopen_'..name:gsub('[.-]', '_')
 end
 
---- Generates definition of C function that loads and calls the given Lua module.
---
--- @tparam string name Full name of the Lua module in dot-notation.
--- @tparam string chunk Source code or bytecode of the Lua module.
--- @treturn string
-local function define_luaopen_for_lua (name, chunk)
-  return fmt([[
-static int %s(lua_State* L) {
-  int arg = lua_gettop(L);
-  static const unsigned char chunk[] = %s;
-
-  if (luaL_loadbuffer(L, (const char*)chunk, sizeof(chunk), "%s")) {
-    return lua_error(L);
-  }
-  lua_insert(L, 1);
-
-  lua_call(L, arg, 1);
-  return 1;
-}
-]], luaopen_name(name), encode_c_hex(chunk), name)
-end
-
 --- Generates declaration of C function for loading the specified C/Lua module.
 --
 -- @tparam string name Full name of the module in dot or underscore notation.
@@ -91,27 +69,18 @@ end
 
 --- Generates a fragment of C code that should be included in the template.
 --
--- @tparam string lua_main Source code or byte code of the main script.
--- @tparam {string,...} native_modules List of native modules names to preload.
--- @tparam {[string]=string,...} lua_modules Map of Lua modules name to chunks (source code).
--- @treturn string A generated C code.
-local function generate_fragment (lua_main, native_modules, lua_modules)
+-- @tparam string lua_chunk The Lua chunk (source code or byte code) to embed.
+-- @tparam {string,...} clib_names List of names of native modules to be preload.
+-- @treturn string Generated C code.
+local function generate_fragment (lua_chunk, clib_names)
   local buffer = {}
-  local mod_names = {}
 
-  push(buffer, define_lua_main(remove_shebang(lua_main)))
+  push(buffer, define_lua_main(remove_shebang(lua_chunk)))
 
-  for _, name in ipairs(native_modules) do
+  for _, name in ipairs(clib_names) do
     push(buffer, declare_luaopen_func(name))
-    push(mod_names, name)
   end
-
-  for name, chunk in pairs(lua_modules) do
-    push(buffer, define_luaopen_for_lua(name, remove_shebang(chunk)))
-    push(mod_names, name)
-  end
-
-  push(buffer, define_preloaded_libs(mod_names))
+  push(buffer, define_preloaded_libs(clib_names))
 
   return concat(buffer, '\n')
 end
@@ -119,17 +88,17 @@ end
 
 local M = {}
 
---- Generates source code of the C "wrapper" with the given Lua script and modules.
+--- Generates source code of the C "wrapper" with the given Lua chunk and preloaded
+-- native modules.
 --
--- @tparam string lua_main Source code or byte code of the main Lua script.
--- @tparam ?{string,...} native_modules List of names of native modules to preload.
--- @tparam ?{[string]=string,...} lua_modules Map of Lua modules name to chunks (source code).
+-- @tparam string lua_chunk The Lua chunk (source code or byte code) to embed.
+-- @tparam ?{string,...} clib_names List of names of native modules to be preload.
 -- @treturn string A source code in C.
-function M.generate (lua_main, native_modules, lua_modules)
-  check_args('string, ?table, ?table', lua_main, native_modules, lua_modules)
+function M.generate (lua_chunk, clib_names)
+  check_args('string, ?table', lua_chunk, clib_names)
 
   return (wrapper_tmpl:gsub('//%-%-PLACEHOLDER%-%-//',
-      generate_fragment(lua_main, native_modules or {}, lua_modules or {})))
+      generate_fragment(lua_chunk, clib_names or {})))
 end
 
 return M

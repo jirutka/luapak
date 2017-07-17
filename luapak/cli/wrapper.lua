@@ -3,26 +3,19 @@
 ----
 local fs = require 'luapak.fs'
 local optparse = require 'luapak.optparse'
-local utils = require 'luapak.utils'
 local wrapper = require 'luapak.wrapper'
 
-local push = table.insert
 local read_file = fs.read_file
-local split = utils.split
-local unpack = table.unpack
 
 
 local help_msg = [[
 .
-Usage: ${PROG_NAME} wrapper [options] ENTRY_SCRIPT [MODULE...]
+Usage: ${PROG_NAME} wrapper [options] FILE [MODULE_NAME...]
        ${PROG_NAME} wrapper [-h | --help]
 
 Arguments:
-  ENTRY_SCRIPT                Entry point of the wrapped program, i.e. the main Lua script.
-
-  MODULE                      Name of the native module to register (e.g. "cjson"), or name and
-                              path of the Lua module to embed into the wrapper as lazy-loaded
-                              (e.g. "luapak.utils=luapak/utils.lua").
+  FILE                        The Lua file to embed into the wrapper.
+  MODULE_NAME                 Name of native module to preload (e.g. "cjson").
 
 Options:
   -o, --output=FILE           Where to write the generated code; "-" for stdout. Default is "-".
@@ -40,29 +33,19 @@ return function (arg)
   local optparser = optparse(help_msg)
   local args, opts = optparser:parse(arg, { output = '-' })
 
-  local lua_main = table.remove(args, 1)
-  if not lua_main then
-    optparser:opterr('ENTRY_SCRIPT not specified')
+  local filename = table.remove(args, 1)
+  if not filename then
+    optparser:opterr('FILE not specified')
   end
-  lua_main = assert(read_file(lua_main))
 
-  local lua_modules = {}
-  local native_modules = {}
-
-  for _, item in ipairs(args) do
-    local name, path = unpack(split('%=', item))
-    if path then
-      lua_modules[name] = assert(read_file(path))
-    else
-      push(native_modules, name)
-    end
-  end
+  local lua_chunk = assert(read_file(filename))
+  local module_names = args
 
   local out = opts.output == '-'
       and io.stdout
       or assert(io.open(opts.output, 'w'))
 
-  local output = wrapper.generate(lua_main, native_modules, lua_modules)
+  local output = wrapper.generate(lua_chunk, module_names)
 
   assert(out:write(output))
   out:close()
