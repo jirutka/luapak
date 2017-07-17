@@ -19,6 +19,24 @@ return [[
 
 
 /*****************************************************************************
+*                        Compatibility with older Lua                        *
+*****************************************************************************/
+
+#if LUA_VERSION_NUM == 501  // Lua 5.1
+  #define LUA_OK 0
+#endif
+
+/**
+ * Print an error message.
+ * Copied from Lua 5.3 lauxlib.h for compatibility with olders.
+ */
+#if !defined(lua_writestringerror)
+#define lua_writestringerror(s,p) \
+        (fprintf(stderr, (s), (p)), fflush(stderr))
+#endif
+
+
+/*****************************************************************************
 *                                 Stub libdl                                 *
 *****************************************************************************/
 
@@ -46,26 +64,139 @@ return [[
 
 
 /*****************************************************************************
-*                        Compatibility with older Lua                        *
+*                               BriefLZ depack                               *
 *****************************************************************************/
 
-#if LUA_VERSION_NUM == 501  // Lua 5.1
-  #define LUA_OK 0
-#endif
+// The following code is based on BriefLZ library by Joergen Ibsen,
+// licensed under zlib license.
+// https://github.com/jibsen/brieflz/blob/master/depack.c
+#if LUAPAK_BRIEFLZ == 1
 
-/**
- * Print an error message.
- * Copied from Lua 5.3 lauxlib.h for compatibility with olders.
- */
-#if !defined(lua_writestringerror)
-#define lua_writestringerror(s,p) \
-        (fprintf(stderr, (s), (p)), fflush(stderr))
+  // Internal data structure.
+  struct blz_State {
+    const unsigned char *src;
+    unsigned char *dst;
+    unsigned int tag;
+    unsigned int bits_left;
+  };
+
+  static unsigned int blz_getbit (struct blz_State *bs) {
+    // Check if tag is empty.
+    if (!bs->bits_left--) {
+      // Load next tag
+      bs->tag = (unsigned int) bs->src[0]
+             | ((unsigned int) bs->src[1] << 8);
+      bs->src += 2;
+      bs->bits_left = 15;
+    }
+
+    // Shift bit out of tag.
+    const unsigned int bit = (bs->tag & 0x8000) ? 1 : 0;
+    bs->tag <<= 1;
+
+    return bit;
+  }
+
+  static size_t blz_getgamma (struct blz_State *bs) {
+    size_t result = 1;
+
+    // Input gamma2-encoded bits.
+    do {
+      result = (result << 1) + blz_getbit(bs);
+    } while (blz_getbit(bs));
+
+    return result;
+  }
+
+  /**
+   * Decompress `depacked_size` bytes of data from `src` to `dst`
+   * and return size of decompressed data.
+   */
+  static size_t blz_depack (const void *src, void *dst, size_t depacked_size) {
+    if (depacked_size == 0) {
+      return 0;
+    }
+
+    struct blz_State bs = {
+      .src = (const unsigned char *) src,
+      .dst = (unsigned char *) dst,
+      .bits_left = 0
+    };
+    *bs.dst++ = *bs.src++;  // first byte verbatim
+
+    size_t dst_size = 1;
+
+    // Main decompression loop.
+    while (dst_size < depacked_size) {
+      if (blz_getbit(&bs)) {
+        // Input match length and offset.
+        size_t len = blz_getgamma(&bs) + 2;
+        size_t off = blz_getgamma(&bs) - 2;
+
+        off = (off << 8) + (size_t) *bs.src++ + 1;
+
+        // Copy match.
+        {
+          const unsigned char *p = bs.dst - off;
+          for (size_t i = len; i > 0; --i) {
+            *bs.dst++ = *p++;
+          }
+        }
+        dst_size += len;
+
+      } else {
+        // Copy literal.
+        *bs.dst++ = *bs.src++;
+        dst_size++;
+      }
+    }
+
+    return dst_size;  // decompressed size
+  }
 #endif
 
 
 /*****************************************************************************
 *                                  M a i n                                   *
 *****************************************************************************/
+
+#if LUAPAK_BRIEFLZ == 1
+
+  /**
+   * Decompress and load the embedded Lua script.
+   * If there's no error, the compiled chunk is pushed on top of the stack as
+   * a Lua function. Otherwise an error message is pushed on top of the stack.
+   */
+  static int load_script (lua_State *L) {
+    const size_t unpacked_size = LUAPAK_SCRIPT_UNPACKED_SIZE;
+
+    void *buffer = malloc(unpacked_size);
+    if (buffer == NULL) {
+      lua_pushstring(L, "PANIC: not enough memory for decompression");
+      return LUA_ERRRUN;
+    }
+
+    if (blz_depack(LUAPAK_SCRIPT, buffer, unpacked_size) != unpacked_size) {
+      lua_pushstring(L, "PANIC: decompression failed");
+      return LUA_ERRRUN;
+    }
+
+    const int status = luaL_loadbuffer(L, (const char *) buffer, unpacked_size, "@main");
+    free(buffer);
+
+    return status;
+  }
+#else
+
+  /**
+   * Load the embedded Lua script.
+   * If there's no error, the compiled chunk is pushed on top of the stack as
+   * a Lua function. Otherwise an error message is pushed on top of the stack.
+   */
+  static int load_script (lua_State *L) {
+    return luaL_loadbuffer(L, (const char *) LUAPAK_SCRIPT, sizeof(LUAPAK_SCRIPT), "@main");
+  }
+#endif
 
 #if defined(LUAPAK_WITHOUT_COROUTINE) \
     || defined(LUAPAK_WITHOUT_IO) \
@@ -310,7 +441,7 @@ int main (int argc, char *argv[]) {
 
   preload_bundled_libs(L);
 
-  int status = luaL_loadbuffer(L, (const char*)LUAPAK_LUA_MAIN, sizeof(LUAPAK_LUA_MAIN), "main");
+  int status = load_script(L);
   if (status == LUA_OK) {
     int n = pushargs(L);  // push arguments to script
     status = docall(L, n, LUA_MULTRET);

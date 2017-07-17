@@ -18,6 +18,7 @@ Arguments:
   MODULE_NAME                 Name of native module to preload (e.g. "cjson").
 
 Options:
+  -C, --no-compress           Do not compress FILE using BriefLZ algorithm.
   -o, --output=FILE           Where to write the generated code; "-" for stdout. Default is "-".
   -v, --verbose               Be verbose, i.e. print debug messages.
   -h, --help                  Display this help message and exit.
@@ -45,7 +46,9 @@ return function (arg)
       and io.stdout
       or assert(io.open(opts.output, 'w'))
 
-  local output = wrapper.generate(lua_chunk, module_names)
+  local output = wrapper.generate(lua_chunk, module_names, {
+      compress = not opts.no_compress,
+    })
 
   assert(out:write(output))
   out:close()

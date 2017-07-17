@@ -70,7 +70,6 @@ source .envrc
 
 * Write documentation into README.
 * Write integration tests.
-* Integrate some compression algorithm for compressing embedded Lua sources.
 * Analyse usage of Lua standard modules and exclude unused from the binary.
 
 

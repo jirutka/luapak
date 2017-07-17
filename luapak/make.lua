@@ -186,7 +186,7 @@ local function generate_wrapper (output_file, entry_script, lua_modules, native_
     end)
   push(buff, remove_shebang(entry_script))
 
-  assert(fileh:write(wrapper.generate(concat(buff), native_modules)))
+  assert(fileh:write(wrapper.generate(concat(buff), native_modules, opts)))
 
   fileh:flush()
   fileh:close()

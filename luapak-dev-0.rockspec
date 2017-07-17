@@ -24,6 +24,7 @@ with Lua library and native extensions.]],
 
 dependencies = {
   'lua >= 5.1',
+  'brieflz ~> 0.1.0',
   'depgraph ~> 0.1',
   'lua-glob-pattern ~> 0.2',
   'luafilesystem ~> 1.6',

@@ -73,6 +73,8 @@ Options:
   -o, --output=FILE               Output file name or path. Defaults to base name of the main
                                   script with stripped .lua extension.
 
+  -C, --no-compress               Disable BriefLZ compression of Lua sources.
+
   -M, --no-minify                 Disable minification of Lua sources.
 
   -t, --rocks-tree=DIR            The prefix where to install required modules. Default is
@@ -114,6 +116,7 @@ return function (arg)
   end
 
   local make_opts = {
+    compress = not opts.no_compress,
     debug = opts.debug,
     exclude_modules = split_repeated_option(opts.exclude_modules),
     extra_modules = split_repeated_option(opts.include_modules),
