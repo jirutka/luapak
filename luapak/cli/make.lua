@@ -18,6 +18,10 @@ local help_msg = [[
 Usage: ${PROG_NAME} make [options] [PACKAGE...]
        ${PROG_NAME} make --help
 
+Makes a standalone executable from Lua package(s). This is the main Luapak
+command that handles entire process from installing dependencies to
+compiling executable.
+
 Arguments:
   PACKAGE                         Lua package to build specified as <source-dir>:<rockspec>.
                                   :<rockspec> may be omitted if the <source-dir> or
@@ -84,6 +88,18 @@ Options:
   -v, --verbose                   Be verbose, i.e. print debug messages.
 
   -h, --help                      Display this help message and exit.
+
+Environment Variables:
+  AR          Archive-maintaining program; default is "ar".
+  CC          Command for compiling C; default is "gcc".
+  CMAKE       Command for processing CMakeLists.txt files; default is "cmake".
+  CFLAGS      Extra flags to give to the C compiler; default is "-O2".
+  LD          Command for linking object files and archive files; default is "ld".
+  LDFLAGS     Extra flags to give to compiler when they are supposed to invoke the linker;
+              default on macOS is "-pagezero_size 10000 -image_base 100000000".
+  MAKE        Command for executing Makefile; default is "make".
+  RANLIB      Command for generating index to the contents of an archive; default is "ranlib".
+  STRIP       Command for discarding symbols from an object file; default is "strip".
 ]]
 
 

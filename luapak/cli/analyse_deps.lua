@@ -19,6 +19,9 @@ local help_msg = [[
 .
 Usage: ${PROG_NAME} analyse-deps [-a|-f|-m|-g] [options] FILE...
 
+Analyzes dependency graph of Lua module(s) using static code analysis (looks
+for "require" expressions).
+
 Arguments:
   FILE                        The entry point(s); path(s) to Lua script(s) to analyze.
 

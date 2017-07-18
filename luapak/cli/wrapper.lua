@@ -13,6 +13,9 @@ local help_msg = [[
 Usage: ${PROG_NAME} wrapper [options] FILE [MODULE_NAME...]
        ${PROG_NAME} wrapper [-h | --help]
 
+Wraps Lua script into a generated C file that can be compiled and linked with
+Lua interpreter and Lua/C native extensions into a standalone executable.
+
 Arguments:
   FILE                        The Lua file to embed into the wrapper.
   MODULE_NAME                 Name of native module to preload (e.g. "cjson").

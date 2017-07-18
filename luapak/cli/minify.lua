@@ -13,8 +13,11 @@ local help_msg = [[
 Usage: ${PROG_NAME} minify [options] [FILE]
        ${PROG_NAME} minify [-h | --help]
 
+Minificates Lua source code - removes comments, unnecessary white spaces and
+empty lines, shortens numbers and names of local variables.
+
 Arguments:
-  FILE                        Path of the Lua source file.
+  FILE                        Path of the Lua source file, or "-" for stdin.
 
 Options:
   -l, --keep-lno              Do not affect line numbers.

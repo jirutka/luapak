@@ -21,15 +21,15 @@ ${PROG_NAME} ${PROG_VERSION}
 Usage: ${PROG_NAME} COMMAND [args]
        ${PROG_NAME} (--help | --version)
 
+
 Commands:
-  make              Make a standalone executable for the specified Lua program. This is the main
-                    Luapak command that do everything what is needed.
+  make              Make a standalone executable from Lua package(s). The main Luapak command.
 
   analyse-deps      Analyse requirements of Lua sources.
 
   build-rock        Build and install Lua rock from local rockspec and sources.
 
-  merge             Merge Lua modules into single file.
+  merge             Combine Lua modules into a single file.
 
   minify            Minify Lua source code.
 

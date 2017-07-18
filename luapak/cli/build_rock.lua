@@ -19,6 +19,9 @@ local help_msg = [[
 Usage: ${PROG_NAME} build-rock [options] ROCKSPEC...
        ${PROG_NAME} build-rock [-h | --help]
 
+Builds Lua/C module as a library archive suitable for static linking
+and installs it into rocks tree.
+
 Arguments:
   ROCKSPEC                    Path of the rockspec file to build and install.
 
@@ -27,7 +30,7 @@ Options:
 
   -I, --lua-incdir=DIR        The directory that contains Lua headers.
 
-  -l, --lua-version=VERSION   The version number of Lua headers and to try to find (e.g. "5.3").
+  -l, --lua-version=VERSION   The version number of Lua headers to try to find (e.g. "5.3").
 
   -t, --rocks-tree=DIR        The prefix where to install Lua/C modules Default is ".luapak" in
                               the current directory.
@@ -35,6 +38,17 @@ Options:
   -v, --verbose               Be verbose, i.e. print debug messages.
 
   -h, --help                  Display this help message and exit.
+
+Environment Variables:
+  AR          Archive-maintaining program; default is "ar".
+  CC          Command for compiling C; default is "gcc".
+  CMAKE       Command for processing CMakeLists.txt files; default is "cmake".
+  CFLAGS      Extra flags to give to the C compiler; default is "-O2".
+  LD          Command for linking object files and archive files; default is "ld".
+  LDFLAGS     Extra flags to give to compiler when they are supposed to invoke the linker;
+              default on macOS is "-pagezero_size 10000 -image_base 100000000".
+  MAKE        Command for executing Makefile; default is "make".
+  RANLIB      Command for generating index to the contents of an archive; default is "ranlib".
 ]]
 
 

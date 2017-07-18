@@ -16,6 +16,10 @@ local help_msg = [[
 Usage: ${PROG_NAME} merge [options] MODULE [MODULE...]
        ${PROG_NAME} merge [-h | --help]
 
+Combines multiple Lua modules into a single file. Each module is be wrapped in
+a function, or string loaded by "load" (--debug), and assigned to
+"package.preload" table.
+
 Arguments:
   MODULE                    Name and path of Lua module delimited with "="
                             (e.g. "luapak.utils=luapak/utils.lua") or just path of module.
