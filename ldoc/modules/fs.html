@@ -46,6 +46,8 @@
   <li><a href="../modules/cli.analyse_deps.html">cli.analyse_deps</a></li>
   <li><a href="../modules/cli.build_rock.html">cli.build_rock</a></li>
   <li><a href="../modules/cli.make.html">cli.make</a></li>
+  <li><a href="../modules/cli.merge.html">cli.merge</a></li>
+  <li><a href="../modules/cli.minify.html">cli.minify</a></li>
   <li><a href="../modules/cli.wrapper.html">cli.wrapper</a></li>
   <li><a href="../modules/deps_analyser.html">deps_analyser</a></li>
   <li><strong>fs</strong></li>
@@ -54,6 +56,8 @@
   <li><a href="../modules/lua_finder.html">lua_finder</a></li>
   <li><a href="../modules/luarocks.html">luarocks</a></li>
   <li><a href="../modules/make.html">make</a></li>
+  <li><a href="../modules/merger.html">merger</a></li>
+  <li><a href="../modules/minifier.html">minifier</a></li>
   <li><a href="../modules/optparse.html">optparse</a></li>
   <li><a href="../modules/pkgpath.html">pkgpath</a></li>
   <li><a href="../modules/utils.html">utils</a></li>
@@ -98,12 +102,12 @@
 	<td class="summary">Joins the given path components using platform-specific separator.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#walk_dir">walk_dir (dir_path)</a></td>
-	<td class="summary">Traverses all files under the specified directory recursively.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#read_file">read_file (filename, mode)</a></td>
 	<td class="summary">Reads the specified file and returns its content as string.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#walk_dir">walk_dir (dir_path)</a></td>
+	<td class="summary">Traverses all files under the specified directory recursively.</td>
 	</tr>
 </table>
 
@@ -310,33 +314,6 @@
 
 </dd>
     <dt>
-    <a name = "walk_dir"></a>
-    <strong>walk_dir (dir_path)</strong>
-    </dt>
-    <dd>
-    Traverses all files under the specified directory recursively.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">dir_path</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-         Path of the directory to traverse.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.2">coroutine</a></span>
-        A coroutine that yields file path and its attributes.
-    </ol>
-
-
-
-
-</dd>
-    <dt>
     <a name = "read_file"></a>
     <strong>read_file (filename, mode)</strong>
     </dt>
@@ -372,6 +349,33 @@
         <li>
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
         An error message.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "walk_dir"></a>
+    <strong>walk_dir (dir_path)</strong>
+    </dt>
+    <dd>
+    Traverses all files under the specified directory recursively.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dir_path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Path of the directory to traverse.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.2">coroutine</a></span>
+        A coroutine that yields file path and its attributes.
     </ol>
 
 

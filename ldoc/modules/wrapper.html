@@ -47,6 +47,8 @@
   <li><a href="../modules/cli.analyse_deps.html">cli.analyse_deps</a></li>
   <li><a href="../modules/cli.build_rock.html">cli.build_rock</a></li>
   <li><a href="../modules/cli.make.html">cli.make</a></li>
+  <li><a href="../modules/cli.merge.html">cli.merge</a></li>
+  <li><a href="../modules/cli.minify.html">cli.minify</a></li>
   <li><a href="../modules/cli.wrapper.html">cli.wrapper</a></li>
   <li><a href="../modules/deps_analyser.html">deps_analyser</a></li>
   <li><a href="../modules/fs.html">fs</a></li>
@@ -55,6 +57,8 @@
   <li><a href="../modules/lua_finder.html">lua_finder</a></li>
   <li><a href="../modules/luarocks.html">luarocks</a></li>
   <li><a href="../modules/make.html">make</a></li>
+  <li><a href="../modules/merger.html">merger</a></li>
+  <li><a href="../modules/minifier.html">minifier</a></li>
   <li><a href="../modules/optparse.html">optparse</a></li>
   <li><a href="../modules/pkgpath.html">pkgpath</a></li>
   <li><a href="../modules/utils.html">utils</a></li>
@@ -75,49 +79,33 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#generate">generate (lua_main, modules)</a></td>
-	<td class="summary">Generates source code of the C "wrapper" with the given Lua script and modules.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#generate_from_files">generate_from_files (main_file, modules)</a></td>
-	<td class="summary">Generates source code of the C "wrapper" with the given Lua script and modules.</td>
+	<td class="name" nowrap><a href="#generate">generate (lua_chunk, clib_names, opts, write)</a></td>
+	<td class="summary">Generates source code of the C "wrapper" with the given Lua chunk and preloaded
+ native modules.</td>
 	</tr>
 </table>
 <h2><a href="#Local_Functions">Local Functions</a></h2>
 <table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#remove_shebang">remove_shebang (script)</a></td>
-	<td class="summary">Returns copy of the given <code>script</code> with removed shebang.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#encode_c_hex">encode_c_hex (str)</a></td>
-	<td class="summary">Encodes string into hexadecimal representation formatted as a C array.</td>
-	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#luaopen_name">luaopen_name (name)</a></td>
 	<td class="summary">Converts the module name in dot-notation into name of the corresponding
  C luaopen function.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#define_luaopen_for_lua">define_luaopen_for_lua (name, chunk)</a></td>
-	<td class="summary">Generates definition of C function that loads and calls the given Lua module.</td>
+	<td class="name" nowrap><a href="#encode_c_hex">encode_c_hex (write, data)</a></td>
+	<td class="summary">Encodes the given data into hexadecimal representation formatted as a C array.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#declare_luaopen_func">declare_luaopen_func (name)</a></td>
-	<td class="summary">Generates declaration of C function for loading the specified C/Lua module.</td>
+	<td class="name" nowrap><a href="#define_macro_const">define_macro_const (write, name, value)</a></td>
+	<td class="summary">Formats C <code>#define</code> directive with the specified constant.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#define_preloaded_libs">define_preloaded_libs (names)</a></td>
-	<td class="summary">Generates definition of C constant <code>LUAPAK_PRELOADED_LIBS</code> of type
- <code>luaL_Reg</code> that contains an array of preloaded modules.</td>
+	<td class="name" nowrap><a href="#define_preloaded_libs">define_preloaded_libs (write, names)</a></td>
+	<td class="summary">Writes code for preloading of the specified Lua/C modules.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#define_lua_main">define_lua_main (chunk)</a></td>
-	<td class="summary">Generates definition of C constant <code>LUAPAK_LUA_MAIN</code> with the given chunk of Lua code.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#generate_fragment">generate_fragment (lua_main, modules)</a></td>
-	<td class="summary">Generates a fragment of C code that should be included in the template.</td>
+	<td class="name" nowrap><a href="#define_script">define_script (write, data, unpacked_size)</a></td>
+	<td class="summary">Writes the Lua script encoded as a C array of bytes in hexa.</td>
 	</tr>
 </table>
 
@@ -130,91 +118,41 @@
     <dl class="function">
     <dt>
     <a name = "generate"></a>
-    <strong>generate (lua_main, modules)</strong>
+    <strong>generate (lua_chunk, clib_names, opts, write)</strong>
     </dt>
     <dd>
-
-<p>Generates source code of the C "wrapper" with the given Lua script and modules. </p>
-
-<p> <strong>Module table:</strong></p>
-
-<ul>
-    <li><code>type:</code> <code>&quot;lua&quot;</code>, or <code>&quot;native&quot;</code></li>
-    <li><code>name:</code> Full name of the module in dot-notation.</li>
-    <li><code>content:</code> Source code or bytecode of Lua module (only for type "lua").</li>
-</ul>
-
-
+    Generates source code of the C "wrapper" with the given Lua chunk and preloaded
+ native modules.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">lua_main</span>
+        <li><span class="parameter">lua_chunk</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-         Source code or byte code of the main Lua script.
+         The Lua chunk (source code or byte code) to embed.
         </li>
-        <li><span class="parameter">modules</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">{table,...}</a></span>
-         A list of modules to be included.
+        <li><span class="parameter">clib_names</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
+         List of names of native modules to be preload.
+        </li>
+        <li><span class="parameter">opts</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{[string]=bool,...}</a></span>
+         Options: <code>compress</code> - enable compression.
+        </li>
+        <li><span class="parameter">write</span>
+            <span class="types">optional <span class="type">function</span></span>
+         The writer function. If not give, an intermediate table
+   will be created and generated code returned as string.
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-        A source code in C.
+           <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        A generated source code, or nil if the <code>write</code> function given.
     </ol>
 
-    <h3>Raises:</h3>
-    if some module table doesn't have required keys or has wrong "type".
-
-
-
-</dd>
-    <dt>
-    <a name = "generate_from_files"></a>
-    <strong>generate_from_files (main_file, modules)</strong>
-    </dt>
-    <dd>
-
-<p>Generates source code of the C "wrapper" with the given Lua script and modules. </p>
-
-<p> <strong>Module table:</strong></p>
-
-<ul>
-    <li><code>type:</code> <code>&quot;lua&quot;</code>, or <code>&quot;native&quot;</code></li>
-    <li><code>name:</code> Full name of the module in dot-notation.</li>
-    <li><code>path:</code> Path of the Lua module to read (required for type "lua" if <code>content</code> is not set).</li>
-    <li><code>content:</code> Source code or bytecode of the Lua module (required for type "lua"
-    if <code>path</code> is not set).</li>
-</ul>
-
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">main_file</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-         Path of the main Lua script.
-        </li>
-        <li><span class="parameter">modules</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
-         A list of modules to be included.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-        A source code in C.
-    </ol>
-
-    <h3>Raises:</h3>
-    if any path in the <code>modules</code> is unreadable or some module table doesn't have
-   required keys or has wrong "type".
 
 
 
@@ -223,68 +161,6 @@
     <h2 class="section-header "><a name="Local_Functions"></a>Local Functions</h2>
 
     <dl class="function">
-    <dt>
-    <a name = "remove_shebang"></a>
-    <strong>remove_shebang (script)</strong>
-    </dt>
-    <dd>
-    Returns copy of the given <code>script</code> with removed shebang.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">script</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-
-
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-
-
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "encode_c_hex"></a>
-    <strong>encode_c_hex (str)</strong>
-    </dt>
-    <dd>
-    Encodes string into hexadecimal representation formatted as a C array.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">str</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-
-
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-
-
-
-    </ol>
-
-
-
-
-</dd>
     <dt>
     <a name = "luaopen_name"></a>
     <strong>luaopen_name (name)</strong>
@@ -318,62 +194,57 @@
 
 </dd>
     <dt>
-    <a name = "define_luaopen_for_lua"></a>
-    <strong>define_luaopen_for_lua (name, chunk)</strong>
+    <a name = "encode_c_hex"></a>
+    <strong>encode_c_hex (write, data)</strong>
     </dt>
     <dd>
-    Generates definition of C function that loads and calls the given Lua module.
+    Encodes the given data into hexadecimal representation formatted as a C array.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">name</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-         Full name of the Lua module in dot-notation.
+        <li><span class="parameter">write</span>
+            <span class="types"><span class="type">func</span></span>
+         The writer function.
         </li>
-        <li><span class="parameter">chunk</span>
+        <li><span class="parameter">data</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-         Source code or bytecode of the Lua module.
+
+
+
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-
-
-
-    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "declare_luaopen_func"></a>
-    <strong>declare_luaopen_func (name)</strong>
+    <a name = "define_macro_const"></a>
+    <strong>define_macro_const (write, name, value)</strong>
     </dt>
     <dd>
-    Generates declaration of C function for loading the specified C/Lua module.
+    Formats C <code>#define</code> directive with the specified constant.
 
 
     <h3>Parameters:</h3>
     <ul>
+        <li><span class="parameter">write</span>
+            <span class="types"><span class="type">function</span></span>
+
+
+
+        </li>
         <li><span class="parameter">name</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-         Full name of the module in dot or underscore notation.
+         The constant name.
+        </li>
+        <li><span class="parameter">value</span>
+         The constant value.
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-
-
-
-    </ol>
 
 
 
@@ -381,94 +252,56 @@
 </dd>
     <dt>
     <a name = "define_preloaded_libs"></a>
-    <strong>define_preloaded_libs (names)</strong>
+    <strong>define_preloaded_libs (write, names)</strong>
     </dt>
     <dd>
-    Generates definition of C constant <code>LUAPAK_PRELOADED_LIBS</code> of type
- <code>luaL_Reg</code> that contains an array of preloaded modules.
+    Writes code for preloading of the specified Lua/C modules.
 
 
     <h3>Parameters:</h3>
     <ul>
+        <li><span class="parameter">write</span>
+            <span class="types"><span class="type">func</span></span>
+         The writer function.
+        </li>
         <li><span class="parameter">names</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{string,...}</a></span>
          A list of full names in dot-notation.
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-
-
-
-    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "define_lua_main"></a>
-    <strong>define_lua_main (chunk)</strong>
+    <a name = "define_script"></a>
+    <strong>define_script (write, data, unpacked_size)</strong>
     </dt>
     <dd>
-    Generates definition of C constant <code>LUAPAK_LUA_MAIN</code> with the given chunk of Lua code.
+    Writes the Lua script encoded as a C array of bytes in hexa.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">chunk</span>
+        <li><span class="parameter">write</span>
+            <span class="types"><span class="type">function</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">data</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-
-
-
+         Lua chunk or compressed Lua chunk.
+        </li>
+        <li><span class="parameter">unpacked_size</span>
+            <span class="types">optional <span class="type">int</span></span>
+         Size of <strong>uncompressed</strong> Lua chunk.
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
 
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-
-
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "generate_fragment"></a>
-    <strong>generate_fragment (lua_main, modules)</strong>
-    </dt>
-    <dd>
-    Generates a fragment of C code that should be included in the template.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">lua_main</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-         Source code or byte code of the main script.
-        </li>
-        <li><span class="parameter">modules</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">{table,...}</a></span>
-         A list of modules to include.
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
-        A generated C code.
-    </ol>
-
-    <h3>Raises:</h3>
-    if some module table doesn't have required keys or has wrong "type".
 
 
 

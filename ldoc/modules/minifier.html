@@ -32,7 +32,7 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Fields">Fields</a></li>
+<li><a href="#Functions">Functions</a></li>
 </ul>
 
 
@@ -51,13 +51,13 @@
   <li><a href="../modules/cli.wrapper.html">cli.wrapper</a></li>
   <li><a href="../modules/deps_analyser.html">deps_analyser</a></li>
   <li><a href="../modules/fs.html">fs</a></li>
-  <li><strong>init</strong></li>
+  <li><a href="../modules/init.html">init</a></li>
   <li><a href="../modules/logging.html">logging</a></li>
   <li><a href="../modules/lua_finder.html">lua_finder</a></li>
   <li><a href="../modules/luarocks.html">luarocks</a></li>
   <li><a href="../modules/make.html">make</a></li>
   <li><a href="../modules/merger.html">merger</a></li>
-  <li><a href="../modules/minifier.html">minifier</a></li>
+  <li><strong>minifier</strong></li>
   <li><a href="../modules/optparse.html">optparse</a></li>
   <li><a href="../modules/pkgpath.html">pkgpath</a></li>
   <li><a href="../modules/utils.html">utils</a></li>
@@ -68,26 +68,16 @@
 
 <div id="content">
 
-<h1>Module <code>init</code></h1>
-<p>The main module.</p>
-<p>
-
-</p>
+<h1>Module <code>minifier</code></h1>
+<p>Lua minifier - wrapper for LuaSrcDiet with simplified API.</p>
+<p> <strong>Note: This module is not part of public API!</strong></p>
 
 
-<h2><a href="#Fields">Fields</a></h2>
+<h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#_NAME">_NAME</a></td>
-	<td class="summary">The module's name.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#_VERSION">_VERSION</a></td>
-	<td class="summary">The module's version number.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#_HOMEPAGE">_HOMEPAGE</a></td>
-	<td class="summary">The module's homepage.</td>
+	<td class="name" nowrap><a href="#__call">__call (opts, chunk, name)</a></td>
+	<td class="summary">Minifies the given Lua <code>chunk</code>.</td>
 	</tr>
 </table>
 
@@ -95,46 +85,54 @@
 <br/>
 
 
-    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
 
     <dl class="function">
     <dt>
-    <a name = "_NAME"></a>
-    <strong>_NAME</strong>
+    <a name = "__call"></a>
+    <strong>__call (opts, chunk, name)</strong>
     </dt>
     <dd>
-    The module's name.
+    Minifies the given Lua <code>chunk</code>.
 
 
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">opts</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">{[string]=bool,...}</a></span>
+         Table of options.
+        </li>
+        <li><span class="parameter">chunk</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         Lua chunk (source code) to minify.
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types">optional <a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+         The chunk name.
+        </li>
+    </ul>
 
+    <h3>Returns:</h3>
+    <ol>
 
+           <span class="types"><span class="type">function</span></span>
+        A partially applied function accepting chunk and name. (<em>if chunk is nil</em>)
+    </ol>
+     <h3>Or</h3>
+    <ol>
 
-
-
-</dd>
-    <dt>
-    <a name = "_VERSION"></a>
-    <strong>_VERSION</strong>
-    </dt>
-    <dd>
-    The module's version number.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "_HOMEPAGE"></a>
-    <strong>_HOMEPAGE</strong>
-    </dt>
-    <dd>
-    The module's homepage.
-
-
-
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        Minified chunk. (<em>if chunk is not nil</em>)
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+        (<em>if chunk is not nil and minification failed</em>)</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        An error message. (<em>if chunk is not nil and minification failed</em>)</li>
+    </ol>
 
 
 
