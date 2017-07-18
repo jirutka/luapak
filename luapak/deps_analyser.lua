@@ -145,7 +145,7 @@ local M = {}
 --
 -- **Flags**:
 --
--- * pcalls: Analyze pcall requires? (default: true)
+-- * pcalls: Analyse pcall requires? (default: true)
 -- * wildcards: Expand "wildcard" requires? (default: true)
 --
 -- @tparam string entry_point Path of Lua script, or name of Lua module.

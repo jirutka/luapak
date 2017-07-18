@@ -19,11 +19,11 @@ local help_msg = [[
 .
 Usage: ${PROG_NAME} analyse-deps [-a|-f|-m|-g] [options] FILE...
 
-Analyzes dependency graph of Lua module(s) using static code analysis (looks
+Analyses dependency graph of Lua module(s) using static code analysis (looks
 for "require" expressions).
 
 Arguments:
-  FILE                        The entry point(s); path(s) to Lua script(s) to analyze.
+  FILE                        The entry point(s); path(s) to Lua script(s) to analyse.
 
 Options:
   -a, --all                   Print all information (default).
@@ -38,7 +38,7 @@ Options:
 
   -n, --ignore-errors         Ignore errors from dependencies resolution (like unredable or unparseable files).
 
-  -P, --no-pcalls             Do not analyze pcall requires.
+  -P, --no-pcalls             Do not analyse pcall requires.
 
   -W, --no-wildcards          Do not expand "wildcard" requires.
 
