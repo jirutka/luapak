@@ -178,7 +178,7 @@ local function init_minifier (opts)
 end
 
 local function generate_wrapper (output_file, entry_script, lua_modules, native_modules, opts)
-  local fileh = assert(io.open(output_file, 'w'))
+  local file = assert(io.open(output_file, 'w'))
 
   local buff = {}
   merger.merge_modules(lua_modules, opts.debug, function (data)
@@ -186,10 +186,12 @@ local function generate_wrapper (output_file, entry_script, lua_modules, native_
     end)
   push(buff, remove_shebang(entry_script))
 
-  assert(fileh:write(wrapper.generate(concat(buff), native_modules, opts)))
+  wrapper.generate(concat(buff), native_modules, opts, function (...)
+      assert(file:write(...))
+    end)
 
-  fileh:flush()
-  fileh:close()
+  assert(file:flush())
+  file:close()
 end
 
 local function build (proj_paths, entry_script, output_file, pkg_path, lua_lib, opts)

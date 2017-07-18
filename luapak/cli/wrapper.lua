@@ -46,10 +46,10 @@ return function (arg)
       and io.stdout
       or assert(io.open(opts.output, 'w'))
 
-  local output = wrapper.generate(lua_chunk, module_names, {
-      compress = not opts.no_compress,
-    })
+  wrapper.generate(lua_chunk, module_names,
+      { compress = not opts.no_compress },
+      function (...) assert(out:write(...)) end)
+  assert(out:flush())
 
-  assert(out:write(output))
   out:close()
 end
