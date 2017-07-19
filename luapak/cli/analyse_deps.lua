@@ -18,6 +18,7 @@ local tableize = utils.tableize
 local help_msg = [[
 .
 Usage: ${PROG_NAME} analyse-deps [-a|-f|-m|-g] [options] FILE...
+       ${PROG_NAME} analyse-deps --help
 
 Analyses dependency graph of Lua module(s) using static code analysis (looks
 for "require" expressions).

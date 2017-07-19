@@ -13,8 +13,8 @@ local unpack = table.unpack
 
 local help_msg = [[
 .
-Usage: ${PROG_NAME} merge [options] MODULE [MODULE...]
-       ${PROG_NAME} merge [-h | --help]
+Usage: ${PROG_NAME} merge [options] MODULE...
+       ${PROG_NAME} merge --help
 
 Combines multiple Lua modules into a single file. Each module is be wrapped in
 a function, or string loaded by "load" (--debug), and assigned to

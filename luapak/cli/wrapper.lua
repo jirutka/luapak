@@ -11,7 +11,7 @@ local read_file = fs.read_file
 local help_msg = [[
 .
 Usage: ${PROG_NAME} wrapper [options] FILE [MODULE_NAME...]
-       ${PROG_NAME} wrapper [-h | --help]
+       ${PROG_NAME} wrapper --help
 
 Wraps Lua script into a generated C file that can be compiled and linked with
 Lua interpreter and Lua/C native extensions into a standalone executable.

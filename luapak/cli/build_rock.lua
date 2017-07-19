@@ -17,7 +17,7 @@ local luah_version = lua_finder.luah_version
 local help_msg = [[
 .
 Usage: ${PROG_NAME} build-rock [options] ROCKSPEC...
-       ${PROG_NAME} build-rock [-h | --help]
+       ${PROG_NAME} build-rock --help
 
 Builds Lua/C module as a library archive suitable for static linking
 and installs it into rocks tree.

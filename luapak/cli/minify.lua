@@ -11,7 +11,7 @@ local read_file = fs.read_file
 local help_msg = [[
 .
 Usage: ${PROG_NAME} minify [options] [FILE]
-       ${PROG_NAME} minify [-h | --help]
+       ${PROG_NAME} minify --help
 
 Minifies Lua source code - removes comments, unnecessary white spaces and
 empty lines, shortens numbers and names of local variables.
