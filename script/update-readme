@@ -1,0 +1,85 @@
+#!/bin/sh
+# vim: set ts=4:
+#
+# Updates code snippets (help messages) in README.adoc.
+#
+# Note: AsciiDoc supports includes, but it's not enabled on GitHub, so we must
+# use this idiotic approach. :(
+#
+set -eu
+
+cd "$(dirname "$0")/.."
+. script/utils.sh
+
+
+# Selects and prints help message from the specified Lua source.
+# Help message starts with `^Usage: ${PROG_NAME}` and ends with `^]]`.
+select_help_msg() {
+	local luafile="$1"
+
+	sed -En \
+		'/^Usage: \$\{PROG_NAME\}/,/^\]\]/ {
+			s/\$\{PROG_NAME\}/luapak/
+			/^\]\]/d
+			p
+		}' "$luafile"
+}
+
+# Formats snippet of code as an HTML <details> element with summary $1
+# and detail $2.
+format_snippet() {
+	local summary="$1"
+	local detail="$2"
+
+	cat <<-EOF
+		// This is a generated content, do not edit it!
+		// Note: AsciiDoc supports includes, but it's not enabled on GitHub.
+		++++
+		<details>
+		  <summary>
+		    <sup><em>Click here to expand…</em></sup>
+		    <pre>$summary</pre>
+		  </summary>
+		  <pre>$detail</pre>
+		</details>
+		++++
+	EOF
+}
+
+# Replaces text between `// include:$1:start` and `// include:$1:end`
+# with the given snippet $2 in the file $3.
+replace_snippet() {
+	local name="$1"
+	local snippet="$2"
+	local filename="$3"
+
+	local start_mark="^\/\/ include:$name:start$"
+	local end_mark="^\/\/ include:$name:end$"
+
+	local tmpfile=$(mktemp)
+	printf '%s\n' "$snippet" > "$tmpfile"
+
+	sed -iE \
+		"/$start_mark/,/$end_mark/ {
+			/$start_mark/ {
+				p; r $tmpfile
+			}; /$end_mark/p; d
+		}" "$filename"
+
+	rm "$tmpfile"
+}
+
+
+for luafile in luapak/cli/*.lua; do
+	help_msg=$(select_help_msg "$luafile")
+	cmd_name=$(echo "$help_msg" | head -n 1 | sed -En 's/.*luapak ([^ ]+).*/\1/p')
+	summary=$(echo "$help_msg" | awk '/^$/{l++} (l < 2) {print}')  # from start up to 2nd empty line
+	detail=$(echo "$help_msg" | awk '/^$/{l++} (l > 2) {print}')  # from 2nd empty line up to end
+
+	if [ -n "$cmd_name" ] && [ -n "$summary" ] && [ -n "$detail" ]; then
+		snippet=$(format_snippet "$summary" "$detail")
+		replace_snippet "help-$cmd_name" "$snippet" README.adoc
+	else
+		ewarn "$luafile: Help message not found or unable to parse."
+	fi
+done
