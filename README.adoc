@@ -19,6 +19,266 @@ sources, generates C wrapper with embedded Lua sources, compiles it and links wi
 TBD
 
 
+== Commands
+
+=== luapak make
+
+// include:help-make:start
+// This is a generated content, do not edit it!
+// Note: AsciiDoc supports includes, but it's not enabled on GitHub.
+++++
+<details>
+  <summary>
+    <sup><em>Click here to expand…</em></sup>
+    <pre>Usage: luapak make [options] [PACKAGE...]
+       luapak make --help
+
+Makes a standalone executable from Lua package(s). This is the main Luapak
+command that handles entire process from installing dependencies to
+compiling executable.</pre>
+  </summary>
+  <pre>
+Options:
+  -s, --entry-script=FILE         The entry point of your program, i.e. the main Lua script. If not
+                                  specified and the last PACKAGE defines exactly one CLI script,
+                                  then it's used.
+
+  -e, --exclude-modules=PATTERNS  Module(s) to exclude from dependencies analysis and the
+                                  generated binary. PATTERNS is one or more glob patterns matching
+                                  module name in dot notation (e.g. "pl.*"). Patterns may be
+                                  delimited by comma or space. This option can be also specified
+                                  multiple times.
+
+  -g, --debug                     Enable debug mode, i.e. preserve line numbers, module names and
+                                  local variable names for error messages and backtraces.
+
+  -i, --include-modules=PATTERNS  Extra module(s) to include in dependencies analysis and add to
+                                  the generated binary. PATTERNS has the same format as in
+                                  "--exclude-module".
+
+      --lua-impl=NAME             The Lua implementation that should be used - "PUC" (default),
+                                  or "LuaJIT". This is currently used only as a hint to find the
+                                  correct library and headers when auto-detection is used
+                                  (i.e. --lua-incdir or --lua-lib is not specified).
+
+      --lua-incdir=DIR            The directory that contains Lua (or LuaJIT) headers. If not
+                                  specified, luapak will look for the lua.h (and luajit.h) file
+                                  inside: Luarock's LUA_INCDIR, ./vendor/lua, ./deps/lua,
+                                  /usr/local/include, and /usr/include. If --lua-version is
+                                  specified, then it will also try subdirectories lua<version> and
+                                  lua-<version> of each of the named directories and verify that
+                                  the found lua.h (or luajit.h) is for the specified Lua
+                                  (or LuaJIT) version.
+
+      --lua-lib=FILE              The library of Lua interpreter to include in the binary. If not
+                                  specified, luapak will try to find library with version
+                                  corresponding to the headers inside Luarock's LUA_LIBDIR,
+                                  ./vendor/lua, ./deps/lua, /usr/local/lib, /usr/local/lib64,
+                                  /usr/lib, and /usr/lib64.
+
+      --lua-version=VERSION       The version number of Lua (or LuaJIT) headers and library to try
+                                  to find (e.g. "5.3", "2.0").
+
+  -o, --output=FILE               Output file name or path. Defaults to base name of the main
+                                  script with stripped .lua extension.
+
+  -C, --no-compress               Disable BriefLZ compression of Lua sources.
+
+  -M, --no-minify                 Disable minification of Lua sources.
+
+  -t, --rocks-tree=DIR            The prefix where to install required modules. Default is
+                                  ".luapak" in the current directory.
+  -q, --quiet                     Be quiet, i.e. print only errors.
+
+  -v, --verbose                   Be verbose, i.e. print debug messages.
+
+  -h, --help                      Display this help message and exit.
+
+Environment Variables:
+  AR          Archive-maintaining program; default is "ar".
+  CC          Command for compiling C; default is "gcc".
+  CMAKE       Command for processing CMakeLists.txt files; default is "cmake".
+  CFLAGS      Extra flags to give to the C compiler; default is "-O2".
+  LD          Command for linking object files and archive files; default is "ld".
+  LDFLAGS     Extra flags to give to compiler when they are supposed to invoke the linker;
+              default on macOS is "-pagezero_size 10000 -image_base 100000000".
+  MAKE        Command for executing Makefile; default is "make".
+  RANLIB      Command for generating index to the contents of an archive; default is "ranlib".
+  STRIP       Command for discarding symbols from an object file; default is "strip".</pre>
+</details>
+++++
+// include:help-make:end
+
+
+=== luapak analyse-deps
+
+// include:help-analyse-deps:start
+// This is a generated content, do not edit it!
+// Note: AsciiDoc supports includes, but it's not enabled on GitHub.
+++++
+<details>
+  <summary>
+    <sup><em>Click here to expand…</em></sup>
+    <pre>Usage: luapak analyse-deps [-a|-f|-m|-g] [options] FILE...
+       luapak analyse-deps --help
+
+Analyses dependency graph of Lua module(s) using static code analysis (looks
+for "require" expressions).</pre>
+  </summary>
+  <pre>
+Options:
+  -a, --all                   Print all information (default).
+  -f, --found                 Print only found modules.
+  -m, --missing               Print only missing modules.
+  -g, --ignored               Print only excluded/ignored modules.
+
+  -e, --excludes=PATTERNS     Module(s) to exclude from the dependencies analysis. PATTERNS is one
+                              or more glob patterns matching module name in dot notation
+                              (e.g. "pl.*"). Patterns may be delimited by comma or space. This
+                              option can be also specified multiple times.
+
+  -n, --ignore-errors         Ignore errors from dependencies resolution (like unredable or unparseable files).
+
+  -P, --no-pcalls             Do not analyse pcall requires.
+
+  -W, --no-wildcards          Do not expand "wildcard" requires.
+
+  -p, --pkg-path=PATH         The path pattern where to search for Lua and C/Lua modules instead of
+                              the default path.
+
+  -v, --verbose               Be verbose, i.e. print debug messages.
+
+  -h, --help                  Display this help message and exit.</pre>
+</details>
+++++
+// include:help-analyse-deps:end
+
+
+=== luapak build-rock
+
+// include:help-build-rock:start
+// This is a generated content, do not edit it!
+// Note: AsciiDoc supports includes, but it's not enabled on GitHub.
+++++
+<details>
+  <summary>
+    <sup><em>Click here to expand…</em></sup>
+    <pre>Usage: luapak build-rock [options] ROCKSPEC...
+       luapak build-rock --help
+
+Builds Lua/C module as a library archive suitable for static linking
+and installs it into rocks tree.</pre>
+  </summary>
+  <pre>
+Options:
+  -C, --directory=DIR         Change directory before doing anything.
+
+  -I, --lua-incdir=DIR        The directory that contains Lua headers.
+
+  -l, --lua-version=VERSION   The version number of Lua headers to try to find (e.g. "5.3").
+
+  -t, --rocks-tree=DIR        The prefix where to install Lua/C modules Default is ".luapak" in
+                              the current directory.
+
+  -v, --verbose               Be verbose, i.e. print debug messages.
+
+  -h, --help                  Display this help message and exit.
+
+Environment Variables:
+  AR          Archive-maintaining program; default is "ar".
+  CC          Command for compiling C; default is "gcc".
+  CMAKE       Command for processing CMakeLists.txt files; default is "cmake".
+  CFLAGS      Extra flags to give to the C compiler; default is "-O2".
+  LD          Command for linking object files and archive files; default is "ld".
+  LDFLAGS     Extra flags to give to compiler when they are supposed to invoke the linker;
+              default on macOS is "-pagezero_size 10000 -image_base 100000000".
+  MAKE        Command for executing Makefile; default is "make".
+  RANLIB      Command for generating index to the contents of an archive; default is "ranlib".</pre>
+</details>
+++++
+// include:help-build-rock:end
+
+
+=== luapak merge
+
+// include:help-merge:start
+// This is a generated content, do not edit it!
+// Note: AsciiDoc supports includes, but it's not enabled on GitHub.
+++++
+<details>
+  <summary>
+    <sup><em>Click here to expand…</em></sup>
+    <pre>Usage: luapak merge [options] MODULE...
+       luapak merge --help
+
+Combines multiple Lua modules into a single file. Each module is be wrapped in
+a function, or string loaded by "load" (--debug), and assigned to
+"package.preload" table.</pre>
+  </summary>
+  <pre>
+Options:
+  -g, --debug               Preserve module names and line numbers in error backtraces?
+  -o, --output=FILE         Where to write the generated code. Use "-" for stdout. Default is "-".
+  -v, --verbose             Be verbose, i.e. print debug messages.
+  -h, --help                Display this help message and exit.</pre>
+</details>
+++++
+// include:help-merge:end
+
+
+=== luapak minify
+
+// include:help-minify:start
+// This is a generated content, do not edit it!
+// Note: AsciiDoc supports includes, but it's not enabled on GitHub.
+++++
+<details>
+  <summary>
+    <sup><em>Click here to expand…</em></sup>
+    <pre>Usage: luapak minify [options] [FILE]
+       luapak minify --help
+
+Minifies Lua source code - removes comments, unnecessary white spaces and
+empty lines, shortens numbers and names of local variables.</pre>
+  </summary>
+  <pre>
+Options:
+  -l, --keep-lno              Do not affect line numbers.
+  -n, --keep-names            Do not rename local variables.
+  -o, --output=FILE           Where to write the output. Use "-" for stdout. Default is "-".
+  -v, --verbose               Be verbose, i.e. print debug messages.
+  -h, --help                  Display this help message and exit.</pre>
+</details>
+++++
+// include:help-minify:end
+
+
+=== luapak wrapper
+
+// include:help-wrapper:start
+// This is a generated content, do not edit it!
+// Note: AsciiDoc supports includes, but it's not enabled on GitHub.
+++++
+<details>
+  <summary>
+    <sup><em>Click here to expand…</em></sup>
+    <pre>Usage: luapak wrapper [options] FILE [MODULE_NAME...]
+       luapak wrapper --help
+
+Wraps Lua script into a generated C file that can be compiled and linked with
+Lua interpreter and Lua/C native extensions into a standalone executable.</pre>
+  </summary>
+  <pre>
+Options:
+  -C, --no-compress           Do not compress FILE using BriefLZ algorithm.
+  -o, --output=FILE           Where to write the generated code; "-" for stdout. Default is "-".
+  -v, --verbose               Be verbose, i.e. print debug messages.
+  -h, --help                  Display this help message and exit.</pre>
+</details>
+++++
+// include:help-wrapper:end
+
+
 == Installation
 
 Note: If you want to bootstrap development environment for running tests, read the next section.
