@@ -358,6 +358,16 @@ source .envrc
 * Analyse usage of Lua standard modules and exclude unused from the binary.
 
 
+== Similar Projects
+
+Luapak is not the first tool for packing Lua code into standalone executable, but it’s the most complete.
+Here’s a list of similar projects I know about, some of them served as an inspiration for Luapak.
+
+* https://github.com/ers35/luastatic[luastatic] by Eric R. Schulz
+* https://github.com/siffiejoe/lua-amalg[Amalg] by Philipp Janda
+* http://matthewwild.co.uk/projects/squish/home[Squish] by Matthew Wild
+
+
 == License
 
 This project is licensed under http://opensource.org/licenses/MIT/[MIT License].
