@@ -47,12 +47,17 @@ git_based_version() {
 		| cut -c 2- | sed -E 's/\-([0-9]+)\-g([0-9a-f]+)/_git\1g\2/'
 }
 
-# Returns 0 if git HEAD is a release, i.e. it has tag with prefix "v".
+# Returns 0 if this is a release.
+# If running on Travis, then it's a release if building tag with prefix "v",
+# otherwise if git HEAD is tagged with prefix "v".
 is_release() {
-	# First check that we are in a git repository.
-	git rev-parse HEAD >/dev/null
-
-	git describe --tags --exact-match --match 'v*' >/dev/null 2>&1
+	if [ -n "${TRAVIS:-}" ]; then
+		[ -n "${TRAVIS_TAG:-}" ] && [ "${TRAVIS_TAG#v}" != "$TRAVIS_TAG" ]
+	elif git rev-parse HEAD >/dev/null; then
+		git describe --tags --exact-match --match 'v*' >/dev/null 2>&1
+	else
+		ewarn 'Could not detect release; not in a git repository or on Travis CI'
+	fi
 }
 
 # Prints version of the specified Lua binary, or "lua" on PATH if $1 is empty.
