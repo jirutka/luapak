@@ -9,36 +9,57 @@
 #   LUAROCKS_KEY : API key for LuaRocks.
 set -eu
 
+. "$(dirname "$0")/bootstrap"
+
+TARBALL_URI="https://github.com/$REPO_NAME/archive/%s/${REPO_NAME#*/}-%s.tar.gz"
+
 create_release_spec() {
 	local dev_spec="$1"
 	local spec_ver="$2"
+	local tarball_url="$3"
 
 	local git_tag="v${spec_ver%-*}"
 	local rel_spec="$(echo "$dev_spec" | sed "s/-dev-0.rockspec/-$spec_ver.rockspec/")"
+	local tarball_md5=$(remote_md5sum "$tarball_url" \
+			|| die "Tarball $tarball_url does not exists!")
 
 	sed -E \
 		-e "s/^version *= *['\"].*['\"]/version = '$spec_ver'/" \
-		-e "/^source *= *\{/,/^\}/ s/(branch|tag) *= *['\"].*['\"]/tag = '$git_tag'/" \
+		-e "/^source *= *\{/,/^\}/c\\
+source = \{ url = '$tarball_url', md5 = '$tarball_md5' \}" \
 		"$dev_spec" > "$rel_spec"
 
 	echo "$rel_spec"
 }
 
+remote_md5sum() (
+	local url="$1"
 
-. "$(dirname "$0")/bootstrap"
+	mkdir -p "$TEMP_DIR" \
+		&& cd "$TEMP_DIR" \
+		&& rm -f "${url##*/}" \
+		&& wget -T 10 "$url" \
+		&& cat "${url##*/}" | md5sum | cut -d ' ' -f 1
+)
+
 
 [ -n "${LUAROCKS_KEY:-}" ] || die 'LUAROCKS_KEY is not set!'
 
+if is_release; then
+	version=$(git_based_version)
+	tarball_url=$(printf "$TARBALL_URI" "v$version" "$version")
+fi
+
 for dev_spec in *-dev-0.rockspec; do
 	if is_release; then
-		rel_spec=$(create_release_spec "$dev_spec" "$(git_based_version)-1")
+		rel_spec=$(create_release_spec "$dev_spec" "$version-1" "$tarball_url")
 
-		einfo "Uploading $(basename "$rel_spec") to LuaRocks"
+		einfo "Uploading ${rel_spec##*/} to LuaRocks"
 		luarocks upload --api-key="$LUAROCKS_KEY" "$rel_spec"
 
 		rm -- "$rel_spec"
 	else
-		einfo "Uploading $(basename "$dev_spec") to LuaRocks"
+		einfo "Uploading "${dev_spec##*/}" to LuaRocks"
 		luarocks upload --force --api-key="$LUAROCKS_KEY" "$dev_spec"
 	fi
 done

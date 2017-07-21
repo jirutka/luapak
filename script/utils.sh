@@ -1,7 +1,9 @@
 # vim: set ts=4:
 
-readonly HOST_OS=$(uname -s)
 readonly PKG_NAME='luapak'
+readonly REPO_NAME='jirutka/luapak'
+
+readonly HOST_OS=$(uname -s)
 readonly TEMP_DIR="$(pwd)/.tmp"
 readonly VENV_DIR="$(pwd)/.venv"
 
@@ -9,7 +11,8 @@ readonly VENV_DIR="$(pwd)/.venv"
 
 case "$HOST_OS" in
 	Darwin)
-		alias sha256sum='shasum -a 256';;
+		alias sha256sum='shasum -a 256'
+		alias md5sum='md5';;
 	MINGW* | Windows)
 		alias luarocks='luarocks.bat';;
 esac
