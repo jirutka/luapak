@@ -1,5 +1,8 @@
 = Luapak
 Jakub Jirutka <https://github.com/jirutka[@jirutka]>
+:toc: macro
+:toc-title:
+// custom
 :proj-name: luapak
 :gh-name: jirutka/{proj-name}
 :gh-branch: master
@@ -27,6 +30,12 @@ It Just Works!
 
 All these steps can be run with single command `luapak make <rockspec>`, or separately if you need more control.
 You can discover available commands and their options in section <<Commands>>.
+
+
+[discrete]
+== Table of Contents
+
+toc::[]
 
 
 == Commands
