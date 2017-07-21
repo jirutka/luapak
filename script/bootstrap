@@ -11,8 +11,8 @@
 set -eu
 
 DEFAULT_LUA_VERSION='lua-5.3'
-HEREROCKS_URI='https://raw.githubusercontent.com/mpeterv/hererocks/0.15.0/hererocks.py'
-HEREROCKS_SHA256='1729b18b056ebf6eb3d1637616ddd0bb801c615c7a46c3f311dd646789e703ef'
+HEREROCKS_URI='https://raw.githubusercontent.com/mpeterv/hererocks/0.16.0/hererocks.py'
+HEREROCKS_SHA256='8baac6389ebfb986493f897fafe447fec4a0ab0b69767af7c78824b9bfd69357'
 
 cd "$(dirname "$0")/.."
 . script/utils.sh
