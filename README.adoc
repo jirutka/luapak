@@ -279,6 +279,12 @@ Options:
 // include:help-wrapper:end
 
 
+== What Luapak Is _Not_?
+
+* Luapak is _not_ a transpiler from Lua to C, nor compiler to a native code.
+  It does not save you from runtime errors in your Lua code, nor increase its performance.
+
+
 == Installation
 
 Note: If you want to bootstrap development environment for running tests, read the next section.
