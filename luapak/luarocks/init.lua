@@ -5,6 +5,13 @@ require 'luapak.luarocks.site_config'
 require 'luapak.luarocks.cfg_extra'
 package.loaded['luarocks.build.builtin'] = require 'luapak.build.builtin'
 
+local warn_interceptor = require 'luapak.build.warn_interceptor'
+
+for _, name in ipairs { 'cmake', 'command', 'make' } do
+  name =  'luarocks.build.'..name
+  package.loaded[name] = warn_interceptor(require(name))
+end
+
 local cfg = require 'luarocks.cfg'
 local build = require 'luarocks.build'
 local fetch = require 'luarocks.fetch'
