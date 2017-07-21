@@ -23,7 +23,7 @@ It Just Works!
   Lua/C modules (aka native extensions) are built as static libraries (`.a` archive files), so they can be statically linked into resulting executable.footnote:[Luapak includes LuaRocks package manager with rewritten https://github.com/luarocks/luarocks/wiki/Rockspec-format#builtin[builtin build backend] and modified settings to build Lua/C modules as static libraries. Other backends (make, cmake, …) are not supported in the sense that Luapak cannot alter build process to produce static libraries; it’s up to the user to ensure that.]
 . Resolves actually __require__d Lua and Lua/C modules (`.lua` and `.a` files) using static code analysis of the project and its dependencies (recursively).
 . Merges all required Lua modules into a single Lua script.
-. Minifies the Lua script (i.e. removes unnecessary characters to shrink its size).
+. Minifies the Lua script (i.e. removes unnecessary characters to shrink its size) using https://github.com/jirutka/luasrcdiet[LuaSrcDiet].
 . Compresses the Lua script using https://github.com/jibsen/brieflz[BriefLZ] algorithm.
 . Embeds the Lua script into a generated C wrapper.
 . Compiles the C wrapper and links it with Lua interpreter (PUC Lua 5.1–5.3 and LuaJIT supported) and Lua/C libraries (aka native extensions) into a standalone executable.
