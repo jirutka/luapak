@@ -322,14 +322,14 @@ or to get the latest development version:
 luarocks install --server=http://luarocks.org/dev {proj-name}
 
 
-=== Download standalone binary
+=== Download Standalone Binary
 
 You can also download standalone Luapak binaries for Linux, macOS and Windows from https://github.com/{gh-name}/releases/[Releases].
 
 Note: Linux binaries are statically linked with http://www.musl-libc.org/[musl libc], so they should work on any Linux system.
 
 
-== Set up development environment
+== Set Up Development Environment
 
 . Clone this repository:
 [source, subs="+attributes"]
