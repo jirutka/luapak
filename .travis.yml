@@ -51,9 +51,9 @@ jobs:
         provider: script
         script: script/deploy-rocks
         skip_cleanup: true
-        all_branches: true
         on:
-          condition: '"$TRAVIS_BRANCH" = master || -n "$TRAVIS_TAG"'
+          all_branches: true
+          condition: '"$TRAVIS_BRANCH" = master || "$TRAVIS_TAG" = v*'
 
     # Build standalone x86_64-linux binary and deploy it to GitHub Releases
     - &deploy-binary-linux
