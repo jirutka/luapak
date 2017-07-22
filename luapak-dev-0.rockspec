@@ -42,6 +42,7 @@ build = {
     ['luapak.build.toolchain.gnu'] = 'luapak/build/toolchain/gnu.lua',
     ['luapak.build.toolchain.msvc'] = 'luapak/build/toolchain/msvc.lua',
     ['luapak.build.toolchain.utils'] = 'luapak/build/toolchain/utils.lua',
+    ['luapak.build.warn_interceptor'] = 'luapak/build/warn_interceptor.lua',
     ['luapak.cli.analyse_deps'] = 'luapak/cli/analyse_deps.lua',
     ['luapak.cli.build_rock'] = 'luapak/cli/build_rock.lua',
     ['luapak.cli.make'] = 'luapak/cli/make.lua',
