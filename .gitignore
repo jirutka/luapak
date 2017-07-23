@@ -3,4 +3,5 @@
 /.venv/
 /dist/
 /doc/
+*.bak
 *.rock

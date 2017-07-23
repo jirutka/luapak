@@ -59,7 +59,7 @@ replace_snippet() {
 	local tmpfile=$(mktemp)
 	printf '%s\n' "$snippet" > "$tmpfile"
 
-	sed -iE \
+	sed -E -i.bak \
 		"/$start_mark/,/$end_mark/ {
 			/$start_mark/ {
 				p; r $tmpfile
