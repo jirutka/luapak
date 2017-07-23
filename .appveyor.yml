@@ -29,7 +29,7 @@ build_script:
 after_build:
   - sh -c script/ci-artifact
 artifacts:
-  - path: dist\*.zip
+  - path: dist\*.zip*
     name: luapak
 deploy:
   provider: GitHub

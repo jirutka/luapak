@@ -37,12 +37,14 @@ case "$target_os" in
 	windows)
 		7z a $file_name.zip luapak.exe
 		rm luapak.exe
+		sha256sum $file_name.zip > $file_name.zip.sha256
 	;;
 	*)
 		mkdir "$dir_name"
 		mv luapak "$dir_name"/
 		tar -czf "$file_name.tar.gz" "$dir_name"
 		rm -r "$dir_name"
+		sha256sum $file_name.tar.gz > $file_name.tar.gz.sha256
 	;;
 esac
 
