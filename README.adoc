@@ -192,9 +192,20 @@ and installs it into rocks tree.</pre>
 Options:
   -C, --directory=DIR         Change directory before doing anything.
 
-  -I, --lua-incdir=DIR        The directory that contains Lua headers.
+  -i, --lua-impl=NAME         The Lua implementation that should be used - "PUC" (default), or
+                              "LuaJIT". This is currently used only as a hint to find the correct
+                              headers when auto-detection is used (i.e. --lua-incdir unspecified).
 
-  -l, --lua-version=VERSION   The version number of Lua headers to try to find (e.g. "5.3").
+  -I, --lua-incdir=DIR        The directory that contains Lua (or LuaJIT) headers. If not
+                              specified, luapak will look for the lua.h (and luajit.h) file inside:
+                              Luarock's LUA_INCDIR, ./vendor/lua, ./deps/lua, /usr/local/include,
+                              and /usr/include. If --lua-version is specified, then it will also
+                              try subdirectories lua<version> and lua-<version> of each of the
+                              named directories and verify that the found lua.h (or luajit.h) is
+                              for the specified Lua (or LuaJIT) version.
+
+  -l, --lua-version=VERSION   The version number of Lua (or LuaJIT) headers and library to try
+                              to find (e.g. "5.3", "2.0").
 
   -t, --rocks-tree=DIR        The prefix where to install Lua/C modules Default is ".luapak" in
                               the current directory.

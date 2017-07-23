@@ -10,6 +10,7 @@ local utils = require 'luapak.utils'
 
 local errorf = utils.errorf
 local find_incdir = lua_finder.find_incdir
+local fmt = string.format
 local is_file = fs.is_file
 local luah_version = lua_finder.luah_version
 
@@ -28,9 +29,20 @@ Arguments:
 Options:
   -C, --directory=DIR         Change directory before doing anything.
 
-  -I, --lua-incdir=DIR        The directory that contains Lua headers.
+  -i, --lua-impl=NAME         The Lua implementation that should be used - "PUC" (default), or
+                              "LuaJIT". This is currently used only as a hint to find the correct
+                              headers when auto-detection is used (i.e. --lua-incdir unspecified).
 
-  -l, --lua-version=VERSION   The version number of Lua headers to try to find (e.g. "5.3").
+  -I, --lua-incdir=DIR        The directory that contains Lua (or LuaJIT) headers. If not
+                              specified, luapak will look for the lua.h (and luajit.h) file inside:
+                              Luarock's LUA_INCDIR, ./vendor/lua, ./deps/lua, /usr/local/include,
+                              and /usr/include. If --lua-version is specified, then it will also
+                              try subdirectories lua<version> and lua-<version> of each of the
+                              named directories and verify that the found lua.h (or luajit.h) is
+                              for the specified Lua (or LuaJIT) version.
+
+  -l, --lua-version=VERSION   The version number of Lua (or LuaJIT) headers and library to try
+                              to find (e.g. "5.3", "2.0").
 
   -t, --rocks-tree=DIR        The prefix where to install Lua/C modules Default is ".luapak" in
                               the current directory.
@@ -59,13 +71,21 @@ Environment Variables:
 -- @raise if some error occured.
 return function (arg)
   local optparser = optparse(help_msg)
-  local args, opts = optparser:parse(arg, { rocks_tree = '.luapak' })
+  local args, opts = optparser:parse(arg, {
+      lua_impl = 'PUC',
+      rocks_tree = '.luapak',
+    })
 
   if #args == 0 then
     optparser:opterr('no ROCKSPEC specified')
   end
 
+  if not ({ puc = 1, luajit = 1 })[opts.lua_impl:lower()] then
+    optparser:opterr(fmt('--lua-impl="%s" is invalid, must be "PUC", or "LuaJIT"', opts.lua_impl))
+  end
+
   local lua_incdir = opts.lua_incdir
+  local lua_name = opts.lua_impl:lower() == 'luajit' and 'LuaJIT' or 'Lua'
   local lua_ver = opts.lua_version
 
   luarocks.set_link_static(true)
@@ -74,23 +94,21 @@ return function (arg)
   if lua_incdir then
     if not is_file(lua_incdir..'/lua.h') then
       errorf('Cannot find lua.h in %s!', lua_incdir)
-    elseif not lua_ver then
-      lua_ver = assert(luah_version(lua_incdir..'/lua.h'))
-      log.debug('Detected Lua %s', lua_ver)
     end
   else
-    lua_incdir, lua_ver = find_incdir(lua_ver)
+    lua_incdir, lua_ver = find_incdir(lua_name:lower(), lua_ver)
     if not lua_incdir then
-      errorf('Cannot find Lua %s headers. Please specify --lua-incdir=DIR',
-             opts.lua_version or '')
+      errorf('Cannot find headers for %s %s. Please specify --lua-incdir=DIR',
+             lua_name, opts.lua_version or '')
     end
-    log.debug('Using Lua %s headers from: %s', lua_ver, lua_incdir)
+    log.debug('Using %s %s headers from: %s', lua_name, lua_ver or '', lua_incdir)
   end
   luarocks.set_variable('LUA_INCDIR', lua_incdir)
 
-  if luarocks.cfg.lua_version ~= lua_ver then
-    luarocks.set_lua_version(lua_ver)
-  end
+  local luaapi_ver = assert(luah_version(lua_incdir..'/lua.h')):match('^(%d+%.%d+)')
+  log.debug('Detected Lua API %s', luaapi_ver)
+  luarocks.change_target_lua(luaapi_ver, lua_name == 'LuaJIT' and lua_ver or nil)
+
 
   for _, rockspec in ipairs(args) do
     log.info('Building %s', rockspec)
