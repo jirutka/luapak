@@ -59,7 +59,7 @@ Environment Variables:
 -- @raise if some error occured.
 return function (arg)
   local optparser = optparse(help_msg)
-  local args, opts = optparser:parse(arg)
+  local args, opts = optparser:parse(arg, { rocks_tree = '.luapak' })
 
   if #args == 0 then
     optparser:opterr('no ROCKSPEC specified')
