@@ -30,6 +30,7 @@ dependencies = {
   'luafilesystem ~> 1.6',
   'luarocks ~> 2.4',
   'luasrcdiet ~> 0.3',
+  'md5 ~> 1.2',  -- (optional)
   'optparse ~> 1.1',
 }
 

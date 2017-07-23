@@ -6,4 +6,5 @@ lua-glob-pattern
 luacheck
 LuaFileSystem
 luasrcdiet
+md5
 optparse
