@@ -28,6 +28,12 @@ if not is_empty(getenv('LUAROCKS_DEBUG')) then
   require('luarocks.fs').verbose()
 end
 
+-- Change default optimization option from -O2 to -Os.
+if cfg.variables.CFLAGS then
+  local sep = cfg.is_platform('windows') and '/' or '-'
+  cfg.variables.CFLAGS = cfg.variables.CFLAGS:gsub(sep..'O2', sep..'Os')
+end
+
 if not cfg.shared_lib_extension then
   cfg.shared_lib_extension = cfg.lib_extension
 end

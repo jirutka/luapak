@@ -117,7 +117,7 @@ Environment Variables:
   AR          Archive-maintaining program; default is "ar".
   CC          Command for compiling C; default is "gcc".
   CMAKE       Command for processing CMakeLists.txt files; default is "cmake".
-  CFLAGS      Extra flags to give to the C compiler; default is "-O2".
+  CFLAGS      Extra flags to give to the C compiler; default is "-Os -fPIC".
   LD          Command for linking object files and archive files; default is "ld".
   LDFLAGS     Extra flags to give to compiler when they are supposed to invoke the linker;
               default on macOS is "-pagezero_size 10000 -image_base 100000000".
@@ -207,7 +207,7 @@ Environment Variables:
   AR          Archive-maintaining program; default is "ar".
   CC          Command for compiling C; default is "gcc".
   CMAKE       Command for processing CMakeLists.txt files; default is "cmake".
-  CFLAGS      Extra flags to give to the C compiler; default is "-O2".
+  CFLAGS      Extra flags to give to the C compiler; default is "-Os -fPIC".
   LD          Command for linking object files and archive files; default is "ld".
   LDFLAGS     Extra flags to give to compiler when they are supposed to invoke the linker;
               default on macOS is "-pagezero_size 10000 -image_base 100000000".

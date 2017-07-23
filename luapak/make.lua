@@ -209,11 +209,6 @@ local function build (proj_paths, entry_script, output_file, pkg_path, lua_lib, 
     end
   end
 
-  luarocks.set_variable('CFLAGS', luarocks.get_variable('CFLAGS')..' -Os -std=c99')
-  local vars = luarocks.cfg.variables
-
-  local libs = { 'm' }  -- math library
-
   log.info('Resolving dependencies...')
   local lua_modules, native_modules, objects = resolve_dependencies(
       entry_script, opts.extra_modules, opts.exclude_modules, pkg_path)
@@ -237,11 +232,14 @@ local function build (proj_paths, entry_script, output_file, pkg_path, lua_lib, 
   log.info('Generating %s...', main_src)
   generate_wrapper(main_src, entry_script, lua_modules, native_modules, opts)
 
+  luarocks.set_variable('CFLAGS', '-std=c99 '..luarocks.get_variable('CFLAGS'))
+  local vars = luarocks.cfg.variables
+
   log.info('Compiling %s...', main_obj)
   assert(toolchain.compile_object(vars, main_obj, main_src), 'Failed to compile '..main_obj)
 
   log.info('Linking %s...', output_file)
-  assert(toolchain.link_binary(vars, output_file, objects, libs),
+  assert(toolchain.link_binary(vars, output_file, objects, { 'm' }),  -- "m" is math library
          'Failed to link '..output_file)
   if not opts.debug then
     assert(toolchain.strip(vars, output_file), 'Failed to strip '..output_file)
