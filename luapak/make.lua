@@ -320,9 +320,9 @@ return function (proj_paths, entry_script, output_file, rocks_dir, opts)
   if not lua_lib then
     lua_lib = find_liblua(luarocks.cfg.lib_extension, lua_name:lower(), lua_ver)
     if not lua_lib then
-      errorf('Cannot find %s %s library. Please specify --lua-lib=PATH', lua_name, lua_ver)
+      errorf('Cannot find %s %s library. Please specify --lua-lib=PATH', lua_name, lua_ver or '')
     end
-    log.debug('Using %s %s library: %s', lua_name, lua_ver, lua_lib)
+    log.debug('Using %s %s library: %s', lua_name, lua_ver or '', lua_lib)
   elseif not is_file(lua_lib) then
     errorf('File %s does not exist!', lua_lib)
   end
