@@ -243,7 +243,9 @@ local function build (proj_paths, entry_script, output_file, pkg_path, lua_lib, 
   log.info('Linking %s...', output_file)
   assert(toolchain.link_binary(vars, output_file, objects, libs),
          'Failed to link '..output_file)
-  assert(toolchain.strip(vars, output_file), 'Failed to strip '..output_file)
+  if not opts.debug then
+    assert(toolchain.strip(vars, output_file), 'Failed to strip '..output_file)
+  end
 
   log.info('Build completed: %s', output_file)
 
