@@ -25,6 +25,11 @@ select_help_msg() {
 		}' "$luafile"
 }
 
+# Escapes characters that have special meaning in HTML.
+html_escape() {
+	sed 's/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g;'
+}
+
 # Formats snippet of code as an HTML <details> element with summary $1
 # and detail $2.
 format_snippet() {
@@ -73,8 +78,8 @@ replace_snippet() {
 for luafile in luapak/cli/*.lua; do
 	help_msg=$(select_help_msg "$luafile")
 	cmd_name=$(echo "$help_msg" | head -n 1 | sed -En 's/.*luapak ([^ ]+).*/\1/p')
-	summary=$(echo "$help_msg" | awk '/^$/{l++} (l < 2) {print}')  # from start up to 2nd empty line
-	detail=$(echo "$help_msg" | awk '/^$/{l++} (l >= 2) {print}')  # from 2nd empty line up to end
+	summary=$(echo "$help_msg" | awk '/^$/{l++} (l < 2) {print}' | html_escape)  # from start up to 2nd empty line
+	detail=$(echo "$help_msg" | awk '/^$/{l++} (l >= 2) {print}' | html_escape)  # from 2nd empty line up to end
 
 	if [ -n "$cmd_name" ] && [ -n "$summary" ] && [ -n "$detail" ]; then
 		snippet=$(format_snippet "$summary" "$detail")

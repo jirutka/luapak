@@ -58,15 +58,15 @@ compiling executable.</pre>
   </summary>
   <pre>
 Arguments:
-  PACKAGE                         Lua package to build specified as <source-dir>:<rockspec>.
-                                  :<rockspec> may be omitted if the <source-dir> or
-                                  <source-dir>/rockspec(s) contains single rockspec, or multiple
+  PACKAGE                         Lua package to build specified as &lt;source-dir&gt;:&lt;rockspec&gt;.
+                                  :&lt;rockspec&gt; may be omitted if the &lt;source-dir&gt; or
+                                  &lt;source-dir&gt;/rockspec(s) contains single rockspec, or multiple
                                   rockspecs for the same package (i.e. with different version).
                                   In the further case rockspec with the highest version is used.
-                                  <source-dir>: may be omitted if the <rockspec> is in the
+                                  &lt;source-dir&gt;: may be omitted if the &lt;rockspec&gt; is in the
                                   project's source directory or rockspec(s) subdirectory.
                                   If no argument is given, the current directory is used as
-                                  <source-dir>.
+                                  &lt;source-dir&gt;.
 
 Options:
   -s, --entry-script=FILE         The entry point of your program, i.e. the main Lua script. If not
@@ -95,8 +95,8 @@ Options:
                                   specified, luapak will look for the lua.h (and luajit.h) file
                                   inside: Luarock's LUA_INCDIR, ./vendor/lua, ./deps/lua,
                                   /usr/local/include, and /usr/include. If --lua-version is
-                                  specified, then it will also try subdirectories lua<version> and
-                                  lua-<version> of each of the named directories and verify that
+                                  specified, then it will also try subdirectories lua&lt;version&gt; and
+                                  lua-&lt;version&gt; of each of the named directories and verify that
                                   the found lua.h (or luajit.h) is for the specified Lua
                                   (or LuaJIT) version.
 
@@ -217,7 +217,7 @@ Options:
                               specified, luapak will look for the lua.h (and luajit.h) file inside:
                               Luarock's LUA_INCDIR, ./vendor/lua, ./deps/lua, /usr/local/include,
                               and /usr/include. If --lua-version is specified, then it will also
-                              try subdirectories lua<version> and lua-<version> of each of the
+                              try subdirectories lua&lt;version&gt; and lua-&lt;version&gt; of each of the
                               named directories and verify that the found lua.h (or luajit.h) is
                               for the specified Lua (or LuaJIT) version.
 
