@@ -74,7 +74,7 @@ for luafile in luapak/cli/*.lua; do
 	help_msg=$(select_help_msg "$luafile")
 	cmd_name=$(echo "$help_msg" | head -n 1 | sed -En 's/.*luapak ([^ ]+).*/\1/p')
 	summary=$(echo "$help_msg" | awk '/^$/{l++} (l < 2) {print}')  # from start up to 2nd empty line
-	detail=$(echo "$help_msg" | awk '/^$/{l++} (l > 2) {print}')  # from 2nd empty line up to end
+	detail=$(echo "$help_msg" | awk '/^$/{l++} (l >= 2) {print}')  # from 2nd empty line up to end
 
 	if [ -n "$cmd_name" ] && [ -n "$summary" ] && [ -n "$detail" ]; then
 		snippet=$(format_snippet "$summary" "$detail")

@@ -57,6 +57,17 @@ command that handles entire process from installing dependencies to
 compiling executable.</pre>
   </summary>
   <pre>
+Arguments:
+  PACKAGE                         Lua package to build specified as <source-dir>:<rockspec>.
+                                  :<rockspec> may be omitted if the <source-dir> or
+                                  <source-dir>/rockspec(s) contains single rockspec, or multiple
+                                  rockspecs for the same package (i.e. with different version).
+                                  In the further case rockspec with the highest version is used.
+                                  <source-dir>: may be omitted if the <rockspec> is in the
+                                  project's source directory or rockspec(s) subdirectory.
+                                  If no argument is given, the current directory is used as
+                                  <source-dir>.
+
 Options:
   -s, --entry-script=FILE         The entry point of your program, i.e. the main Lua script. If not
                                   specified and the last PACKAGE defines exactly one CLI script,
@@ -145,6 +156,9 @@ Analyses dependency graph of Lua module(s) using static code analysis (looks
 for "require" expressions).</pre>
   </summary>
   <pre>
+Arguments:
+  FILE                        The entry point(s); path(s) to Lua script(s) to analyse.
+
 Options:
   -a, --all                   Print all information (default).
   -f, --found                 Print only found modules.
@@ -189,6 +203,9 @@ Builds Lua/C module as a library archive suitable for static linking
 and installs it into rocks tree.</pre>
   </summary>
   <pre>
+Arguments:
+  ROCKSPEC                    Path of the rockspec file to build and install.
+
 Options:
   -C, --directory=DIR         Change directory before doing anything.
 
@@ -246,6 +263,10 @@ a function, or string loaded by "load" (--debug), and assigned to
 "package.preload" table.</pre>
   </summary>
   <pre>
+Arguments:
+  MODULE                    Name and path of Lua module delimited with "="
+                            (e.g. "luapak.utils=luapak/utils.lua") or just path of module.
+
 Options:
   -g, --debug               Preserve module names and line numbers in error backtraces?
   -o, --output=FILE         Where to write the generated code. Use "-" for stdout. Default is "-".
@@ -272,6 +293,9 @@ Minifies Lua source code - removes comments, unnecessary white spaces and
 empty lines, shortens numbers and names of local variables.</pre>
   </summary>
   <pre>
+Arguments:
+  FILE                        Path of the Lua source file, or "-" for stdin.
+
 Options:
   -l, --keep-lno              Do not affect line numbers.
   -n, --keep-names            Do not rename local variables.
@@ -299,6 +323,10 @@ Wraps Lua script into a generated C file that can be compiled and linked with
 Lua interpreter and Lua/C native extensions into a standalone executable.</pre>
   </summary>
   <pre>
+Arguments:
+  FILE                        The Lua file to embed into the wrapper.
+  MODULE_NAME                 Name of native module to preload (e.g. "cjson").
+
 Options:
   -C, --no-compress           Do not compress FILE using BriefLZ algorithm.
   -o, --output=FILE           Where to write the generated code; "-" for stdout. Default is "-".
