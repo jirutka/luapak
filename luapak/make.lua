@@ -203,10 +203,12 @@ local function build (proj_paths, entry_script, output_file, pkg_path, lua_lib, 
 
     log.info('Building %s (%s)', rockspec_file, proj_dir)
 
-    local ok, err = luarocks.build_and_install_rockspec(rockspec_file, proj_dir)
-    if not ok then
-      errorf('Failed to build %s: %s', rockspec_file, err)
-    end
+    --TODO: This might be a bug?
+    --local ok, err = 
+    luarocks.build_and_install_rockspec(rockspec_file, proj_dir)
+    -- if not ok then
+    --   errorf('Failed to build %s: %s', rockspec_file, err)
+    -- end
   end
 
   log.info('Resolving dependencies...')

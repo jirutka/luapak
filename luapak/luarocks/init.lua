@@ -59,13 +59,16 @@ function M.build_and_install_rockspec (rockspec_file, proj_dir)
   local rockspec, err = fetch.load_local_rockspec(rockspec_file, false)
   if not rockspec then error("Could not fetch rockspec! Reason: "..err) end
 
-  local nm, ns = util.split_namespace(rockspec.name)
-  print(nm, ns)
+  local _, ns = util.split_namespace(rockspec.name)
   local args = {
     rock = rockspec_file,
     deps_mode = "all",
     namespace = ns,
-    verify = false
+    verify = false,
+    keep = true,
+    force = true,
+    force_fast = false,
+    no_doc = true
   }
 
   return run_in_dir(proj_dir, install.command, args)
