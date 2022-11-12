@@ -4,7 +4,7 @@ package = 'luapak'
 version = 'dev-0'
 
 source = {
-  url = 'git://github.com/jirutka/luapak.git',
+  url = 'git://github.com/Frityet/luapak.git',
   branch = 'master',
 }
 

@@ -1,6 +1,9 @@
 ---------
 -- Facade for interaction with LuaRocks.
 ----
+local cfg = require 'luarocks.core.cfg'
+cfg.init()
+
 require 'luapak.luarocks.site_config'
 require 'luapak.luarocks.cfg_extra'
 package.loaded['luarocks.build.builtin'] = require 'luapak.build.builtin'
@@ -12,10 +15,11 @@ for _, name in ipairs { 'cmake', 'command', 'make' } do
   package.loaded[name] = warn_interceptor(require(name))
 end
 
-local cfg = require 'luarocks.cfg'
+
 local build = require 'luarocks.build'
 local fetch = require 'luarocks.fetch'
 local fs = require 'luarocks.fs'
+fs.init()
 local path = require 'luarocks.path'
 local util = require 'luarocks.util'
 
@@ -40,7 +44,7 @@ local M = {}
 M.cfg = cfg
 
 --- Do we run on Windows?
-M.is_windows = cfg.platforms.windows
+M.is_windows = cfg.is_platform("windows")
 
 --- Builds and installs local rock specified by the rockspec.
 --
@@ -58,6 +62,8 @@ end
 function M.change_target_lua (api_ver, luajit_ver)
   cfg.lua_version = api_ver
   cfg.luajit_version = luajit_ver
+
+  
 
   cfg.rocks_provided.lua = api_ver..'-1'
   if api_ver == '5.2' then
