@@ -4,7 +4,7 @@
 -- This module returns @{build.toolchain.gnu} or @{build.toolchain.msvc} based
 -- on the user's platform.
 ----
-local cfg = require 'luarocks.cfg'
+local cfg = require 'luarocks.core.cfg'
 
 local MSVC = cfg.is_platform('win32') and not cfg.is_platform('mingw32')
 

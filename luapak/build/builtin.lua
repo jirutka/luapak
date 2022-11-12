@@ -1,7 +1,7 @@
 ---------
 -- The builtin builder based on LuaRocks builtin.
 ----
-local cfg = require 'luarocks.cfg'
+local cfg = require 'luarocks.core.cfg'
 local dir = require 'luarocks.dir'
 local fs = require 'luarocks.fs'
 local path = require 'luarocks.path'
