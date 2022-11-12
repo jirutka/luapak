@@ -59,19 +59,6 @@ function M.build_and_install_rockspec (rockspec_file, proj_dir)
   local rockspec, err = fetch.load_local_rockspec(rockspec_file, false)
   if not rockspec then error("Could not fetch rockspec! Reason: "..err) end
 
-  -- return run_in_dir(proj_dir,
-  --     build.build_rockspec, rockspec, build.opts {
-  --     need_to_fetch = false,
-  --     minimal_mode = true,
-  --     deps_mode = cfg.deps_mode,
-  --     build_only_deps = false,
-  --     namespace = util.split_namespace(rockspec.name),
-  --     verify = true,
-  --     check_lua_versions = true,
-  --     pin = false,
-  --     no_install = false
-  --  })
-
   local nm, ns = util.split_namespace(rockspec.name)
   print(nm, ns)
   local args = {
