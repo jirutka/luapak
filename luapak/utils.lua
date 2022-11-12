@@ -9,6 +9,7 @@ local fmt = string.format
 local gmatch = string.gmatch
 local insert = table.insert
 local io_type = io.type
+print(io_type)
 local pairs = pairs
 local select = select
 local sort = table.sort

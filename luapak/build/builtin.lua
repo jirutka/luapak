@@ -187,4 +187,7 @@ function M.run (rockspec)
   return builder(rockspec)
 end
 
+local old = require 'luarocks.build.builtin'
+for k, v in pairs(old) do if not M[k] then M[k] = v end end
+
 return M

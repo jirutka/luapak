@@ -22,7 +22,7 @@ local fs = require 'luarocks.fs'
 fs.init()
 local path = require 'luarocks.path'
 local util = require 'luarocks.util'
-
+local deps = require 'luarocks.deps'
 local const = require 'luapak.luarocks.constants'
 
 
@@ -51,8 +51,19 @@ M.is_windows = cfg.is_platform("windows")
 -- @tparam string rockspec_file Path of the rockspec file.
 -- @tparam string proj_dir The base directory with the rock's sources.
 function M.build_and_install_rockspec (rockspec_file, proj_dir)
+  local rockspec = fetch.load_local_rockspec(rockspec_file, false)
+ 
   return run_in_dir(proj_dir,
-      build.build_rockspec, rockspec_file, false, true, 'one', false)
+      build.build_rockspec, rockspec, build.opts {
+        need_to_fetch = true,
+        minimal_mode = false,
+        build_only_deps = false,
+        verify = true,
+        deps_mode = cfg.deps_mode,
+        no_install = false,
+        check_lua_versions = true,
+        pin = true
+      })
 end
 
 --- Changes the target Lua version.
@@ -64,16 +75,17 @@ function M.change_target_lua (api_ver, luajit_ver)
   cfg.luajit_version = luajit_ver
 
   
+  local rocks_provided = util.get_rocks_provided()
 
-  cfg.rocks_provided.lua = api_ver..'-1'
+  rocks_provided.lua = api_ver..'-1'
   if api_ver == '5.2' then
-    cfg.rocks_provided.bit32 = '5.2-1'
+    rocks_provided.bit32 = '5.2-1'
   elseif api_ver == '5.3' then
-    cfg.rocks_provided.utf8 = '5.3-1'
+    rocks_provided.utf8 = '5.3-1'
   end
 
   if luajit_ver then
-    cfg.rocks_provided.luabitop = luajit_ver:gsub('%-', '')..'-1'
+    rocks_provided.luabitop = luajit_ver:gsub('%-', '')..'-1'
 
     if cfg.is_platform('macosx') then
       -- See http://luajit.org/install.html#embed.
@@ -81,7 +93,7 @@ function M.change_target_lua (api_ver, luajit_ver)
       cfg.variables.LDFLAGS = const.LUAJIT_MACOS_LDFLAGS..' '..ldflags
     end
   else
-    cfg.rocks_provided.luabitop = nil
+    rocks_provided.luabitop = nil
   end
 end
 
