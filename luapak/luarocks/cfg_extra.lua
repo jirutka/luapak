@@ -1,4 +1,4 @@
-local cfg = require 'luarocks.cfg'
+local cfg = require 'luarocks.core.cfg'
 
 local const = require 'luapak.luarocks.constants'
 local fs = require 'luapak.fs'

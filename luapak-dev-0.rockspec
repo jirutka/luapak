@@ -4,7 +4,7 @@ package = 'luapak'
 version = 'dev-0'
 
 source = {
-  url = 'git://github.com/jirutka/luapak.git',
+  url = 'git://github.com/Frityet/luapak.git',
   branch = 'master',
 }
 
@@ -24,13 +24,13 @@ with Lua library and native extensions.]],
 
 dependencies = {
   'lua >= 5.1',
-  'brieflz ~> 0.1.2',
-  'depgraph ~> 0.1',
-  'lua-glob-pattern ~> 0.2',
-  'luafilesystem ~> 1.6',
-  'luarocks ~> 2.4',
-  'luasrcdiet ~> 0.3',
-  'optparse ~> 1.1',
+  'brieflz',
+  'depgraph',
+  'lua-glob-pattern',
+  'luafilesystem',
+  'luarocks',
+  'luasrcdiet',
+  'optparse',
 }
 
 build = {

@@ -1,7 +1,7 @@
 ---------
 -- Implementation of the @{build.toolchain}'s functions for GNU.
 ----
-local cfg = require 'luarocks.cfg'
+local cfg = require 'luarocks.core.cfg'
 local utils = require 'luapak.utils'
 local tc_utils = require 'luapak.build.toolchain.utils'
 
