@@ -5,3 +5,7 @@
 /doc/
 *.bak
 *.rock
+/luarocks
+/lua
+/lua_modules
+/.luarocks
