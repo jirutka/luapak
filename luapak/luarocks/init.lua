@@ -20,9 +20,14 @@ local build = require 'luarocks.build'
 local fetch = require 'luarocks.fetch'
 local fs = require 'luarocks.fs'
 fs.init()
+-- local pprint = require("pprint")
+-- pprint.setup {
+--   show_all = true
+-- }
+-- pprint(fs)
 local path = require 'luarocks.path'
 local util = require 'luarocks.util'
-local deps = require 'luarocks.deps'
+local install = require 'luarocks.cmd.install'
 local const = require 'luapak.luarocks.constants'
 
 
@@ -51,19 +56,28 @@ M.is_windows = cfg.is_platform("windows")
 -- @tparam string rockspec_file Path of the rockspec file.
 -- @tparam string proj_dir The base directory with the rock's sources.
 function M.build_and_install_rockspec (rockspec_file, proj_dir)
-  local rockspec = fetch.load_local_rockspec(rockspec_file, false)
- 
-  return run_in_dir(proj_dir,
-      build.build_rockspec, rockspec, build.opts {
-        need_to_fetch = true,
-        minimal_mode = false,
-        build_only_deps = false,
-        verify = true,
-        deps_mode = cfg.deps_mode,
-        no_install = false,
-        check_lua_versions = true,
-        pin = true
-      })
+  local rockspec, err = fetch.load_local_rockspec(rockspec_file, false)
+  if not rockspec then error("Could not fetch rockspec! Reason: "..err) end
+
+  -- return run_in_dir(proj_dir,
+  --     build.build_rockspec, rockspec, build.opts {
+  --     need_to_fetch = false,
+  --     minimal_mode = true,
+  --     deps_mode = cfg.deps_mode,
+  --     build_only_deps = false,
+  --     namespace = util.split_namespace(rockspec.name),
+  --     verify = true,
+  --     check_lua_versions = true,
+  --     pin = false,
+  --     no_install = false
+  --  })
+
+  return run_in_dir(proj_dir, install.command, {
+    rock = rockspec_file,
+    deps_mode = "all",
+    namespace = util.split_namespace(rockspec.name),
+    verify = false
+  })
 end
 
 --- Changes the target Lua version.

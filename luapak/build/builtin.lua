@@ -4,6 +4,7 @@
 local cfg = require 'luarocks.core.cfg'
 local dir = require 'luarocks.dir'
 local fs = require 'luarocks.fs'
+fs.init()
 local path = require 'luarocks.path'
 
 local utils = require 'luapak.utils'
@@ -15,6 +16,7 @@ local dir_name = dir.dir_name
 local dir_path = dir.path
 local fmt = string.format
 local fs_copy = fs.copy
+
 local make_dir = fs.make_dir
 local module_to_path = path.module_to_path
 local push = table.insert
